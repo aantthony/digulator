@@ -12,26 +12,47 @@ var exports = module.exports = function (details) {
   this.faceY = +1;
 
   this._world = details.world;
+  
+  // timer for current digging action:
+  this._currentDig = null;
+  // current dig direction (if _currentDig is falsy, then this should be zero)
+  this._currentDigX = 0;
 
   scene.add(this.object);
 };
 exports.prototype.digLeft = function () {
-  var pos = this.object.position;
-  pos.x--;
-  var block = this._world.getBlock(pos.x, pos.y);
-  if (block) {
-    this._world.setBlock(pos.x + 1, pos.y, 'sand');
-  }
-  this._world.setBlock(pos.x, pos.y, null);
+  return this.digInDirection(-1);
 };
-exports.prototype.digRight = function () {
+
+exports.prototype.digInDirection = function (xDir) {
   var pos = this.object.position;
-  pos.x++;
+  if (this._currentDig) {
+    if (this._currentDigX === xDir) return;
+    this._currentDigX = 0;
+    clearTimeout(this._currentDig);
+    pos.x-=xDir;
+  }
+  pos.x += xDir;
   var block = this._world.getBlock(pos.x, pos.y);
   if (block) {
-    this._world.setBlock(pos.x - 1, pos.y, 'sand');
+    var world = this._world;
+    var x = pos.x;
+    var y = pos.y;
+    var self = this;
+    this._currentDig = setTimeout(function () {
+      self._currentDigX = 0;
+      delete self._currentDig;
+      world.setBlock(x - xDir, y, 'sand');
+      world.setBlock(x, y, null);
+    }, 500);
+    this._currentDigX = xDir;
+
+  } else {
+
   }
-  this._world.setBlock(pos.x, pos.y, null);
+}
+exports.prototype.digRight = function () {
+  return this.digInDirection(+1);
 };
 exports.prototype.digDown = function () {
   this.object.position.y--;

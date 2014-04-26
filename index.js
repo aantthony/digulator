@@ -82,7 +82,7 @@ Game = function()
 		var targetY = Math.max(-5, Math.min(5, playerpos.y - 5)) + 5;
 		camera.position.x += (targetX - camera.position.x) * 0.04;
 		camera.position.y += (targetY - camera.position.y) * 0.04;
-
+		
 		// soundPlayer.play('test');
 	}
 	this.display = function()

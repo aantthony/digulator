@@ -30,6 +30,7 @@ function World() {
 		cube.rotation.set((Math.random() - 0.5) * 0.9, (Math.random()-0.5) * 0.9, 0.0);
 		// scene.add(cube);
 		cube.name = block.name;
+		block.strength = 2;
 
 		return cube;
 	},
@@ -54,6 +55,7 @@ function World() {
 		cube.position.set(x, y, 0);
 		col[y] = cube;
 		scene.add(cube);
+		return cube;
 	};
 
 	this.chooseBlock = function(){
