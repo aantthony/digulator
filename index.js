@@ -102,7 +102,7 @@ keys.onup = function () {
 
 };
 keys.ondown = function () {
-
+  player.digDown();
 };
 
 window.onload = function()

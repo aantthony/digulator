@@ -4,20 +4,26 @@ var exports = module.exports = function () {
   var material = new THREE.MeshBasicMaterial({color: 0x0066CC});
   this.object = new THREE.Mesh(geometry, material);
 
+  // The direction the player is facing:
   this.faceX = +1;
   this.faceY = +1;
+
+  this.object.position.set(0,0,+1);
 
   scene.add(this.object);
 };
 
 exports.prototype.digLeft = function () {
   console.log('digging left...');
+  this.object.position.x--;
 };
 exports.prototype.digRight = function () {
   console.log('digging right...');
+  this.object.position.x++;
 };
 exports.prototype.digDown = function () {
-  console.log('move down');
+  console.log('dig down');
+  this.object.position.y++;
 };
 exports.prototype.digUp = function() {
 
