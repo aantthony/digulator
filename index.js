@@ -31,54 +31,9 @@ var World = require('./objects/world');
 var Particles = require('./objects/particles');
 var GameState = require('./objects/gamestate');
 var Bloom = require('./objects/bloom');
-
-var renderer = new THREE.WebGLRenderer();
-gl = renderer.context;
-
-var stats = new Stats();
-stats.setMode(0);
-stats.domElement.style.position = 'absolute';
-stats.domElement.style.right = '0px';
-stats.domElement.style.bottom = '0px';
-document.body.appendChild(stats.domElement);
-
-var width = window.innerWidth;
-var height = window.innerHeight;
-if(width > height){
-	height -= 100;
-	width =  height;
-}
-else{
-	width -= 100;
-	height = width;
-}
-var camera = new THREE.PerspectiveCamera( 45, width / height, 0.1, 20 );
-
-renderer.setSize(width, height);
-document.body.appendChild(renderer.domElement);
-
-var SoundPlayer = require('./objects/soundPlayer');
-var geometry = new THREE.CubeGeometry(1,1,1);
-var monster = new Monster({
-  world: world
-});
-/*var player = new Player({
-  world: world
-});*/
-var material = new THREE.MeshLambertMaterial({color: 0xAAAAAA});
-var cube = new THREE.Mesh(geometry, material);
-scene.add(cube);
-cube.position.x = 4.5;
-cube.position.y = 4.5;
-cube.position.z = 1;
-
-var world = new World();
-console.log('created a world!');
-
-var soundPlayer = new SoundPlayer();
-
-camera.position.z = 15;
-var cameraFocus = new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z);
+var soundPlayer = require('./objects/soundPlayer');
+var textureLoader = require('./objects/textureLoader');
+var objectLoader = require('./objects/objectLoader');
 
 function shake(x)
 {
@@ -99,8 +54,64 @@ Game = function()
 {
 	GameState.call(this);
 
+	var renderer = new THREE.WebGLRenderer();
+	gl = renderer.context;
+
+	var width = window.innerWidth;
+	var height = window.innerHeight;
+	if(width > height){
+		height -= 100;
+		width =  height;
+	}
+	else{
+		width -= 100;
+		height = width;
+	}
+	var camera = new THREE.PerspectiveCamera( 45, width / height, 0.1, 20 );
+	gl.viewportWidth = width; //FFS. can't query GL viewport state. this is a workaround for Particles
+	gl.viewportHeight = height;
+
+	renderer.setSize(width, height);
+	document.getElementById("gamewrap").appendChild(renderer.domElement);
+
+	var geometry = new THREE.CubeGeometry(1,1,1);
+	var material = new THREE.MeshLambertMaterial({color: 0xAAAAAA});
+	var cube = new THREE.Mesh(geometry, material);
+	scene.add(cube);
+	cube.position.x = 4.5;
+	cube.position.y = 4.5;
+	cube.position.z = 1;
+
+	var world = new World();
+	console.log('created a world!');
+
+	camera.position.z = 15;
+	var cameraFocus = new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z);
+	
+	var keys = new Keyboard();
+
+	var player = new Player({
+	  world: world
+	});
+	var monster = new Monster({world:world});
+
+	keys.onleft = function () {
+	  player.left();
+	};
+	keys.onright = function () {
+	  player.right();
+	};
+	keys.onup = function () {
+		player.digUp();
+	};
+	keys.ondown = function () {
+	  player.digDown();
+	};
+
+
+	
 	this.bloom = new Bloom(width, height);
-	this.particles = new Particles();
+	this.particles = new Particles(64);
 	
 	this.enter = function()
 	{
@@ -143,18 +154,25 @@ Game = function()
 			this.secondTimer = 0.0;
 			//screenShake += 4.0;
 		}
-	
-		cube.rotation.x += dt;
-		cube.rotation.y += dt;
-
-		monster.updateFunc(dt,player);
 		
-		// soundPlayer.play('test');
+		//soundPlayer.play('test');
+		
+		this.particles.spawn([0, 0, 0, 0], [Math.random()-0.5, Math.random()-0.5, Math.random()-0.5, 0]);
+		
+		this.particles.step(dt);
+		
+		if(cube){
+			cube.rotation.x += dt;
+			cube.rotation.y += dt;
+		}
+		if(monster)
+			monster.updateFunc(dt,player);
 	}
 	this.display = function()
 	{
 		this.bloom.bind();
 		renderer.render(scene, camera);
+		this.particles.draw(camera.projectionMatrix.elements, camera.matrixWorldInverse.elements);
 		this.bloom.unbind();
 	}
 }
@@ -170,6 +188,13 @@ var changeGameState = function(newState)
 	
 	currentGameState = newState;
 }
+
+var stats = new Stats();
+stats.setMode(0);
+stats.domElement.style.position = 'absolute';
+stats.domElement.style.right = '0px';
+stats.domElement.style.bottom = '0px';
+document.body.appendChild(stats.domElement);
 
 var lastTime = 0.0;
 var sleepTime = 0.0;
@@ -201,29 +226,11 @@ var mainloop = function()
 	stats.end();
 }
 
-var keys = new Keyboard();
-
-var player = new Player({
-  world: world
-});
-
-keys.onleft = function () {
-  player.left();
-};
-keys.onright = function () {
-  player.right();
-};
-keys.onup = function () {
-  screenShake += 1.0;
-  player.digUp();
-};
-keys.ondown = function () {
-  player.digDown();
-};
-
 window.onload = function()
 {
-
-	changeGameState(new Game());
-	mainloop();
+	setTimeout(function () {
+		changeGameState(new Game());
+		document.getElementById("loadingscreen").style.display = "none";
+		mainloop();
+	}, 500);
 }

@@ -4,7 +4,7 @@ var exports = module.exports = function (details) {
   var material = new THREE.MeshBasicMaterial({color: 0xFFFFFF});
   this.object = new THREE.Mesh(geometry, material);
 
-  this.object.position.set(4,2,-0.5);
+  this.object.position.set(4,2,0.5);
   this.object.rotation.set(1.4,0,0);
 
   // The direction the monster is facing:

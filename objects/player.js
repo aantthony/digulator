@@ -1,3 +1,5 @@
+var soundPlayer = require('./soundPlayer');
+
 var exports = module.exports = function (details) {
 
   var geometry = new THREE.CubeGeometry(0.4,0.4, 0.4);
@@ -17,58 +19,122 @@ var exports = module.exports = function (details) {
   this._currentDig = null;
   // current dig direction (if _currentDig is falsy, then this should be zero)
   this._currentDigX = 0;
+  this._x = Math.round(this.object.position.x);
+  this._y = Math.round(this.object.position.y);
 
   scene.add(this.object);
 };
 exports.prototype.digLeft = function () {
-  return this.digInDirection(-1);
+  return this.digInDirection(-1, 0);
 };
 
-exports.prototype.digInDirection = function (xDir) {
-  var pos = this.object.position;
-  if (this._currentDig) {
-    if (this._currentDigX === xDir) return;
-    this._currentDigX = 0;
-    clearTimeout(this._currentDig);
-    pos.x-=xDir;
+function difficulty (block) {
+  switch(block.name) {
+    case 'diamond': return 12;
+    case 'gold': return 8;
+    case 'rock': return 18;
+    case 'clay': return 4;
+    case 'dirt': return 2;
+    case 'sand': return 1;
+    default:
+    console.log('unkown type:', block.name);
+    return 3;
   }
-  var block = this._world.getBlock(pos.x + xDir, pos.y);
+}
+
+exports.prototype.digInDirection = function (xDir, yDir) {
+  var pos = this.object.position;
+
+  if (this._currentDig) {
+    if (this._currentDigX === xDir && this._currentDigY === yDir) return;
+    // uncomment this line to allow digging to be canceled:
+    // this._currentDigCancel();
+    return;
+  }
+  pos.x = this._x;
+  pos.y = this._y;
+  var block = this._world.getBlock(pos.x + xDir, pos.y + yDir);
   if (block) {
-    shake(8);
+    shake(3);
     var world = this._world;
-    var x = pos.x + xDir;
-    var y = pos.y;
+    var x = this._x + xDir;
+    var y = this._y + yDir;
     var self = this;
-    this._currentDig = setTimeout(function () {
-      shake(4.5);
-      pos.x = x;
+
+    var d = difficulty(block);
+    var mineTime = d * 80;
+    var timers = [];
+    soundPlayer.play(d > 5 ? 'DrillMed' : 'DrillFast');
+    
+    timers.push(setTimeout(function () {
+      shake(3);
+      block.scale.set(0.5, 0.5, 0.5);
+      pos.x += 0.5 * xDir;
+      block.position.x = x + 0.25 * xDir;
+      block.position.y = y - 0.25;
+      if (d > 5) soundPlayer.play('DrillMed');
+    }, mineTime / 3));
+    timers.push(setTimeout(function () {
+      shake(2);
+      block.scale.set(0.25, 0.25, 0.25);
+      block.position.y = y - 0.25 - 0.125;
+      if (d > 5) soundPlayer.play('DrillMed');
+    }, mineTime * 2 / 3));
+    timers.push(setTimeout(function () {
+      shake(0.5);
+      pos.x = self._x = x;
+      pos.y = self._y = y;
       self._currentDigX = 0;
+      self._currentDigY = 0;
       delete self._currentDig;
-      world.setBlock(x - xDir, y, 'sand');
+      if (d > 5) soundPlayer.play('DrillFast');
+      world.setBlock(x - xDir, y - yDir, 'sand');
       world.setBlock(x, y, null);
-    }, 200);
+    }, mineTime));
+    this._currentDig = true;
+
+    this._currentDigCancel = function () {
+      timers.forEach(clearTimeout);
+      self._currentDigX = timers._currentDigY = 0;
+      delete self._currentDig;
+      pos.x = self._x;
+      pos.y = self._y;
+      block.scale.set(1,1,1);
+      block.position.set(self._x + xDir, self._y + yDir, 0.0);
+    };
+
+    // until we have a better digging animation:
     pos.x += 0.4 * xDir;
+    pos.y += 0.4 * yDir;
+
     this._currentDigX = xDir;
+    this._currentDigY = yDir;
 
   } else {
-    pos.x += xDir;
+    this._x = pos.x += xDir;
+    this._y = pos.y += yDir;
   }
 }
 exports.prototype.digRight = function () {
-  return this.digInDirection(+1);
+  return this.digInDirection(+1, 0);
 };
 exports.prototype.digDown = function () {
-  this.object.position.y--;
-
+  return this.digInDirection(0, -1);
 };
 exports.prototype.digUp = function() {
-
+  return this.digInDirection(0, +1);
 };
 exports.prototype.faceLeft = function () {
   this.faceX = -1;
+  if (this._currentDigX === +1) {
+    // this._currentDigCancel();
+  }
 };
 exports.prototype.faceRight = function () {
   this.faceX = +1;
+  if (this._currentDigX === -1) {
+    // this._currentDigCancel();
+  }
 };
 
 exports.prototype.right = function () {

@@ -11,7 +11,10 @@ var size = 10;
 var NUMDIAMONDS = 2;
 var NUMSPACE = 4;
 
+var objectLoader = require('./objectLoader');
+
 function World() {
+	this.objectLoader = objectLoader;
 	this.blocks = [],
 
 	this.createWorld = function(){
@@ -48,13 +51,11 @@ function World() {
 
 	this.makeBlock = function(type,i,j){
 		var block = this.chooseBlock(type);
+		var cube = block.mesh;
 
-		var geometry = new THREE.CubeGeometry(0.95 + Math.random() * 0.1,0.95 + Math.random () * 0.1,0.95);
-		var material = new THREE.MeshLambertMaterial({color: block.color});
-		cube = new THREE.Mesh(geometry, material);
-		cube.rotation.set((Math.random() - 0.5) * 0.2, (Math.random()-0.5) * 0.2, 0.0);
+		// cube.rotation.set((Math.random() - 0.5) * 0.2, (Math.random()-0.5) * 0.2, 0.0);
+		cube.rotation.set(Math.PI/2 * Math.floor(Math.random()*8), Math.PI/2 * Math.floor(Math.random()*8), 0.0);
 		// scene.add(cube);
-		block.strength = 2;
 		cube.name = block.name;
 		cube.position.x = i;
 		cube.position.y = j;
@@ -79,7 +80,7 @@ function World() {
 		}
 		if (!name) return;
 		cube = this.makeBlock(name, x, y);
-		cube.material.color.set(0xffff00);
+		// cube.material.color.set(0xffff00);
 		cube.name = name;
 		cube.position.set(x, y, 0);
 		col[y] = cube;
@@ -88,41 +89,46 @@ function World() {
 	};
 
 	this.chooseBlock = function(type){
+		var geometry = new THREE.CubeGeometry(0.95 + Math.random() * 0.1,0.95 + Math.random () * 0.1,0.95);
+		var material;
 		switch(type){
 			case SAND:
+			case 'sand':
 				return {
+					mesh: this.objectLoader.getObject('Sand'),
 					name: 'sand',
-					color: 0xFF0000 //0xFFFF00
 				}
 			case DIRT:
 				return {
-					name: 'dirt',
-					color: 0xFFAA00
+					mesh: this.objectLoader.getObject('Dirt'),
+					name: 'dirt'
 				}
 			case CLAY:
 				return {
+					mesh: this.objectLoader.getObject('Clay'),
 					name: 'clay',
-					color: 0xFF5500
 				}
 			case ROCK:
 				return {
+					mesh: this.objectLoader.getObject('Rock'),
 					name: 'rock',
-					color: 0xAAAAAA
 				}
 			case GOLD:
 				return {
+					mesh: this.objectLoader.getObject('Gold'),
 					name: 'gold',
-					color: 0xFFFF00
 				}
 			case DIAMOND:
+				material = new THREE.MeshLambertMaterial({color: 0x0000FF});
 				return {
+					mesh: new THREE.Mesh(geometry, material),
 					name: 'diamond',
-					color: 0x0000FF
 				}
 			default:
+				material = new THREE.MeshLambertMaterial({color: 0x000000});
 				return {
+					mesh: new THREE.Mesh(geometry, material),
 					name: 'empty',
-					color: 0x000000
 				}
 		}
 	}
