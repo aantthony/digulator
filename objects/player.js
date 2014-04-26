@@ -1,29 +1,41 @@
-var exports = module.exports = function () {
+var exports = module.exports = function (details) {
 
-  var geometry = new THREE.CubeGeometry(1,1,1);
+  var geometry = new THREE.CubeGeometry(0.4,0.4, 0.4);
   var material = new THREE.MeshBasicMaterial({color: 0x0066CC});
   this.object = new THREE.Mesh(geometry, material);
+
+  this.object.position.set(0,10,0);
+  this.object.rotation.set(1.4,0,0);
 
   // The direction the player is facing:
   this.faceX = +1;
   this.faceY = +1;
 
-  this.object.position.set(0,0,+1);
+  this._world = details.world;
 
   scene.add(this.object);
 };
-
 exports.prototype.digLeft = function () {
-  console.log('digging left...');
-  this.object.position.x--;
+  var pos = this.object.position;
+  pos.x--;
+  var block = this._world.getBlock(pos.x, pos.y);
+  if (block) {
+    this._world.setBlock(pos.x + 1, pos.y, 'sand');
+  }
+  this._world.setBlock(pos.x, pos.y, null);
 };
 exports.prototype.digRight = function () {
-  console.log('digging right...');
-  this.object.position.x++;
+  var pos = this.object.position;
+  pos.x++;
+  var block = this._world.getBlock(pos.x, pos.y);
+  if (block) {
+    this._world.setBlock(pos.x - 1, pos.y, 'sand');
+  }
+  this._world.setBlock(pos.x, pos.y, null);
 };
 exports.prototype.digDown = function () {
-  console.log('dig down');
-  this.object.position.y++;
+  this.object.position.y--;
+
 };
 exports.prototype.digUp = function() {
 

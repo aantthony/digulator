@@ -24,14 +24,37 @@ function World() {
 	this.makeBlock = function(){
 		var block = this.chooseBlock();
 
-		var geometry = new THREE.CubeGeometry(1,1,1);
-		var material = new THREE.MeshBasicMaterial({color: block.color});
+		var geometry = new THREE.CubeGeometry(0.8 + Math.random() * 0.1,0.8 + Math.random () * 0.1,0.95);
+		var material = new THREE.MeshLambertMaterial({color: block.color});
 		cube = new THREE.Mesh(geometry, material);
+		cube.rotation.set((Math.random() - 0.5) * 0.9, (Math.random()-0.5) * 0.9, 0.0);
 		// scene.add(cube);
 		cube.name = block.name;
 
 		return cube;
 	},
+
+	this.getBlock = function (x, y) {
+		var col = this.blocks[x];
+		if (!col) return;
+		return col[y] || undefined;
+	};
+
+	this.setBlock = function (x, y, name) {
+		var old;
+		var col = this.blocks[x];
+		if (old = col[y]) {
+			scene.remove(old);
+			delete col[y];
+		}
+		if (!name) return;
+		cube = this.makeBlock();
+		cube.material.color.set(0xffff00);
+		cube.name = name;
+		cube.position.set(x, y, 0);
+		col[y] = cube;
+		scene.add(cube);
+	};
 
 	this.chooseBlock = function(){
 		var i = Math.floor(Math.random()*6);

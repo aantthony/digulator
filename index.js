@@ -5,7 +5,11 @@ window.THREE = THREE;
 
 var scene = new THREE.Scene();
 window.scene = scene;
-var camera = new THREE.OrthographicCamera(-0.5, 9.5, -0.5, 9.5, 0, 10);
+var light = new THREE.PointLight(0xFFFFFF);
+light.position.z = 3;
+light.position.x = 4.5;
+light.position.y = 4.5;
+scene.add(light);
 
 function AssertException(message)
 {
@@ -47,12 +51,14 @@ else{
 	width -= 100;
 	height = width;
 }
+var camera = new THREE.PerspectiveCamera( 45, width / height, 0.1, 20 );
 
 renderer.setSize(width, height);
 document.body.appendChild(renderer.domElement);
 
+var SoundPlayer = require('./objects/soundPlayer');
 var geometry = new THREE.CubeGeometry(1,1,1);
-var material = new THREE.MeshBasicMaterial({color: 0xAAAAAA});
+var material = new THREE.MeshLambertMaterial({color: 0xAAAAAA});
 var cube = new THREE.Mesh(geometry, material);
 scene.add(cube);
 cube.position.x = 4.5;
@@ -62,7 +68,9 @@ cube.position.z = 1;
 var world = new World();
 console.log('created a world!');
 
-camera.position.z = 5;
+var soundPlayer = new SoundPlayer();
+
+camera.position.z = 15;
 
 Game = function()
 {
@@ -82,6 +90,13 @@ Game = function()
 	{
 		cube.rotation.x += dt;
 		cube.rotation.y += dt;
+		var playerpos = player.object.position;
+		var targetX = Math.max(-5, Math.min(5, playerpos.x - 5)) + 5;
+		var targetY = Math.max(-5, Math.min(5, playerpos.y - 5)) + 5;
+		camera.position.x += (targetX - camera.position.x) * 0.04;
+		camera.position.y += (targetY - camera.position.y) * 0.04;
+
+		// soundPlayer.play('test');
 	}
 	this.display = function()
 	{
@@ -135,7 +150,9 @@ var mainloop = function()
 
 var keys = new Keyboard();
 
-var player = new Player();
+var player = new Player({
+  world: world
+});
 
 keys.onleft = function () {
   player.left();
