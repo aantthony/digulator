@@ -57,15 +57,23 @@ renderer.setSize(width, height);
 document.body.appendChild(renderer.domElement);
 
 var SoundPlayer = require('./objects/soundPlayer');
-var geometry = new THREE.CubeGeometry(1,1,1);
+var TextureLoader = require('./objects/textureLoader');
+var ObjectLoader = require('./objects/objectLoader');
+var Particles = require('./objects/particles');
+var GameState = require('./objects/gamestate');
+var cube;
+/*var geometry = new THREE.CubeGeometry(1,1,1);
 var material = new THREE.MeshLambertMaterial({color: 0xAAAAAA});
 var cube = new THREE.Mesh(geometry, material);
 scene.add(cube);
 cube.position.x = 4.5;
 cube.position.y = 4.5;
-cube.position.z = 1;
+cube.position.z = 1;*/
 
-var world = new World();
+var textureLoader = new TextureLoader();
+var objectLoader = new ObjectLoader();
+
+var world = new World({objectLoader: objectLoader, textureLoader: textureLoader});
 console.log('created a world!');
 
 var soundPlayer = new SoundPlayer();
@@ -136,10 +144,10 @@ Game = function()
 			this.secondTimer = 0.0;
 			//screenShake += 4.0;
 		}
-	
-		cube.rotation.x += dt;
-		cube.rotation.y += dt;
-		
+		if(cube){
+			cube.rotation.x += dt;
+			cube.rotation.y += dt;
+		}
 		// soundPlayer.play('test');
 	}
 	this.display = function()
@@ -213,6 +221,21 @@ keys.ondown = function () {
 
 window.onload = function()
 {
+	/*setTimeout(function(){
+		cube = objectLoader.getObject('Sand');
+
+		var texture = textureLoader.getTexture('Sandtext');
+		cube.traverse( function ( child ) {
+			if(child instanceof THREE.Mesh){
+				child.material.map = texture;
+			}
+		});
+		scene.add(cube);
+
+		cube.position.x = 4.5;
+		cube.position.y = 4.5;
+		cube.position.z = -1;
+	}, 500);*/
 
 	changeGameState(new Game());
 	mainloop();
