@@ -3,7 +3,7 @@ var soundPlayer = require('./soundPlayer');
 var exports = module.exports = function (details) {
 
   var geometry = new THREE.CubeGeometry(0.4,0.4, 0.4);
-  var material = new THREE.MeshBasicMaterial({color: 0x0066CC});
+  var material = new THREE.MeshBasicMaterial({color: 0x0066CC, depthTest: false});
   this.object = new THREE.Mesh(geometry, material);
 
   this.object.position.set(0,10,0);
@@ -84,8 +84,8 @@ exports.prototype.digInDirection = function (xDir, yDir) {
       self._currentDigY = 0;
       delete self._currentDig;
       if (d > 5) soundPlayer.play('DrillFast');
-      world.setBlock(x - xDir, y - yDir, 'sand');
-      world.setBlock(x, y, null);
+      // world.setBlock(x - xDir, y - yDir, 'sand');
+      world.setBlock(x, y, 'sand');
     }, mineTime));
     this._currentDig = true;
 
@@ -151,8 +151,10 @@ exports.prototype.digDown = function () {
   return this.digInDirection(0, -1);
 };
 exports.prototype.digUp = function() {
-  var above = this._world.getBlock(this._x, this._y + 1);
-  if (!above) return; // no flying!
+  console.log('up?');
+  var on = this._world.getBlock(this._x, this._y);
+  if (!on) return; // no flying!
+
   if (!this._world.canDig(this._x, this._y + 1)) {
     return;
   }
