@@ -12,8 +12,18 @@ function TextureLoader() {
   this.loadNormal('ClayNM');
 
   this.loadTexture('Rock');
+  this.loadNormal('RockNM');
+
   this.loadTexture('Gold');
+  this.loadNormal('GoldNM');
+
   this.loadTexture('Dirt');
+  this.loadNormal('DirtNM');
+  
+  this.loadTexture('Diamond');
+  this.loadNormal('DiamondNM');
+  
+  this.loadTexture('spark');
 }
 
 TextureLoader.prototype.getTexture = function(tex) {
