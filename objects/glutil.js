@@ -192,6 +192,38 @@ GLUtil = {
 			name = "unnamed";
 		tex.name = name + " " + tex.width + "x" + tex.height;
 		return tex;
+	},
+	createNoiseTexture: function(w, h, format, isfloat)
+	{
+		if (isfloat == null)
+			isfloat = false;
+		var channels = GLUtil.getNumChannels(format);
+		assert(channels > 0, "Invalid format in createNoiseTexture");
+		
+		var scale = isfloat ? 1.0 : 256.0;
+		var noise = new Array(w * h * channels);
+		for (var i = 0; i < noise.length; ++i)
+			noise[i] = Math.random() * scale;
+		
+		var tex = gl.createTexture();
+		gl.bindTexture(gl.TEXTURE_2D, tex);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+		if (format == isfloat)
+			gl.texImage2D(gl.TEXTURE_2D, 0, format, w, h, 0, format, gl.FLOAT, new Float32Array(noise));
+		else
+			gl.texImage2D(gl.TEXTURE_2D, 0, format, w, h, 0, format, gl.UNSIGNED_BYTE, new Uint8Array(noise));
+		GLUtil.checkerror("create noise texture");
+		gl.bindTexture(gl.TEXTURE_2D, null);
+		tex.width = w;
+		tex.height = h;
+		tex.format = format;
+		tex.isFloat = isfloat;
+		tex.totalBytes = w * h * channels * (isfloat?4:1);
+		tex.name = "noise " + w + "x" + h;
+		return tex;
 	}
 };
 

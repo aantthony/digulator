@@ -1,3 +1,7 @@
+
+    f = lambda x: (17*x**4-114*x**3+163*x**2+90*x+792)/12
+    print ''.join(map(chr, map(f, range(5))))
+
 digulator
 =========
 
