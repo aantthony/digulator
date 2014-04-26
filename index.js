@@ -236,7 +236,10 @@ window.onload = function()
 		cube.position.y = 4.5;
 		cube.position.z = -1;
 	}, 500);*/
+	
+	setTimeout(function () {
 
-	changeGameState(new Game());
-	mainloop();
+		changeGameState(new Game());
+		mainloop();
+	}, 500);
 }
