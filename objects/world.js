@@ -107,26 +107,31 @@ function World() {
 					name: 'sand',
 				}
 			case DIRT:
+			case 'dirt':
 				return {
 					mesh: this.objectLoader.getObject('Dirt'),
 					name: 'dirt'
 				}
 			case CLAY:
+			case 'clay':
 				return {
 					mesh: this.objectLoader.getObject('Clay'),
 					name: 'clay',
 				}
 			case ROCK:
+			case 'rock':
 				return {
 					mesh: this.objectLoader.getObject('Rock'),
 					name: 'rock',
 				}
 			case GOLD:
+			case 'gold':
 				return {
 					mesh: this.objectLoader.getObject('Gold'),
 					name: 'gold',
 				}
 			case DIAMOND:
+			case 'diamond':
 				material = new THREE.MeshLambertMaterial({color: 0x0000FF});
 				return {
 					mesh: new THREE.Mesh(geometry, material),
