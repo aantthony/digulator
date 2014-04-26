@@ -6,6 +6,11 @@ window.THREE = THREE;
 var scene = new THREE.Scene();
 window.scene = scene;
 var camera = new THREE.OrthographicCamera(-0.5, 9.5, -0.5, 9.5, 0, 10);
+var light = new THREE.PointLight(0xFFFFFF);
+light.position.z = -3;
+light.position.x = 4.5;
+light.position.y = 4.5;
+scene.add(light);
 
 var Keyboard = require('./objects/keyboard');
 var Player = require('./objects/player');
@@ -37,11 +42,12 @@ renderer.setSize(width, height);
 document.body.appendChild(renderer.domElement);
 
 var World = require('./objects/world');
+var SoundPlayer = require('./objects/soundPlayer');
 var Particles = require('./objects/particles');
 var GameState = require('./objects/gamestate');
 
 var geometry = new THREE.CubeGeometry(1,1,1);
-var material = new THREE.MeshBasicMaterial({color: 0xAAAAAA});
+var material = new THREE.MeshLambertMaterial({color: 0xAAAAAA});
 var cube = new THREE.Mesh(geometry, material);
 scene.add(cube);
 cube.position.x = 4.5;
@@ -50,6 +56,8 @@ cube.position.z = 1;
 
 var world = new World();
 console.log('created a world!');
+
+var soundPlayer = new SoundPlayer();
 
 var particles = new Particles();
 camera.position.z = 5;
@@ -69,6 +77,8 @@ Game = function()
 	{
 		cube.rotation.x += dt;
 		cube.rotation.y += dt;
+
+		// soundPlayer.play('test');
 	}
 	this.display = function()
 	{
