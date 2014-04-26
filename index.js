@@ -30,6 +30,9 @@ var World = require('./objects/world');
 var Particles = require('./objects/particles');
 var GameState = require('./objects/gamestate');
 var Bloom = require('./objects/bloom');
+var soundPlayer = require('./objects/soundPlayer');
+var textureLoader = require('./objects/textureLoader');
+var objectLoader = require('./objects/objectLoader');
 
 function shake(x)
 {
@@ -43,7 +46,9 @@ function shake(x)
 }
 var screenShake = 0.0;
 var screenShakeTime = 0.0;
-
+window.shake = function (value) {
+	screenShake += value || 1.0;
+};
 Game = function()
 {
 	GameState.call(this);
@@ -68,7 +73,6 @@ Game = function()
 	renderer.setSize(width, height);
 	document.getElementById("gamewrap").appendChild(renderer.domElement);
 
-	var SoundPlayer = require('./objects/soundPlayer');
 	var geometry = new THREE.CubeGeometry(1,1,1);
 	var material = new THREE.MeshLambertMaterial({color: 0xAAAAAA});
 	var cube = new THREE.Mesh(geometry, material);
@@ -80,12 +84,9 @@ Game = function()
 	var world = new World();
 	console.log('created a world!');
 
-	var soundPlayer = new SoundPlayer();
-
 	camera.position.z = 15;
 	var cameraFocus = new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z);
 	
-
 	var keys = new Keyboard();
 
 	var player = new Player({
@@ -99,7 +100,7 @@ Game = function()
 	  player.right();
 	};
 	keys.onup = function () {
-	  screenShake += 1.0;
+		player.digUp();
 	};
 	keys.ondown = function () {
 	  player.digDown();
@@ -151,15 +152,17 @@ Game = function()
 			this.secondTimer = 0.0;
 			//screenShake += 4.0;
 		}
-	
-		cube.rotation.x += dt;
-		cube.rotation.y += dt;
 		
 		//soundPlayer.play('test');
 		
 		this.particles.spawn([0, 0, 0, 0], [Math.random()-0.5, Math.random()-0.5, Math.random()-0.5, 0]);
 		
 		this.particles.step(dt);
+		
+		if(cube){
+			cube.rotation.x += dt;
+			cube.rotation.y += dt;
+		}
 	}
 	this.display = function()
 	{
@@ -218,11 +221,12 @@ var mainloop = function()
 	window.setTimeout(mainloop, sleepTime);
 	stats.end();
 }
+
 window.onload = function()
 {
-	changeGameState(new Game());
-	
-	document.getElementById("loadingscreen").style.display = "none";
-	
-	mainloop();
+	setTimeout(function () {
+		changeGameState(new Game());
+		document.getElementById("loadingscreen").style.display = "none";
+		mainloop();
+	}, 500);
 }
