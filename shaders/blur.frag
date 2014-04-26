@@ -28,9 +28,11 @@ void main()
 		accum += getTex((gl_FragCoord.xy + dir * float(-i)) * size) * weight[i];
 	for (int i = 0; i < 4; ++i)
 		accum += getTex((gl_FragCoord.xy + dir * float(i)) * size) * weight[i];
-	if (pass == 1)
-		accum = texture2D(orig, gl_FragCoord.xy * size) * 0.8 + accum;
-	else
+	if (pass == 0)
 		accum *= 1.0/0.2;
+	else if (pass == 1)
+		accum = texture2D(orig, gl_FragCoord.xy * size) * 0.8 + accum * 0.5;
+	else
+		accum *= 0.3;
 	gl_FragColor = accum;
 }
