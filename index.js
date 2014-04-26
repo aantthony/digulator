@@ -5,9 +5,8 @@ window.THREE = THREE;
 
 var scene = new THREE.Scene();
 window.scene = scene;
-var camera = new THREE.OrthographicCamera(-0.5, 9.5, -0.5, 9.5, 0, 10);
 var light = new THREE.PointLight(0xFFFFFF);
-light.position.z = -3;
+light.position.z = 3;
 light.position.x = 4.5;
 light.position.y = 4.5;
 scene.add(light);
@@ -37,6 +36,7 @@ else{
 	width -= 100;
 	height = width;
 }
+var camera = new THREE.PerspectiveCamera( 45, width / height, 0.1, 20 );
 
 renderer.setSize(width, height);
 document.body.appendChild(renderer.domElement);
@@ -60,7 +60,7 @@ console.log('created a world!');
 var soundPlayer = new SoundPlayer();
 
 var particles = new Particles();
-camera.position.z = 5;
+camera.position.z = 15;
 
 Game = function()
 {
@@ -78,8 +78,8 @@ Game = function()
 		cube.rotation.x += dt;
 		cube.rotation.y += dt;
 		var playerpos = player.object.position;
-		var targetX = Math.max(-5, Math.min(5, playerpos.x - 5));
-		var targetY = Math.max(-5, Math.min(5, playerpos.y - 5));
+		var targetX = Math.max(-5, Math.min(5, playerpos.x - 5)) + 5;
+		var targetY = Math.max(-5, Math.min(5, playerpos.y - 5)) + 5;
 		camera.position.x += (targetX - camera.position.x) * 0.04;
 		camera.position.y += (targetY - camera.position.y) * 0.04;
 

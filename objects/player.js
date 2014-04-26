@@ -4,6 +4,9 @@ var exports = module.exports = function (details) {
   var material = new THREE.MeshBasicMaterial({color: 0x0066CC});
   this.object = new THREE.Mesh(geometry, material);
 
+  this.object.position.set(0,10,0);
+  this.object.rotation.set(1.4,0,0);
+
   // The direction the player is facing:
   this.faceX = +1;
   this.faceY = +1;
@@ -31,7 +34,7 @@ exports.prototype.digRight = function () {
   this._world.setBlock(pos.x, pos.y, null);
 };
 exports.prototype.digDown = function () {
-  this.object.position.y++;
+  this.object.position.y--;
 
 };
 exports.prototype.digUp = function() {
