@@ -10,6 +10,10 @@ function TextureLoader() {
 
   this.loadTexture('Clay');
   this.loadNormal('ClayNM');
+
+  this.loadTexture('Rock');
+  this.loadTexture('Gold');
+  this.loadTexture('Dirt');
 }
 
 TextureLoader.prototype.getTexture = function(tex) {

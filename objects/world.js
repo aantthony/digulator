@@ -53,7 +53,8 @@ function World() {
 		var block = this.chooseBlock(type);
 		var cube = block.mesh;
 
-		cube.rotation.set((Math.random() - 0.5) * 0.2, (Math.random()-0.5) * 0.2, 0.0);
+		// cube.rotation.set((Math.random() - 0.5) * 0.2, (Math.random()-0.5) * 0.2, 0.0);
+		cube.rotation.set(Math.PI/2 * Math.floor(Math.random()*8), Math.PI/2 * Math.floor(Math.random()*8), 0.0);
 		// scene.add(cube);
 		block.strength = 2;
 		cube.name = block.name;
@@ -97,12 +98,10 @@ function World() {
 				return {
 					mesh: this.objectLoader.getObject('Sand'),
 					name: 'sand',
-					color: 0xFF0000
 				}
 			case DIRT:
-				material = new THREE.MeshLambertMaterial({color: 0xFFAA00});
 				return {
-					mesh: new THREE.Mesh(geometry, material),
+					mesh: this.objectLoader.getObject('Dirt'),
 					name: 'dirt'
 				}
 			case CLAY:
@@ -111,15 +110,13 @@ function World() {
 					name: 'clay',
 				}
 			case ROCK:
-				material = new THREE.MeshLambertMaterial({color: 0xAAAAAA});
 				return {
-					mesh: new THREE.Mesh(geometry, material),
+					mesh: this.objectLoader.getObject('Rock'),
 					name: 'rock',
 				}
 			case GOLD:
-				material = new THREE.MeshLambertMaterial({color: 0xFFFF00});
 				return {
-					mesh: new THREE.Mesh(geometry, material),
+					mesh: this.objectLoader.getObject('Gold'),
 					name: 'gold',
 				}
 			case DIAMOND:

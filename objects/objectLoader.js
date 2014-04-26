@@ -342,6 +342,9 @@ function ObjectLoader() {
 
   this.loadObject('Sand');
   this.loadObject('Clay');
+  this.loadObject('Rock');
+  this.loadObject('Dirt');
+  this.loadObject('Gold');
 }
 
 ObjectLoader.prototype.loadObject = function(url) {
@@ -357,7 +360,7 @@ ObjectLoader.prototype.loadObject = function(url) {
     obj.traverse( function ( child ) {
       if(child instanceof THREE.Mesh){
         child.material.map = texture;
-        child.material.lightMap  = normal;
+        // child.material.lightMap  = normal;
       }
     });
 
