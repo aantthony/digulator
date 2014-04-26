@@ -85,7 +85,9 @@ function shake(x)
 }
 var screenShake = 0.0;
 var screenShakeTime = 0.0;
-
+window.shake = function (value) {
+	screenShake += value || 1.0;
+};
 Game = function()
 {
 	GameState.call(this);
