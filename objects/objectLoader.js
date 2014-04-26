@@ -345,24 +345,30 @@ function ObjectLoader() {
   this.loadObject('Rock');
   this.loadObject('Dirt');
   this.loadObject('Gold');
+  this.loadObject('Diamond');
 }
 
 ObjectLoader.prototype.loadObject = function(url) {
   var ctx = this;
   var texture = this.textureLoader.getTexture(url);
+  // var specular = this.textureLoader.getTexture('spark');
   var normal = this.textureLoader.getTexture(url);
+
+  var material = new THREE.MeshPhongMaterial({color:0xFFFFFF, specular:0x222222});
+  material.map = texture;
+  material.bumpMap = normal;
+  material.bumpScale = 0.5;
+  // material.specularMap = specular;
+  material.needsUpdate = true;
 
   // this.objects[url];
   this.objectLoader.load('models/' + url + '.obj', function (event) {
     obj = event.children[0];
     ctx.objects[url] = obj;
 
-    obj.traverse( function ( child ) {
-      if(child instanceof THREE.Mesh){
-        child.material.map = texture;
-        // child.material.lightMap  = normal;
-      }
-    });
+    obj.material = material;
+
+    console.log(obj);
 
   }, function(){}, function(err){
     console.log(err);

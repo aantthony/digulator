@@ -6,6 +6,10 @@ var exports = module.exports = function (details) {
   var material = new THREE.MeshBasicMaterial({color: 0x0066CC, depthTest: false});
   this.object = new THREE.Mesh(geometry, material);
 
+  var light = new THREE.PointLight(0xFFFFFF);
+  light.position.y = 3;
+  this.object.add(light);
+
   this.object.position.set(0,10,0);
   this.object.rotation.set(1.4,0,0);
 

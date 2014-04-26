@@ -132,9 +132,8 @@ function World() {
 				}
 			case DIAMOND:
 			case 'diamond':
-				material = new THREE.MeshLambertMaterial({color: 0x0000FF});
 				return {
-					mesh: new THREE.Mesh(geometry, material),
+					mesh: this.objectLoader.getObject('Diamond'),
 					name: 'diamond',
 				}
 			default:

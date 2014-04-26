@@ -7,6 +7,7 @@ var imagemin   = require('gulp-imagemin');
 
 var paths = {
   html: './views/*.html',
+  // scripts: 'index.js',
   scripts: 'index.js',
   styles: './styles/*.stylus',
   images: 'images/**/*',
@@ -63,7 +64,7 @@ gulp.task('images', function(){
 gulp.task('watch', function () {
   gulp.watch(paths.other, ['other']);
   gulp.watch(paths.html, ['html']);
-  gulp.watch(paths.scripts, ['scripts']);
+  gulp.watch([paths.scripts, 'objects/*.js'], ['scripts']);
   gulp.watch(paths.images, ['images']);
   gulp.watch(paths.styles, ['styles']);
   gulp.watch(paths.sounds, ['sounds']);
