@@ -74,14 +74,6 @@ Game = function()
 	renderer.setSize(width, height);
 	document.getElementById("gamewrap").appendChild(renderer.domElement);
 
-	var geometry = new THREE.CubeGeometry(1,1,1);
-	var material = new THREE.MeshLambertMaterial({color: 0xAAAAAA});
-	var cube = new THREE.Mesh(geometry, material);
-	scene.add(cube);
-	cube.position.x = 4.5;
-	cube.position.y = 4.5;
-	cube.position.z = 1;
-
 	var world = new World();
 	console.log('created a world!');
 
@@ -161,10 +153,6 @@ Game = function()
 		
 		this.particles.step(dt);
 		
-		if(cube){
-			cube.rotation.x += dt;
-			cube.rotation.y += dt;
-		}
 		if(monster)
 			monster.updateFunc(dt,player);
 	}
