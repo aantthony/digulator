@@ -85,3 +85,4 @@ Where to go from here
 	menu to decide which difficulty
 	win condition and screen
 	lose condition and screen
+	make previous block 1 difficulty less than what you mined through

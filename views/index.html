@@ -23,6 +23,15 @@
 			left: 0;
 			top: 0;
 		}
+		#hud{
+			position: fixed;
+		}
+		body{
+			font-family: arial, sans-serif;
+		}
+		h1{
+			background-color: white;
+		}
 	</style>
 	<title>Terrain</title>
 	<script type="text/javascript" src="./stats.js"></script>
@@ -30,7 +39,11 @@
 <body style="margin: 0; padding: 0; overflow: hidden">
 <script type="text/javascript" src="scripts/index.js"></script>
 <div class="relative">
-<div id="gamewrap"></div>
+<div id="gamewrap">
+</div>
+<div id="hud">
+	<h1>Digulator!</h1>
+</div>
 <div id="loadingscreen"><img src="http://i.imgur.com/WUFGJqR.gif?1" /></div>
 </div>
 </body>

@@ -5,11 +5,6 @@ window.THREE = THREE;
 
 var scene = new THREE.Scene();
 window.scene = scene;
-var light = new THREE.PointLight(0xFFFFFF);
-light.position.z = 3;
-light.position.x = 4.5;
-light.position.y = 4.5;
-scene.add(light);
 
 function AssertException(message)
 {
@@ -54,20 +49,12 @@ Game = function()
 {
 	GameState.call(this);
 
-	var renderer = new THREE.WebGLRenderer();
+	window.renderer = new THREE.WebGLRenderer();
 	gl = renderer.context;
 
-	var width = window.innerWidth;
-	var height = window.innerHeight;
-	if(width > height){
-		height -= 100;
-		width =  height;
-	}
-	else{
-		width -= 100;
-		height = width;
-	}
-	var camera = new THREE.PerspectiveCamera( 45, width / height, 0.1, 20 );
+	var width = window.innerWidth - 100;
+	var height = window.innerHeight - 100;
+	window.camera = new THREE.PerspectiveCamera( 45, width / height, 0.1, 20 );
 	gl.viewportWidth = width; //FFS. can't query GL viewport state. this is a workaround for Particles
 	gl.viewportHeight = height;
 
@@ -105,6 +92,7 @@ Game = function()
 
 	
 	this.bloom = new Bloom(width, height);
+	window.bloom = this.bloom;
 	this.particles = new Particles(64);
 	
 	this.enter = function()
@@ -274,4 +262,20 @@ window.onload = function()
 		document.getElementById("loadingscreen").style.display = "none";
 		mainloop();
 	}, 50);
+}
+
+window.onresize = function(){
+	var width = window.innerWidth - 100;
+	var height = window.innerHeight - 100;
+
+	gl = renderer.context;
+	gl.viewportWidth = width; //FFS. can't query GL viewport state. this is a workaround for Particles
+	gl.viewportHeight = height;
+
+	renderer.setSize(width, height);
+
+	camera.setViewOffset(width, height, 0, 0, width, height);
+
+	// window.bloom.w = width;
+	// window.bloom.h = height;
 }
