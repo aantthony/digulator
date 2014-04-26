@@ -62,13 +62,6 @@ var ObjectLoader = require('./objects/objectLoader');
 var Particles = require('./objects/particles');
 var GameState = require('./objects/gamestate');
 var cube;
-/*var geometry = new THREE.CubeGeometry(1,1,1);
-var material = new THREE.MeshLambertMaterial({color: 0xAAAAAA});
-var cube = new THREE.Mesh(geometry, material);
-scene.add(cube);
-cube.position.x = 4.5;
-cube.position.y = 4.5;
-cube.position.z = 1;*/
 
 var textureLoader = new TextureLoader();
 var objectLoader = new ObjectLoader();
@@ -221,22 +214,6 @@ keys.ondown = function () {
 
 window.onload = function()
 {
-	/*setTimeout(function(){
-		cube = objectLoader.getObject('Sand');
-
-		var texture = textureLoader.getTexture('Sandtext');
-		cube.traverse( function ( child ) {
-			if(child instanceof THREE.Mesh){
-				child.material.map = texture;
-			}
-		});
-		scene.add(cube);
-
-		cube.position.x = 4.5;
-		cube.position.y = 4.5;
-		cube.position.z = -1;
-	}, 500);*/
-	
 	setTimeout(function () {
 
 		changeGameState(new Game());
