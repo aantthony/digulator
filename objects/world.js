@@ -25,6 +25,17 @@ function World() {
 		if(NUMSPACE >= size / 2)
 			NUMSPACE = Math.floor(size / 2);
 		NUMDIAMONDS = Math.floor(size / 10) + 1;
+
+		for(var i = 0; i < size; i++){
+			var geometry = new THREE.CubeGeometry(0.5, 1, 0.5);
+			var material = new THREE.MeshLambertMaterial({color: 0xFFFFFF});
+			var tree = new THREE.Mesh(geometry, material);
+
+			tree.position.x = i;
+			tree.position.y = 10;
+			scene.add(tree);
+		}
+
 		this.addDiamonds();
 		this.addGold();
 		this.addRocks();
@@ -97,7 +108,7 @@ function World() {
 	};
 
 	this.chooseBlock = function(type){
-		var geometry = new THREE.CubeGeometry(0.95 + Math.random() * 0.1,0.95 + Math.random () * 0.1,0.95);
+		var geometry = new THREE.CubeGeometry(1, 1, 1);
 		var material;
 		switch(type){
 			case SAND:
