@@ -156,9 +156,43 @@ Game = function()
 		if(monster)
 			monster.updateFunc(dt,player);
 	}
+
+	var texture = THREE.ImageUtils.loadTexture('images/sky.png');
+	texture.wrapS = THREE.RepeatWrapping;
+	var geo = new THREE.PlaneGeometry(2, 2);
+	var uvs = geo.faceVertexUvs[0];
+	uvs.forEach(function (uvs) {
+		uvs.forEach(function (uvs) {
+			uvs.x *= width / 64;
+			if (uvs.y === 0) {
+				uvs.y = height / 512;
+			} else {
+				uvs.y = 0;
+			}
+		});
+	});
+  var backgroundMesh = new THREE.Mesh(
+    geo,
+    new THREE.MeshBasicMaterial({
+      map: texture,
+      depthTest: false,
+      depthWrite: false
+    })
+  );
+
+  var backgroundScene = new THREE.Scene();
+  var backgroundCamera = new THREE.Camera();
+  backgroundScene.add(backgroundCamera);
+  backgroundScene.add(backgroundMesh);
+
+
 	this.display = function()
 	{
 		this.bloom.bind();
+    
+    renderer.autoClear = false;
+		renderer.clear();
+		renderer.render(backgroundScene, backgroundCamera );
 		renderer.render(scene, camera);
 		this.particles.draw(camera.projectionMatrix.elements, camera.matrixWorldInverse.elements);
 		this.bloom.unbind();

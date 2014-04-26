@@ -151,8 +151,10 @@ exports.prototype.digDown = function () {
   return this.digInDirection(0, -1);
 };
 exports.prototype.digUp = function() {
+  var above = this._world.getBlock(this._x, this._y + 1);
+  if (!above) return; // no flying!
   if (!this._world.canDig(this._x, this._y + 1)) {
-    return this._failAttemptToDig(0, +1);
+    return;
   }
   return this.digInDirection(0, +1);
 };
