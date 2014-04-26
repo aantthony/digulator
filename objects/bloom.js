@@ -112,4 +112,34 @@ function Bloom(w, h) {
 		this.quad.draw(this.blit);
 		gl.disable(gl.BLEND);
 	}
+	
+	this.resize = function(w, h)
+	{
+		this.w = w;
+		this.h = h;
+		this.RTT = GLUtil.resize(this.w, this.h);
+		this.RTTdown = GLUtil.resize(this.w/4, this.h/4);
+		gl.bindRenderbuffer(gl.RENDERBUFFER, this.RTTD);
+		gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, this.w, this.h);
+		gl.bindRenderbuffer(gl.RENDERBUFFER, null);
+		this.blurTex = GLUtil.resize(this.w, this.h);
+		this.blurTexDown = GLUtil.resize(this.w/4, this.h/4);
+	}
+	
+	this.release = function()
+	{
+		this.quad.release();
+	
+		if (this.RTTFBO) gl.deleteFramebuffer(this.RTTFBO);
+		if (this.RTTFBOdown) gl.deleteFramebuffer(thisRTTFBOdown);
+		if (this.blurFBO) gl.deleteFramebuffer(this.blurFBO);
+		if (this.blurFBOdown) gl.deleteFramebuffer(this.blurFBOdown);
+		
+		if (this.RTT) gl.deleteTexture(this.RTT);
+		if (this.RTTdown) gl.deleteFramebuffer(this.RTTdown);
+		if (this.blurTex) gl.deleteFramebuffer(this.blurTex);
+		if (this.blurTexDown) gl.deleteFramebuffer(this.blurTexDown);
+		
+		if (this.RTTD) gl.deleteRenderBuffer(this.RTTD);
+	}
 };

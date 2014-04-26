@@ -155,7 +155,11 @@ Game = function()
 		
 		//soundPlayer.play('test');
 		
-		this.particles.spawn([0, 0, 0, 0], [Math.random()-0.5, Math.random()-0.5, Math.random()-0.5, 0]);
+		for (var i = 0; i < 10; ++i)
+		{
+			particleType = 0;
+			this.particles.spawn([0, 0, 2, particleType], [Math.random()*50-25, Math.random()*50-25, Math.random()*50-25, 0]);
+		}
 		
 		this.particles.step(dt);
 		
@@ -168,7 +172,13 @@ Game = function()
 	{
 		this.bloom.bind();
 		renderer.render(scene, camera);
+		
+		gl.disable(gl.DEPTH_TEST);
+		gl.enable(gl.BLEND);
+		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 		this.particles.draw(camera.projectionMatrix.elements, camera.matrixWorldInverse.elements);
+		gl.disable(gl.BLEND);
+		
 		this.bloom.unbind();
 	}
 }

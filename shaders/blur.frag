@@ -31,8 +31,8 @@ void main()
 	if (pass == 0)
 		accum *= 1.0/0.2;
 	else if (pass == 1)
-		accum = texture2D(orig, gl_FragCoord.xy * size) * 0.8 + accum * 0.5;
+		accum = texture2D(orig, gl_FragCoord.xy * size) * 0.8 + accum * 0.2;
 	else
-		accum *= 0.3;
+		accum *= 0.2;
 	gl_FragColor = accum;
 }

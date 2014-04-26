@@ -181,6 +181,14 @@ GLUtil = {
 		{
 			inType = gl.UNSIGNED_SHORT;
 		}
+		tex.format = format;
+		tex.inFormat = inFormat;
+		tex.inType = inType;
+		tex.resize = function(w, h) {
+			gl.bindTexture(gl.TEXTURE_2D, this);
+			gl.texImage2D(gl.TEXTURE_2D, 0, this.format, w, h, 0, this.inFormat, this.inType, null);
+			gl.bindTexture(gl.TEXTURE_2D, null);
+		};
 		gl.texImage2D(gl.TEXTURE_2D, 0, format, w, h, 0, inFormat, inType, null);
 		gl.bindTexture(gl.TEXTURE_2D, null);
 		tex.width = w;

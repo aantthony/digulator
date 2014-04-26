@@ -6,6 +6,10 @@ var GLUtil = require('./glutil');
 
 function Particles(n)
 {
+	if (!gl.getExtension("OES_texture_float")) {
+		throw("Particles requires OES_texture_float extension");
+	}
+
 	this.w = n;
 	this.h = n;
 	this.noise = GLUtil.createNoiseTexture(16, 16, gl.RGB, false);
@@ -25,6 +29,7 @@ function Particles(n)
 	this.texPosB = GLUtil.createTexture(this.w, this.h, gl.RGBA, true, "particles"+n+"PB");
 	this.texVelA = GLUtil.createTexture(this.w, this.h, gl.RGBA, true, "particles"+n+"VA");
 	this.texVelB = GLUtil.createTexture(this.w, this.h, gl.RGBA, true, "particles"+n+"VB");
+	//this.texAttr = GLUtil.createTexture(this.w, this.h, gl.RGBA, false, "particles"+n+"ATTR");
 	this.next = 0;
 	
 	this.shaderParticlesDraw = null;
@@ -95,6 +100,8 @@ function Particles(n)
 	this.mesh.primitive = gl.TRIANGLES;
 	this.mesh.name = "particleGeom " + n;
 	
+	//position can be 4D, where w = particle type (does other shit in shaders)
+	//velocity is 4D and 4th component should default to zero or be zero as its used for particle TTL
 	this.spawn = function(position, velocity)
 	{
 		var posDat = new Float32Array(4);
@@ -141,6 +148,8 @@ function Particles(n)
 	}
 	this.draw = function(projection, camera, shadowMap, lightMat)
 	{
+		gl.disable(gl.CULL_FACE);
+	
 		if (!this.shaderParticlesDraw)
 		{
 			var vertSrc = require('../shaders/particlesDraw.vert');
@@ -151,13 +160,14 @@ function Particles(n)
 		gl.useProgram(this.shaderParticlesDraw);
 		Shader.setActiveTexture(this.shaderParticlesDraw, "particles", 0, this.swap?this.texPosB:this.texPosA);
 		Shader.setActiveTexture(this.shaderParticlesDraw, "velocities", 1, this.swap?this.texVelB:this.texVelA);
+		//Shader.setActiveTexture(this.shaderParticlesDraw, "attributes", 2, this.texAttr);
 		if (!!shadowMap)
 		{
 			Shader.setActiveTexture(this.shaderParticlesDraw, "shadow", 2, shadowMap);
 			gl.uniformMatrix4fv(gl.getUniformLocation(this.shaderParticlesDraw, "lightMat"), false, lightMat);
 		}
 		gl.uniformMatrix4fv(gl.getUniformLocation(this.shaderParticlesDraw, "modelviewMat"), false, camera);
-		gl.uniformMatrix4fv(gl.getUniformLocation(this.shaderParticlesDraw, "ProjectionMat"), false, projection);
+		gl.uniformMatrix4fv(gl.getUniformLocation(this.shaderParticlesDraw, "projectionMat"), false, projection);
 		this.mesh.draw(this.shaderParticlesDraw);
 	}
 	this.release = function()
@@ -169,6 +179,7 @@ function Particles(n)
 		deleteTexture(this.texVelA);
 		deleteTexture(this.texVelB);
 		deleteTexture(this.noise);
+		//deleteTexture(this.texAttr);
 		gl.deleteFramebuffer(this.fbopa);
 		gl.deleteFramebuffer(this.fbopb);
 		gl.deleteFramebuffer(this.fbova);
