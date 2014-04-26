@@ -30,6 +30,8 @@ exports.prototype.digInDirection = function (xDir, yDir) {
     if (this._currentDigX === xDir && this._currentDigY === yDir) return;
     this._currentDigX = this._currentDigY = 0;
     clearTimeout(this._currentDig);
+    pos.x = Math.round(pos.x);
+    pos.y = Math.round(pos.y);
   }
   var block = this._world.getBlock(pos.x + xDir, pos.y + yDir);
   if (block) {
