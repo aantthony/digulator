@@ -88,6 +88,14 @@ function World() {
 		return cube;
 	};
 
+	this.canDig = function (x, y) {
+		if (x < 0) return false;
+		if (y < 0) return false;
+		if (x >= size) return false;
+		if (y >= size) return false;
+		return true;
+	};
+
 	this.chooseBlock = function(type){
 		var geometry = new THREE.CubeGeometry(0.95 + Math.random() * 0.1,0.95 + Math.random () * 0.1,0.95);
 		var material;

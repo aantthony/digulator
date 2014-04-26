@@ -24,10 +24,6 @@ var exports = module.exports = function (details) {
 
   scene.add(this.object);
 };
-exports.prototype.digLeft = function () {
-  return this.digInDirection(-1, 0);
-};
-
 function difficulty (block) {
   switch(block.name) {
     case 'diamond': return 12;
@@ -115,13 +111,49 @@ exports.prototype.digInDirection = function (xDir, yDir) {
     this._y = pos.y += yDir;
   }
 }
+
+/**
+ * Try to dig into a boundary
+ * @return undefined
+ */
+exports.prototype._failAttemptToDig = function (dx, dy) {
+  soundPlayer.play('DrillMed');
+  if (this._currentDig) this._currentDigCancel();
+  this._currentDig = true;
+  var self = this;
+  var pos = this.object.position;
+  var x = pos.x;
+  pos.x += dx * 0.5;
+  this._currentDigCancel = function () {
+    delete self._currentDig;
+    pos.x = x;
+  };
+  setTimeout(this._currentDigCancel, 500);
+};
+
+exports.prototype.digLeft = function () {
+  if (!this._world.canDig(this._x - 1, this._y)) {
+    return this._failAttemptToDig(-1, 0);
+  }
+  return this.digInDirection(-1, 0);
+};
+
 exports.prototype.digRight = function () {
+  if (!this._world.canDig(this._x + 1, this._y)) {
+    return this._failAttemptToDig(+1, 0);
+  }
   return this.digInDirection(+1, 0);
 };
 exports.prototype.digDown = function () {
+  if (!this._world.canDig(this._x, this._y - 1)) {
+    return this._failAttemptToDig(0, -1);
+  }
   return this.digInDirection(0, -1);
 };
 exports.prototype.digUp = function() {
+  if (!this._world.canDig(this._x, this._y + 1)) {
+    return this._failAttemptToDig(0, +1);
+  }
   return this.digInDirection(0, +1);
 };
 exports.prototype.faceLeft = function () {
