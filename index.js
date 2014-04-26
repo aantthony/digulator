@@ -7,6 +7,8 @@ var scene = new THREE.Scene();
 window.scene = scene;
 var camera = new THREE.OrthographicCamera(-0.5, 9.5, -0.5, 9.5, 0, 10);
 
+var Keyboard = require('./objects/keyboard');
+
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
@@ -84,6 +86,22 @@ var mainloop = function()
 	
 	window.setTimeout(mainloop, sleepTime);
 }
+
+var keys = new Keyboard();
+
+keys.onleft = function () {
+  console.log('LEFT!!!');
+};
+keys.onright = function () {
+  console.log('RIGHT!!!');
+
+};
+keys.onup = function () {
+  console.log('UP!!!');
+};
+keys.ondown = function () {
+  console.log('DOWN!!!');
+};
 
 window.onload = function()
 {
