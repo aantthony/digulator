@@ -1,7 +1,11 @@
+var Digulator = {};
+
 var THREE = require('three/three');
+window.THREE = THREE;
 
 var scene = new THREE.Scene();
-var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+window.scene = scene;
+var camera = new THREE.OrthographicCamera(-0.5, 9.5, -0.5, 9.5, 0, 10);
 
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -10,7 +14,6 @@ document.body.appendChild(renderer.domElement);
 var geometry = new THREE.CubeGeometry(1,1,1);
 var material = new THREE.MeshBasicMaterial({color: 0x00ff00});
 var cube = new THREE.Mesh(geometry, material);
-scene.add(cube);
 
 var World = require('./objects/world');
 var Particles = require('./objects/particles');
@@ -20,13 +23,19 @@ var world = new World();
 console.log('created a world!');
 
 var particles = new Particles();
-
 camera.position.z = 5;
 
 Game = function()
 {
 	GameState.call(this);
 	
+	this.enter = function()
+	{
+		// cube = new Digulator.Sand();
+		// scene.add(cube);
+
+		world.createWorld();
+	}
 	this.update = function(dt)
 	{
 		cube.rotation.x += dt;
@@ -76,5 +85,9 @@ var mainloop = function()
 	window.setTimeout(mainloop, sleepTime);
 }
 
-changeGameState(new Game());
-mainloop();
+window.onload = function()
+{
+
+	changeGameState(new Game());
+	mainloop();
+}
