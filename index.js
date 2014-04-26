@@ -69,6 +69,9 @@ Game = function()
 	{
 		cube.rotation.x += dt;
 		cube.rotation.y += dt;
+		var playerpos = player.object.position;
+		camera.position.x += (playerpos.x * 0.4 - camera.position.x) * 0.04;
+		camera.position.y += (playerpos.y * 0.4 - camera.position.y) * 0.04;
 	}
 	this.display = function()
 	{

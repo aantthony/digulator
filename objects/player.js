@@ -1,6 +1,6 @@
 var exports = module.exports = function (details) {
 
-  var geometry = new THREE.SphereGeometry(0.4,32,32);
+  var geometry = new THREE.CubeGeometry(0.4,0.4, 0.4);
   var material = new THREE.MeshBasicMaterial({color: 0x0066CC});
   this.object = new THREE.Mesh(geometry, material);
 
@@ -16,14 +16,18 @@ exports.prototype.digLeft = function () {
   var pos = this.object.position;
   pos.x--;
   var block = this._world.getBlock(pos.x, pos.y);
-  this._world.setBlock(pos.x + 1, pos.y, 'sand');
+  if (block) {
+    this._world.setBlock(pos.x + 1, pos.y, 'sand');
+  }
   this._world.setBlock(pos.x, pos.y, null);
 };
 exports.prototype.digRight = function () {
   var pos = this.object.position;
   pos.x++;
   var block = this._world.getBlock(pos.x, pos.y);
-  this._world.setBlock(pos.x - 1, pos.y, 'sand');
+  if (block) {
+    this._world.setBlock(pos.x - 1, pos.y, 'sand');
+  }
   this._world.setBlock(pos.x, pos.y, null);
 };
 exports.prototype.digDown = function () {
