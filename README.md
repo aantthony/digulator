@@ -12,6 +12,8 @@ Diamond blocks take longer to dig, but earn more cash
 Limited sight
 Can see gold/diamond everywhere though
 
+Orthogonal camera
+
 <!-- start with X amount of fuel
 dig in one of the four cardinal directions
 each dig costs fuel
@@ -70,6 +72,8 @@ Sound FX
  -monster
  -death
  -music
+
+
 
 Art
 ===
