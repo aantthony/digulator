@@ -54,6 +54,7 @@ function World() {
 		var cube = block.mesh;
 
 		// cube.rotation.set((Math.random() - 0.5) * 0.2, (Math.random()-0.5) * 0.2, 0.0);
+		cube.rotation.set(Math.PI/2 * Math.floor(Math.random()*8), Math.PI/2 * Math.floor(Math.random()*8), 0.0);
 		// scene.add(cube);
 		cube.name = block.name;
 		cube.position.x = i;
@@ -87,6 +88,14 @@ function World() {
 		return cube;
 	};
 
+	this.canDig = function (x, y) {
+		if (x < 0) return false;
+		if (y < 0) return false;
+		if (x >= size) return false;
+		if (y > size) return false;
+		return true;
+	};
+
 	this.chooseBlock = function(type){
 		var geometry = new THREE.CubeGeometry(0.95 + Math.random() * 0.1,0.95 + Math.random () * 0.1,0.95);
 		var material;
@@ -96,32 +105,33 @@ function World() {
 				return {
 					mesh: this.objectLoader.getObject('Sand'),
 					name: 'sand',
-					color: 0xFF0000
 				}
 			case DIRT:
-				material = new THREE.MeshLambertMaterial({color: 0xFFAA00});
+			case 'dirt':
 				return {
-					mesh: new THREE.Mesh(geometry, material),
+					mesh: this.objectLoader.getObject('Dirt'),
 					name: 'dirt'
 				}
 			case CLAY:
+			case 'clay':
 				return {
 					mesh: this.objectLoader.getObject('Clay'),
 					name: 'clay',
 				}
 			case ROCK:
-				material = new THREE.MeshLambertMaterial({color: 0xAAAAAA});
+			case 'rock':
 				return {
-					mesh: new THREE.Mesh(geometry, material),
+					mesh: this.objectLoader.getObject('Rock'),
 					name: 'rock',
 				}
 			case GOLD:
-				material = new THREE.MeshLambertMaterial({color: 0xFFFF00});
+			case 'gold':
 				return {
-					mesh: new THREE.Mesh(geometry, material),
+					mesh: this.objectLoader.getObject('Gold'),
 					name: 'gold',
 				}
 			case DIAMOND:
+			case 'diamond':
 				material = new THREE.MeshLambertMaterial({color: 0x0000FF});
 				return {
 					mesh: new THREE.Mesh(geometry, material),

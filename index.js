@@ -26,6 +26,7 @@ window.assert = assert;
 
 var Keyboard = require('./objects/keyboard');
 var Player = require('./objects/player');
+var Monster = require('./objects/monster');
 var World = require('./objects/world');
 var Particles = require('./objects/particles');
 var GameState = require('./objects/gamestate');
@@ -73,14 +74,6 @@ Game = function()
 	renderer.setSize(width, height);
 	document.getElementById("gamewrap").appendChild(renderer.domElement);
 
-	var geometry = new THREE.CubeGeometry(1,1,1);
-	var material = new THREE.MeshLambertMaterial({color: 0xAAAAAA});
-	var cube = new THREE.Mesh(geometry, material);
-	scene.add(cube);
-	cube.position.x = 4.5;
-	cube.position.y = 4.5;
-	cube.position.z = 1;
-
 	var world = new World();
 	console.log('created a world!');
 
@@ -92,6 +85,7 @@ Game = function()
 	var player = new Player({
 	  world: world
 	});
+	var monster = new Monster({world:world});
 
 	keys.onleft = function () {
 	  player.left();
@@ -163,14 +157,46 @@ Game = function()
 		
 		this.particles.step(dt);
 		
-		if(cube){
-			cube.rotation.x += dt;
-			cube.rotation.y += dt;
-		}
+		if(monster)
+			monster.updateFunc(dt,player);
 	}
+
+	var texture = THREE.ImageUtils.loadTexture('images/sky.png');
+	texture.wrapS = THREE.RepeatWrapping;
+	var geo = new THREE.PlaneGeometry(2, 2);
+	var uvs = geo.faceVertexUvs[0];
+	uvs.forEach(function (uvs) {
+		uvs.forEach(function (uvs) {
+			uvs.x *= width / 64;
+			if (uvs.y === 0) {
+				uvs.y = height / 512;
+			} else {
+				uvs.y = 0;
+			}
+		});
+	});
+  var backgroundMesh = new THREE.Mesh(
+    geo,
+    new THREE.MeshBasicMaterial({
+      map: texture,
+      depthTest: false,
+      depthWrite: false
+    })
+  );
+
+  var backgroundScene = new THREE.Scene();
+  var backgroundCamera = new THREE.Camera();
+  backgroundScene.add(backgroundCamera);
+  backgroundScene.add(backgroundMesh);
+
+
 	this.display = function()
 	{
 		this.bloom.bind();
+    
+    renderer.autoClear = false;
+		renderer.clear();
+		renderer.render(backgroundScene, backgroundCamera );
 		renderer.render(scene, camera);
 		
 		gl.disable(gl.DEPTH_TEST);
