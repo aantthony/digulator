@@ -24,9 +24,10 @@ function World() {
 	this.makeBlock = function(){
 		var block = this.chooseBlock();
 
-		var geometry = new THREE.CubeGeometry(1,1,1);
-		var material = new THREE.MeshBasicMaterial({color: block.color});
+		var geometry = new THREE.CubeGeometry(0.95 + Math.random() * 0.1,0.95 + Math.random () * 0.1,0.95);
+		var material = new THREE.MeshLambertMaterial({color: block.color});
 		cube = new THREE.Mesh(geometry, material);
+		cube.rotation.set(Math.random() * 0.2, Math.random() * 0.2, 0.0);
 		// scene.add(cube);
 		cube.name = block.name;
 
@@ -47,9 +48,8 @@ function World() {
 			delete col[y];
 		}
 		if (!name) return;
-		var geometry = new THREE.CubeGeometry(1,1,1);
-		var material = new THREE.MeshBasicMaterial({color: 0xFFFF00});
-		cube = new THREE.Mesh(geometry, material);
+		cube = this.makeBlock();
+		cube.material.color.set(0xffff00);
 		cube.name = name;
 		cube.position.set(x, y, 0);
 		col[y] = cube;

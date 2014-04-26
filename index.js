@@ -78,8 +78,10 @@ Game = function()
 		cube.rotation.x += dt;
 		cube.rotation.y += dt;
 		var playerpos = player.object.position;
-		camera.position.x += (playerpos.x * 0.4 - camera.position.x) * 0.04;
-		camera.position.y += (playerpos.y * 0.4 - camera.position.y) * 0.04;
+		var targetX = Math.max(-5, Math.min(5, playerpos.x - 5));
+		var targetY = Math.max(-5, Math.min(5, playerpos.y - 5));
+		camera.position.x += (targetX - camera.position.x) * 0.04;
+		camera.position.y += (targetY - camera.position.y) * 0.04;
 
 		// soundPlayer.play('test');
 	}
