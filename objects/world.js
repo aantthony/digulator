@@ -43,10 +43,10 @@ function World() {
 	this.makeBlock = function(type,i,j){
 		var block = this.chooseBlock(type);
 
-		var geometry = new THREE.CubeGeometry(0.8 + Math.random() * 0.1,0.8 + Math.random () * 0.1,0.95);
+		var geometry = new THREE.CubeGeometry(0.95 + Math.random() * 0.1,0.95 + Math.random () * 0.1,0.95);
 		var material = new THREE.MeshLambertMaterial({color: block.color});
 		cube = new THREE.Mesh(geometry, material);
-		cube.rotation.set((Math.random() - 0.5) * 0.9, (Math.random()-0.5) * 0.9, 0.0);
+		cube.rotation.set((Math.random() - 0.5) * 0.2, (Math.random()-0.5) * 0.2, 0.0);
 		// scene.add(cube);
 		block.strength = 2;
 		cube.name = block.name;

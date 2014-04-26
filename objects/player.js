@@ -12,7 +12,7 @@ var exports = module.exports = function (details) {
   this.faceY = +1;
 
   this._world = details.world;
-  
+
   // timer for current digging action:
   this._currentDig = null;
   // current dig direction (if _currentDig is falsy, then this should be zero)
@@ -32,23 +32,26 @@ exports.prototype.digInDirection = function (xDir) {
     clearTimeout(this._currentDig);
     pos.x-=xDir;
   }
-  pos.x += xDir;
-  var block = this._world.getBlock(pos.x, pos.y);
+  var block = this._world.getBlock(pos.x + xDir, pos.y);
   if (block) {
+    shake(8);
     var world = this._world;
-    var x = pos.x;
+    var x = pos.x + xDir;
     var y = pos.y;
     var self = this;
     this._currentDig = setTimeout(function () {
+      shake(4.5);
+      pos.x = x;
       self._currentDigX = 0;
       delete self._currentDig;
       world.setBlock(x - xDir, y, 'sand');
       world.setBlock(x, y, null);
-    }, 500);
+    }, 200);
+    pos.x += 0.4 * xDir;
     this._currentDigX = xDir;
 
   } else {
-
+    pos.x += xDir;
   }
 }
 exports.prototype.digRight = function () {
