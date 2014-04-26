@@ -1,6 +1,8 @@
 module.exports = KeyboardState;
 
 function keydown(event) {
+  if (this.keyCodes[event.keyCode]) return;
+  this.keyCodes[event.keyCode] = true;
   if (event.keyCode === KeyboardState.ALIAS['left']) {
     return this.onleft();
   } else if (event.keyCode === KeyboardState.ALIAS['right']) {
@@ -13,7 +15,8 @@ function keydown(event) {
 }
 
 function keyup(event) {
-
+  if (!this.keyCodes[event.keyCode]) return;
+  delete this.keyCodes[event.keyCode];
 }
 
 function KeyboardState() {

@@ -8,6 +8,7 @@ window.scene = scene;
 var camera = new THREE.OrthographicCamera(-0.5, 9.5, -0.5, 9.5, 0, 10);
 
 var Keyboard = require('./objects/keyboard');
+var Player = require('./objects/player');
 
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -89,18 +90,19 @@ var mainloop = function()
 
 var keys = new Keyboard();
 
+var player = new Player();
+
 keys.onleft = function () {
-  console.log('LEFT!!!');
+  player.left();
 };
 keys.onright = function () {
-  console.log('RIGHT!!!');
-
+  player.right();
 };
 keys.onup = function () {
-  console.log('UP!!!');
+
 };
 keys.ondown = function () {
-  console.log('DOWN!!!');
+
 };
 
 window.onload = function()
