@@ -57,6 +57,9 @@ Blocks cost time:
 		4
 	Empty - none
 		0
+	oil - black
+		1
+
 	Monster - green
 	Fuel??
 
