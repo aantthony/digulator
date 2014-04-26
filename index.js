@@ -26,6 +26,7 @@ window.assert = assert;
 
 var Keyboard = require('./objects/keyboard');
 var Player = require('./objects/player');
+var Monster = require('./objects/monster');
 var World = require('./objects/world');
 var Particles = require('./objects/particles');
 var GameState = require('./objects/gamestate');
@@ -58,6 +59,12 @@ document.body.appendChild(renderer.domElement);
 
 var SoundPlayer = require('./objects/soundPlayer');
 var geometry = new THREE.CubeGeometry(1,1,1);
+var monster = new Monster({
+  world: world
+});
+/*var player = new Player({
+  world: world
+});*/
 var material = new THREE.MeshLambertMaterial({color: 0xAAAAAA});
 var cube = new THREE.Mesh(geometry, material);
 scene.add(cube);
@@ -139,6 +146,8 @@ Game = function()
 	
 		cube.rotation.x += dt;
 		cube.rotation.y += dt;
+
+		monster.updateFunc(dt,player);
 		
 		// soundPlayer.play('test');
 	}
@@ -206,6 +215,7 @@ keys.onright = function () {
 };
 keys.onup = function () {
   screenShake += 1.0;
+  player.digUp();
 };
 keys.ondown = function () {
   player.digDown();
