@@ -120,7 +120,9 @@ var mainloop = function()
 
 var keys = new Keyboard();
 
-var player = new Player();
+var player = new Player({
+  world: world
+});
 
 keys.onleft = function () {
   player.left();
