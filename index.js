@@ -12,6 +12,12 @@ var material = new THREE.MeshBasicMaterial({color: 0x00ff00});
 var cube = new THREE.Mesh(geometry, material);
 scene.add(cube);
 
+var World = require('./objects/world');
+
+var world = new World();
+console.log('created a world!');
+
+
 camera.position.z = 5;
 
 var render = function () {
