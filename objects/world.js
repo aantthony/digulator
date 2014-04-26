@@ -92,7 +92,7 @@ function World() {
 		if (x < 0) return false;
 		if (y < 0) return false;
 		if (x >= size) return false;
-		if (y >= size) return false;
+		if (y > size) return false;
 		return true;
 	};
 
