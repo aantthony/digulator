@@ -42,11 +42,13 @@ exports.prototype.digInDirection = function (xDir, yDir) {
     var self = this;
     setTimeout(function () {
       block.scale.set(0.5, 0.5, 0.5);
-      block.position.y -= 0.5;
-    }, 75);
+      pos.x += 0.5 * xDir;
+      block.position.x += 0.25 * xDir;
+      block.position.y -= 0.25;
+    }, 70);
     setTimeout(function () {
-      block.position.y -= 0.2;
-      block.scale.set(0.2, 0.2, 0.2);
+      block.position.y -= 0.125;
+      block.scale.set(0.25, 0.25, 0.25);
     }, 150);
     this._currentDig = setTimeout(function () {
       shake(4.5);
