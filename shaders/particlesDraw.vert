@@ -35,9 +35,12 @@ void main()
 	if (type == 0.0)
 		size = 0.4;
 	else if (type == 1.0)
-		size = max(veldat.w * 4.0, 1.0);
+		size = max(veldat.w * 0.4, 0.5);
 	else if (type == 2.0)
 		size = 1.0;
+		
+	if (veldat.w > 4.0)
+		size = 0.0;
 	
 	vec2 square = osVert.xy * vec2(0.05, 0.1) * size;
 	

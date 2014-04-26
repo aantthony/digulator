@@ -20,7 +20,8 @@ void main()
 	velocity.z += sin(n.z*6.2) * n.z * 0.01;
 	
 	velocity.w += time;
-		
+	
+	/*
 	if (position.w == 1.0)
 	{
 		if (length(position.xyz) < 2.1)
@@ -29,7 +30,7 @@ void main()
 		velocity.xyz += -position.xyz * 0.01;
 		velocity.xyz *= 0.97;
 	}
-	else
+	else*/
 	{
 		velocity.xyz *= 0.95;
 		velocity.y -= time * 9.8;

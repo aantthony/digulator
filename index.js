@@ -72,28 +72,54 @@ Game = function()
 	var keys = new Keyboard();
 
 	var player = new Player({
-	  world: world
+		world: world
 	});
 	var monster = new Monster({world:world});
 
 	keys.onleft = function () {
-	  player.left();
+		player.left();
 	};
 	keys.onright = function () {
-	  player.right();
+		player.right();
 	};
 	keys.onup = function () {
 		player.digUp();
 	};
 	keys.ondown = function () {
-	  player.digDown();
+		player.digDown();
 	};
 
-
-	
 	this.bloom = new Bloom(width, height);
 	window.bloom = this.bloom;
 	this.particles = new Particles(64);
+	
+	var texture = THREE.ImageUtils.loadTexture('images/sky.png');
+	texture.wrapS = THREE.RepeatWrapping;
+	var geo = new THREE.PlaneGeometry(2, 2);
+	var uvs = geo.faceVertexUvs[0];
+	uvs.forEach(function (uvs) {
+		uvs.forEach(function (uvs) {
+			uvs.x *= width / 64;
+			if (uvs.y === 0) {
+				uvs.y = height / 512;
+			} else {
+				uvs.y = 0;
+			}
+		});
+	});
+	var backgroundMesh = new THREE.Mesh(
+		geo,
+		new THREE.MeshBasicMaterial({
+			map: texture,
+			depthTest: false,
+			depthWrite: false
+		})
+	);
+
+	var backgroundScene = new THREE.Scene();
+	var backgroundCamera = new THREE.Camera();
+	backgroundScene.add(backgroundCamera);
+	backgroundScene.add(backgroundMesh);
 	
 	this.enter = function()
 	{
@@ -139,10 +165,11 @@ Game = function()
 		
 		//soundPlayer.play('test');
 		
-		for (var i = 0; i < 10; ++i)
+		for (var i = 0; i < 2; ++i)
 		{
 			particleType = 1;
-			this.particles.spawn([0, 0, 2, particleType], [Math.random()*50-25, Math.random()*50-25, Math.random()*50-25, 0]);
+			var speed = 1.0;
+			this.particles.spawn([0, 0, 2, particleType], [(Math.random()-0.5)*speed, (Math.random()-0.5)*speed, (Math.random()-0.5)*speed, 0]);
 		}
 		
 		this.particles.step(dt);
@@ -150,41 +177,25 @@ Game = function()
 		if(monster)
 			monster.updateFunc(dt,player);
 	}
+	
+	this.resize = function(width, height)
+	{
+		gl = renderer.context;
+		gl.viewportWidth = width; //FFS. can't query GL viewport state. this is a workaround for Particles
+		gl.viewportHeight = height;
 
-	var texture = THREE.ImageUtils.loadTexture('images/sky.png');
-	texture.wrapS = THREE.RepeatWrapping;
-	var geo = new THREE.PlaneGeometry(2, 2);
-	var uvs = geo.faceVertexUvs[0];
-	uvs.forEach(function (uvs) {
-		uvs.forEach(function (uvs) {
-			uvs.x *= width / 64;
-			if (uvs.y === 0) {
-				uvs.y = height / 512;
-			} else {
-				uvs.y = 0;
-			}
-		});
-	});
-  var backgroundMesh = new THREE.Mesh(
-    geo,
-    new THREE.MeshBasicMaterial({
-      map: texture,
-      depthTest: false,
-      depthWrite: false
-    })
-  );
+		renderer.setSize(width, height);
 
-  var backgroundScene = new THREE.Scene();
-  var backgroundCamera = new THREE.Camera();
-  backgroundScene.add(backgroundCamera);
-  backgroundScene.add(backgroundMesh);
+		camera.setViewOffset(width, height, 0, 0, width, height);
 
-
+		this.bloom.resize(width, height)
+	}
+	
 	this.display = function()
 	{
 		this.bloom.bind();
-    
-    renderer.autoClear = false;
+		
+		renderer.autoClear = false;
 		renderer.clear();
 		//renderer.render(backgroundScene, backgroundCamera );
 		renderer.render(scene, camera);
@@ -268,14 +279,5 @@ window.onresize = function(){
 	var width = window.innerWidth - 100;
 	var height = window.innerHeight - 100;
 
-	gl = renderer.context;
-	gl.viewportWidth = width; //FFS. can't query GL viewport state. this is a workaround for Particles
-	gl.viewportHeight = height;
-
-	renderer.setSize(width, height);
-
-	camera.setViewOffset(width, height, 0, 0, width, height);
-
-	// window.bloom.w = width;
-	// window.bloom.h = height;
+	currentGameState.resize(width, height);
 }
