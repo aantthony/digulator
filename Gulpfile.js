@@ -28,8 +28,7 @@ gulp.task('scripts', function() {
   gulp.src(paths.scripts)
   .pipe(browserify({
     insertGlobals : true,
-    debug : process.env.NODE_ENV !== 'production',
-    transform: ['brfs']
+    debug : process.env.NODE_ENV !== 'production'
   }))
   .pipe(gulp.dest('./dist/scripts'));
 });
