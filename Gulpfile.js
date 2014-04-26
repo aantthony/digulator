@@ -7,7 +7,7 @@ var imagemin   = require('gulp-imagemin');
 
 var paths = {
   html: './views/*.html',
-  scripts: 'index.js',
+  scripts: ['index.js', '*.js', './**/*.js'],
   styles: './styles/*.stylus',
   images: 'images/**/*',
   other: 'other/**/*'
