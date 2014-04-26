@@ -16,9 +16,9 @@ function Bloom(w, h) {
 	this.RTTFBOdown = gl.createFramebuffer();
 	this.RTTdown = GLUtil.createTexture(this.w/4, this.h/4, gl.RGBA, true, "bloomRTTdown");
 	this.RTTD = gl.createRenderbuffer(1);
-	gl.bindRenderbuffer(gl.RENDER_BUFFER, this.RTTD);
-	gl.renderbufferStorage(gl.RENDER_BUFFER, gl.DEPTH_COMPONENT, this.w, this.h);
-	gl.bindRenderbuffer(gl.RENDER_BUFFER, null);
+	gl.bindRenderbuffer(gl.RENDERBUFFER, this.RTTD);
+	gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, this.w, this.h);
+	gl.bindRenderbuffer(gl.RENDERBUFFER, null);
 	this.blurFBO = gl.createFramebuffer();
 	this.blurTex = GLUtil.createTexture(this.w, this.h, gl.RGBA, true, "bloomBlur");
 	this.blurFBOdown = gl.createFramebuffer();
@@ -38,7 +38,7 @@ function Bloom(w, h) {
 	
 	gl.bindFramebuffer(gl.FRAMEBUFFER, this.RTTFBO);
 	gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.RTT, 0);
-	gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.TEXTURE_2D, this.RTTD);
+	gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, this.RTTD);
 	gl.bindFramebuffer(gl.FRAMEBUFFER, this.RTTFBOdown);
 	gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.RTTdown, 0);
 	gl.bindFramebuffer(gl.FRAMEBUFFER, this.blurFBO);

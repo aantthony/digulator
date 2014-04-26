@@ -56,7 +56,6 @@ function World() {
 		// cube.rotation.set((Math.random() - 0.5) * 0.2, (Math.random()-0.5) * 0.2, 0.0);
 		cube.rotation.set(Math.PI/2 * Math.floor(Math.random()*8), Math.PI/2 * Math.floor(Math.random()*8), 0.0);
 		// scene.add(cube);
-		block.strength = 2;
 		cube.name = block.name;
 		cube.position.x = i;
 		cube.position.y = j;
