@@ -1,0 +1,32 @@
+{
+  "name": "digulator",
+  "version": "0.0.0",
+  "description": "digulator =========",
+  "main": "index.js",
+  "scripts": {
+    "start": "gulp",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/aantthony/digulator.git"
+  },
+  "author": "",
+  "license": "N/A",
+  "bugs": {
+    "url": "https://github.com/aantthony/digulator/issues"
+  },
+  "homepage": "https://github.com/aantthony/digulator",
+  "dependencies": {
+    "three": "^0.66.2"
+  },
+  "devDependencies": {
+    "gulp-minify-html": "^0.1.3",
+    "connect": "^2.14.5",
+    "gulp-util": "^2.2.14",
+    "gulp-stylus": "^1.0.0",
+    "gulp": "^3.6.2",
+    "gulp-browserify": "^0.5.0",
+    "gulp-imagemin": "^0.4.0"
+  }
+}
