@@ -56,20 +56,15 @@ var camera = new THREE.PerspectiveCamera( 45, width / height, 0.1, 20 );
 renderer.setSize(width, height);
 document.body.appendChild(renderer.domElement);
 
-var SoundPlayer = require('./objects/soundPlayer');
-var TextureLoader = require('./objects/textureLoader');
-var ObjectLoader = require('./objects/objectLoader');
+var soundPlayer = require('./objects/soundPlayer');
+var textureLoader = require('./objects/textureLoader');
+var objectLoader = require('./objects/objectLoader');
 var Particles = require('./objects/particles');
 var GameState = require('./objects/gamestate');
 var cube;
 
-var textureLoader = new TextureLoader();
-var objectLoader = new ObjectLoader();
-
-var world = new World({objectLoader: objectLoader, textureLoader: textureLoader});
+var world = new World();
 console.log('created a world!');
-
-var soundPlayer = new SoundPlayer();
 
 camera.position.z = 15;
 var cameraFocus = new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z);
@@ -141,7 +136,6 @@ Game = function()
 			cube.rotation.x += dt;
 			cube.rotation.y += dt;
 		}
-		// soundPlayer.play('test');
 	}
 	this.display = function()
 	{

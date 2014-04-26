@@ -1,3 +1,5 @@
+var soundPlayer = require('./soundPlayer');
+
 var exports = module.exports = function (details) {
 
   var geometry = new THREE.CubeGeometry(0.4,0.4, 0.4);
@@ -52,6 +54,7 @@ exports.prototype.digInDirection = function (xDir, yDir) {
     }, 150);
     this._currentDig = setTimeout(function () {
       shake(4.5);
+      // soundPlayer.play('DrillFast');
       pos.x = x;
       pos.y = y;
       self._currentDigX = 0;

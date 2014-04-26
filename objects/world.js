@@ -11,9 +11,10 @@ var size = 10;
 var NUMDIAMONDS = 2;
 var NUMSPACE = 4;
 
-function World(params) {
-	this.objectLoader = params.objectLoader;
-	// this.textureLoader = params.textureLoader;
+var objectLoader = require('./objectLoader');
+
+function World() {
+	this.objectLoader = objectLoader;
 	this.blocks = [],
 
 	this.createWorld = function(){
