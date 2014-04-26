@@ -16,22 +16,6 @@ Diamond blocks take longer to dig, but earn more cash
 Limited sight
 Can see gold/diamond everywhere though
 
-Orthogonal camera
-
-<!-- start with X amount of fuel
-dig in one of the four cardinal directions
-each dig costs fuel
-
-some blocks cost more than others
-
-some blocks have fuel
-some blocks have cost
-some blocks have gold
-
-can retrace your path
-
-start with a small grid, grows as you advance -->
-
 
 What we need
 ============
@@ -88,3 +72,16 @@ Art
 	-block textures
 	-monster
 	
+
+Where to go from here
+=====================
+	Models for alien and digger
+	limited field of view
+	laser effect
+	more sound effects
+	music
+	border texture
+	HUD (html/css is easiest)
+	menu to decide which difficulty
+	win condition and screen
+	lose condition and screen
