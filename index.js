@@ -71,6 +71,20 @@ console.log('created a world!');
 var soundPlayer = new SoundPlayer();
 
 camera.position.z = 15;
+var cameraFocus = new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z);
+
+function shake(x)
+{
+	var r = 0.0;
+	for (var i = 0; i < 6; ++i)
+	{
+		var f = (1 << i);
+		r += Math.sin(x * f) / f;
+	}
+	return r;
+}
+var screenShake = 0.0;
+var screenShakeTime = 0.0;
 
 Game = function()
 {
@@ -86,15 +100,43 @@ Game = function()
 
 		world.createWorld();
 	}
-	this.update = function(dt)
+	this.fixedUpdate = function(dt)
 	{
-		cube.rotation.x += dt;
-		cube.rotation.y += dt;
 		var playerpos = player.object.position;
 		var targetX = Math.max(-5, Math.min(5, playerpos.x - 5)) + 5;
 		var targetY = Math.max(-5, Math.min(5, playerpos.y - 5)) + 5;
-		camera.position.x += (targetX - camera.position.x) * 0.04;
-		camera.position.y += (targetY - camera.position.y) * 0.04;
+		cameraFocus.x += (targetX - cameraFocus.x) * 0.04;
+		cameraFocus.y += (targetY - cameraFocus.y) * 0.04;
+	
+		screenShakeTime += dt;	
+		camera.position.x = cameraFocus.x + shake(100.0 * screenShakeTime) * Math.sqrt(screenShake) * 0.1;
+		camera.position.y = cameraFocus.y + shake(100.0 * screenShakeTime + 12383.23487) * Math.sqrt(screenShake) * 0.1;
+		screenShake *= 0.9;
+	}
+
+	this.secondTimer = 0.0;
+	this.fixedUpdateTime = 1.0/120.0;
+	this.fixedUpdateTimer = 0.0;
+	this.update = function(dt)
+	{
+		//loop until processed all fixed updates
+		this.fixedUpdateTimer += dt;
+		while (this.fixedUpdateTimer > this.fixedUpdateTime)
+		{
+			this.fixedUpdateTimer -= this.fixedUpdateTime;
+			this.fixedUpdate(this.fixedUpdateTime);
+		}
+		
+		//poll stuff once a second
+		this.secondTimer += dt;
+		if (this.secondTimer > 1.0)
+		{
+			this.secondTimer = 0.0;
+			//screenShake += 4.0;
+		}
+	
+		cube.rotation.x += dt;
+		cube.rotation.y += dt;
 		
 		// soundPlayer.play('test');
 	}
@@ -161,7 +203,7 @@ keys.onright = function () {
   player.right();
 };
 keys.onup = function () {
-
+  screenShake += 1.0;
 };
 keys.ondown = function () {
   player.digDown();
