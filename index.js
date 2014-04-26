@@ -11,16 +11,39 @@ var Keyboard = require('./objects/keyboard');
 var Player = require('./objects/player');
 
 var renderer = new THREE.WebGLRenderer();
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
 
-var geometry = new THREE.CubeGeometry(1,1,1);
-var material = new THREE.MeshBasicMaterial({color: 0x00ff00});
-var cube = new THREE.Mesh(geometry, material);
+var stats = new Stats();
+stats.setMode(0);
+stats.domElement.style.position = 'absolute';
+stats.domElement.style.right = '0px';
+stats.domElement.style.bottom = '0px';
+document.body.appendChild(stats.domElement);
+
+var width = window.innerWidth;
+var height = window.innerHeight;
+if(width > height){
+	height -= 100;
+	width =  height;
+}
+else{
+	width -= 100;
+	height = width;
+}
+
+renderer.setSize(width, height);
+document.body.appendChild(renderer.domElement);
 
 var World = require('./objects/world');
 var Particles = require('./objects/particles');
 var GameState = require('./objects/gamestate');
+
+var geometry = new THREE.CubeGeometry(1,1,1);
+var material = new THREE.MeshBasicMaterial({color: 0xAAAAAA});
+var cube = new THREE.Mesh(geometry, material);
+scene.add(cube);
+cube.position.x = 4.5;
+cube.position.y = 4.5;
+cube.position.z = 1;
 
 var world = new World();
 console.log('created a world!');
@@ -68,6 +91,7 @@ var targetFrametime = 1000.0/60.0;
 var javascriptUsage = 0.0;
 var mainloop = function()
 {
+	stats.begin();
 	var thisTime = new Date().getTime();
 	var frameTime = thisTime - lastTime;
 	lastTime = thisTime;
@@ -86,6 +110,7 @@ var mainloop = function()
 	currentGameState.display();
 	
 	window.setTimeout(mainloop, sleepTime);
+	stats.end();
 }
 
 var keys = new Keyboard();

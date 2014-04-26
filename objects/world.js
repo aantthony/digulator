@@ -1,11 +1,12 @@
 module.exports = World;
 
 function World() {
+	this.blocks = [],
 
 	this.createWorld = function(){
-		var blocks = [];
+		this.blocks = [];
 		for(var i = 0; i < 10; i++){
-			blocks[i] = [];
+			this.blocks[i] = [];
 		}
 
 		var cube;
@@ -15,6 +16,7 @@ function World() {
 				cube.position.x = i;
 				cube.position.y = j;
 				scene.add(cube);
+				this.blocks[i][j] = cube;
 			}
 		}
 	},
