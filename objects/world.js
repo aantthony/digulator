@@ -33,6 +33,29 @@ function World() {
 		return cube;
 	},
 
+	this.getBlock = function (x, y) {
+		var col = this.blocks[x];
+		if (!col) return;
+		return col[y];
+	};
+
+	this.setBlock = function (x, y, name) {
+		var old;
+		var col = this.blocks[x];
+		if (old = col[y]) {
+			scene.remove(old);
+			delete col[y];
+			if (!name) return;
+			var geometry = new THREE.CubeGeometry(1,1,1);
+			var material = new THREE.MeshBasicMaterial({color: block.color});
+			cube = new THREE.Mesh(geometry, material);
+			cube.name = name;
+			cube.position.x = x;
+			cube.position.y = y;
+			col[y] = cube;
+		}
+	};
+
 	this.chooseBlock = function(){
 		var i = Math.floor(Math.random()*6);
 		switch(i){
