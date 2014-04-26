@@ -28,14 +28,19 @@ function World() {
 
 		for(var i = 0; i < size; i++) {
 			for(var j = 0; j < size; j++) {
-				if(this.blocks[i][j] == undefined)
-					var r = Math.random();
-					if(r < 0.5)
-						this.makeBlock(DIRT,i,j);
-					if(r < 0.8)
-						this.makeBlock(CLAY,i,j);
-					else
-						this.makeBlock(SAND,i,j);
+				if(this.blocks[i][j] == undefined) {
+					if(j == 0) {
+						this.makeBlock(EMPTY,i,j);
+					} else {
+						var r = Math.random();
+						if(r < 0.5)
+							this.makeBlock(DIRT,i,j);
+						if(r < 0.8)
+							this.makeBlock(CLAY,i,j);
+						else
+							this.makeBlock(SAND,i,j);
+					}
+				}
 			}
 		}
 	},
@@ -187,6 +192,9 @@ function World() {
 		for(var i = 0; i < numRock; ++ i) {
 			var x = Math.floor(Math.random()*size);
 			var y = Math.floor(Math.random()*size);
+			while(y < 1)
+				y = Math.floor(Math.random()*size);
+				
 			if(this.blocks[x][y] == undefined) {
 				this.makeBlock(ROCK,x,y);
 				var r = Math.random();
