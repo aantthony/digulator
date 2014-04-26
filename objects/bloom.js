@@ -36,6 +36,10 @@ function Bloom(w, h) {
 	var fragSrc = require('../shaders/blit.frag');
 	this.blit = Shader.create(vertSrc, fragSrc, "blit");
 	
+	var vertSrc = require('../shaders/volumetric.vert');
+	var fragSrc = require('../shaders/volumetric.frag');
+	this.volumetrics = Shader.create(vertSrc, fragSrc, "volumetric");
+	
 	gl.bindFramebuffer(gl.FRAMEBUFFER, this.RTTFBO);
 	gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.RTT, 0);
 	gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, this.RTTD);
@@ -50,9 +54,19 @@ function Bloom(w, h) {
 	this.bind = function() {
 	   gl.bindFramebuffer(gl.FRAMEBUFFER, this.RTTFBO);
 	}
-	this.unbind = function(target) {
+	this.unbind = function(target, sunPos) {
 		if (!target)
 			target = null;
+			
+		gl.disable(gl.DEPTH_TEST);
+			
+		//blit primary + volumetrics
+		gl.useProgram(this.volumetrics);
+		gl.bindFramebuffer(gl.FRAMEBUFFER, target);
+		Shader.setActiveTexture(this.volumetrics, "tex", 0, this.RTT);
+		gl.uniform2f(gl.getUniformLocation(this.volumetrics, "size"), 1.0/this.w, 1.0/this.h);
+		gl.uniform2f(gl.getUniformLocation(this.volumetrics, "sun"), sunPos.x, sunPos.y);
+		this.quad.draw(this.volumetrics);
 		
 		//first full rez blur pass
 		gl.useProgram(this.blur);
@@ -62,16 +76,14 @@ function Bloom(w, h) {
 		gl.bindFramebuffer(gl.FRAMEBUFFER, this.blurFBO);
 		this.quad.draw(this.blur);
 		
-		//seconf full rez blur pass
+		//second full rez blur pass
 		gl.uniform1i(gl.getUniformLocation(this.blur, "pass"), 1);
-		Shader.setActiveTexture(this.blur, "orig", 0, this.RTT);
-		Shader.setActiveTexture(this.blur, "tex", 1, this.blurTex);
+		Shader.setActiveTexture(this.blur, "tex", 0, this.blurTex);
 		gl.bindFramebuffer(gl.FRAMEBUFFER, target);
-		gl.disable(gl.DEPTH_TEST);
-		//gl.enable(gl.BLEND);
-		//gl.blendFunc(gl.ONE, gl.ONE);
+		gl.enable(gl.BLEND);
+		gl.blendFunc(gl.ONE, gl.ONE);
 		this.quad.draw(this.blur);
-		//gl.disable(gl.BLEND);
+		gl.disable(gl.BLEND);
 		
 		//downsample for large blur
 		gl.useProgram(this.downsample);

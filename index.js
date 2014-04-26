@@ -80,6 +80,8 @@ Game = function()
 	camera.position.z = 15;
 	var cameraFocus = new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z);
 	
+	var sunPosition = new THREE.Vector3(-100, 50, -300);
+	
 	var keys = new Keyboard();
 
 	var player = new Player({
@@ -151,7 +153,7 @@ Game = function()
 		
 		for (var i = 0; i < 10; ++i)
 		{
-			particleType = 0;
+			particleType = 1;
 			this.particles.spawn([0, 0, 2, particleType], [Math.random()*50-25, Math.random()*50-25, Math.random()*50-25, 0]);
 		}
 		
@@ -196,7 +198,7 @@ Game = function()
     
     renderer.autoClear = false;
 		renderer.clear();
-		renderer.render(backgroundScene, backgroundCamera );
+		//renderer.render(backgroundScene, backgroundCamera );
 		renderer.render(scene, camera);
 		
 		gl.disable(gl.DEPTH_TEST);
@@ -205,7 +207,14 @@ Game = function()
 		this.particles.draw(camera.projectionMatrix.elements, camera.matrixWorldInverse.elements);
 		gl.disable(gl.BLEND);
 		
-		this.bloom.unbind();
+		var tmp = new THREE.Vector4(sunPosition.x,sunPosition.y,sunPosition.z,1);
+		tmp.applyMatrix4(camera.matrixWorldInverse);
+		tmp.applyMatrix4(camera.projectionMatrix);
+		tmp.x /= tmp.w;
+		tmp.y /= tmp.w;
+		tmp.x = tmp.x * 0.5 + 0.5;
+		tmp.y = tmp.y * 0.5 + 0.5;
+		this.bloom.unbind(null, tmp);
 	}
 }
 
@@ -264,5 +273,5 @@ window.onload = function()
 		changeGameState(new Game());
 		document.getElementById("loadingscreen").style.display = "none";
 		mainloop();
-	}, 500);
+	}, 50);
 }
