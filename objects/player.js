@@ -61,9 +61,10 @@ exports.prototype.digInDirection = function (xDir, yDir) {
     var y = this._y + yDir;
     var self = this;
 
-    var mineTime = difficulty(block) * 80;
+    var d = difficulty(block);
+    var mineTime = d * 80;
     var timers = [];
-    soundPlayer.play('DrillFast');
+    soundPlayer.play(d > 5 ? 'DrillMed' : 'DrillFast');
     
     timers.push(setTimeout(function () {
       shake(3);
