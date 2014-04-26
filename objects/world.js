@@ -35,12 +35,13 @@ function World() {
 						var r = Math.random();
 						if(r < 0.5)
 							this.makeBlock(DIRT,i,j);
-						if(r < 0.8)
+						else if(r < 0.8)
 							this.makeBlock(CLAY,i,j);
 						else
 							this.makeBlock(SAND,i,j);
 					}
 				}
+
 			}
 		}
 	},
@@ -77,7 +78,7 @@ function World() {
 			delete col[y];
 		}
 		if (!name) return;
-		cube = this.makeBlock();
+		cube = this.makeBlock(name, x, y);
 		cube.material.color.set(0xffff00);
 		cube.name = name;
 		cube.position.set(x, y, 0);
@@ -86,10 +87,6 @@ function World() {
 		return cube;
 	};
 
-	/*this.chooseBlock = function(){
-		var i = Math.floor(Math.random()*6);
-		switch(i){
-			case 0:*/
 	this.chooseBlock = function(type){
 		switch(type){
 			case SAND:
