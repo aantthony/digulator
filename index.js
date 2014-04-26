@@ -89,13 +89,15 @@ var lastTime = 0.0;
 var sleepTime = 0.0;
 var targetFrametime = 1000.0/60.0;
 var javascriptUsage = 0.0;
+var sleepTime = 0.0;
 var mainloop = function()
 {
 	stats.begin();
 	var thisTime = new Date().getTime();
 	var frameTime = thisTime - lastTime;
 	lastTime = thisTime;
-	var sleepTime = Math.max(0.0, frameTime - targetFrametime);
+	sleepTime += targetFrametime - frameTime;
+	sleepTime = Math.max(Math.min(sleepTime, targetFrametime), 0);
 	javascriptUsage = 1.0 - sleepTime / targetFrametime;
 	var dt = frameTime * 0.001;
 	
