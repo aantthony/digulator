@@ -1,4 +1,3 @@
-module.exports = TextureLoader;
 
 function TextureLoader() {
   var ctx = this;
@@ -56,3 +55,6 @@ TextureLoader.prototype.loadNormal = function(url) {
 function onError(err){
   console.log(err);
 }
+
+var instance = new TextureLoader();
+module.exports = instance;

@@ -11,9 +11,10 @@ var size = 10;
 var NUMDIAMONDS = 2;
 var NUMSPACE = 4;
 
-function World(params) {
-	this.objectLoader = params.objectLoader;
-	// this.textureLoader = params.textureLoader;
+var objectLoader = require('./objectLoader');
+
+function World() {
+	this.objectLoader = objectLoader;
 	this.blocks = [],
 
 	this.createWorld = function(){
@@ -78,7 +79,7 @@ function World(params) {
 		}
 		if (!name) return;
 		cube = this.makeBlock(name, x, y);
-		cube.material.color.set(0xffff00);
+		// cube.material.color.set(0xffff00);
 		cube.name = name;
 		cube.position.set(x, y, 0);
 		col[y] = cube;
@@ -91,6 +92,7 @@ function World(params) {
 		var material;
 		switch(type){
 			case SAND:
+			case 'sand':
 				return {
 					mesh: this.objectLoader.getObject('Sand'),
 					name: 'sand',

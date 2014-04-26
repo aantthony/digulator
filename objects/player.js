@@ -1,3 +1,5 @@
+var soundPlayer = require('./soundPlayer');
+
 var exports = module.exports = function (details) {
 
   var geometry = new THREE.CubeGeometry(0.4,0.4, 0.4);
@@ -60,6 +62,8 @@ exports.prototype.digInDirection = function (xDir, yDir) {
 
     var mineTime = difficulty(block) * 80;
     var timers = [];
+    soundPlayer.play('DrillFast');
+    
     timers.push(setTimeout(function () {
       shake(3);
       block.scale.set(0.5, 0.5, 0.5);

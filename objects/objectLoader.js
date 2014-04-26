@@ -1,50 +1,4 @@
-module.exports = ObjectLoader;
 
-var TextureLoader = require('./textureLoader');
-
-function ObjectLoader() {
-  var ctx = this;
-  this.objectLoader = new THREE.OBJLoader();
-  this.objects = {};
-  this.textureLoader = new TextureLoader();
-
-  this.loadObject('Sand');
-  this.loadObject('Clay');
-}
-
-ObjectLoader.prototype.getObject = function(obj) {
-  if(!this.objects[obj]){
-    console.log("Object not loaded: " + obj);
-    return;
-  }
-  return this.objects[obj].clone();
-}
-
-ObjectLoader.prototype.loadObject = function(url) {
-  var ctx = this;
-  var texture = this.textureLoader.getTexture(url);
-  var normal = this.textureLoader.getTexture(url);
-
-  // this.objects[url];
-  this.objectLoader.load('models/' + url + '.obj', function (event) {
-    obj = event.children[0];
-    ctx.objects[url] = obj;
-
-    obj.traverse( function ( child ) {
-      if(child instanceof THREE.Mesh){
-        child.material.map = texture;
-        child.material.lightMap  = normal;
-      }
-    });
-
-  }, function(){}, function(err){
-    console.log(err);
-  });
-};
-
-function onError(err){
-  console.log(err);
-}
 
 
 
@@ -376,3 +330,53 @@ THREE.OBJLoader.prototype = {
   }
 
 };
+
+var textureLoader = require('./textureLoader');
+
+
+function ObjectLoader() {
+  var ctx = this;
+  this.objectLoader = new THREE.OBJLoader();
+  this.objects = {};
+  this.textureLoader = textureLoader;
+
+  this.loadObject('Sand');
+  this.loadObject('Clay');
+}
+
+ObjectLoader.prototype.loadObject = function(url) {
+  var ctx = this;
+  var texture = this.textureLoader.getTexture(url);
+  var normal = this.textureLoader.getTexture(url);
+
+  // this.objects[url];
+  this.objectLoader.load('models/' + url + '.obj', function (event) {
+    obj = event.children[0];
+    ctx.objects[url] = obj;
+
+    obj.traverse( function ( child ) {
+      if(child instanceof THREE.Mesh){
+        child.material.map = texture;
+        child.material.lightMap  = normal;
+      }
+    });
+
+  }, function(){}, function(err){
+    console.log(err);
+  });
+};
+
+ObjectLoader.prototype.getObject = function(obj) {
+  if(!this.objects[obj]){
+    console.log("Object not loaded: " + obj);
+    return;
+  }
+  return this.objects[obj].clone();
+}
+
+function onError(err){
+  console.log(err);
+}
+
+var instance = new ObjectLoader();
+module.exports = instance;

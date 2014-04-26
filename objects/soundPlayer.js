@@ -1,5 +1,3 @@
-module.exports = SoundPlayer;
-
 window.AudioContext = window.AudioContext || window.webkitAudioContext;
 
 function SoundPlayer() {
@@ -7,15 +5,9 @@ function SoundPlayer() {
   this.audio = new AudioContext();
   this.sounds = {};
 
-  this.loadSound('test');
+  this.loadSound('DrillFast');
+  this.loadSound('DrillMed');
 }
-
-SoundPlayer.prototype.destroy  = function() {
-};
-
-SoundPlayer.sound  = {
-  
-};
 
 SoundPlayer.prototype.play = function(sound) {
   if(!this.sounds[sound]){
@@ -46,3 +38,6 @@ SoundPlayer.prototype.loadSound = function(url) {
 function onError(err){
   console.log(err);
 }
+
+var instance = new SoundPlayer();
+module.exports = instance;
