@@ -30,9 +30,9 @@ exports.prototype.digLeft = function () {
 
 function difficulty (block) {
   switch(block.name) {
-    case 'diamond': return 24;
-    case 'gold': return 12;
-    case 'rock': return 8;
+    case 'diamond': return 12;
+    case 'gold': return 8;
+    case 'rock': return 18;
     case 'clay': return 4;
     case 'dirt': return 2;
     case 'sand': return 1;
@@ -72,11 +72,13 @@ exports.prototype.digInDirection = function (xDir, yDir) {
       pos.x += 0.5 * xDir;
       block.position.x = x + 0.25 * xDir;
       block.position.y = y - 0.25;
+      if (d > 5) soundPlayer.play('DrillMed');
     }, mineTime / 3));
     timers.push(setTimeout(function () {
       shake(2);
       block.scale.set(0.25, 0.25, 0.25);
       block.position.y = y - 0.25 - 0.125;
+      if (d > 5) soundPlayer.play('DrillMed');
     }, mineTime * 2 / 3));
     timers.push(setTimeout(function () {
       shake(0.5);
@@ -85,6 +87,7 @@ exports.prototype.digInDirection = function (xDir, yDir) {
       self._currentDigX = 0;
       self._currentDigY = 0;
       delete self._currentDig;
+      if (d > 5) soundPlayer.play('DrillFast');
       world.setBlock(x - xDir, y - yDir, 'sand');
       world.setBlock(x, y, null);
     }, mineTime));

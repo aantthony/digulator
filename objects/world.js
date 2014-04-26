@@ -53,7 +53,7 @@ function World() {
 		var block = this.chooseBlock(type);
 		var cube = block.mesh;
 
-		cube.rotation.set((Math.random() - 0.5) * 0.2, (Math.random()-0.5) * 0.2, 0.0);
+		// cube.rotation.set((Math.random() - 0.5) * 0.2, (Math.random()-0.5) * 0.2, 0.0);
 		// scene.add(cube);
 		cube.name = block.name;
 		cube.position.x = i;
