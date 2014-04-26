@@ -13,20 +13,68 @@ var cube = new THREE.Mesh(geometry, material);
 scene.add(cube);
 
 var World = require('./objects/world');
+var Particles = require('./objects/particles');
+var GameState = require('./objects/gamestate');
 
 var world = new World();
 console.log('created a world!');
 
+var particles = new Particles();
 
 camera.position.z = 5;
 
-var render = function () {
-  requestAnimationFrame(render);
+Game = function()
+{
+	GameState.call(this);
+	
+	this.update = function(dt)
+	{
+		cube.rotation.x += dt;
+		cube.rotation.y += dt;
+	}
+	this.display = function()
+	{
+		renderer.render(scene, camera);
+	}
+}
 
-  cube.rotation.x += 0.1;
-  cube.rotation.y += 0.1;
+var currentGameState = null;
 
-  renderer.render(scene, camera);
-};
+var changeGameState = function(newState)
+{
+	if (currentGameState)
+		currentGameState.leave();
+	
+	newState.enter();
+	
+	currentGameState = newState;
+}
 
-render();
+var lastTime = 0.0;
+var sleepTime = 0.0;
+var targetFrametime = 1000.0/60.0;
+var javascriptUsage = 0.0;
+var mainloop = function()
+{
+	var thisTime = new Date().getTime();
+	var frameTime = thisTime - lastTime;
+	lastTime = thisTime;
+	var sleepTime = Math.max(0.0, frameTime - targetFrametime);
+	javascriptUsage = 1.0 - sleepTime / targetFrametime;
+	var dt = frameTime * 0.001;
+	
+	//if the browser pauses the script or is running slow limit the frame time
+	if (dt > 4.0)
+		dt = 0.0;
+	if (dt > 0.5)
+		dt = 0.5;
+	
+	currentGameState.update(dt);
+	
+	currentGameState.display();
+	
+	window.setTimeout(mainloop, sleepTime);
+}
+
+changeGameState(new Game());
+mainloop();
