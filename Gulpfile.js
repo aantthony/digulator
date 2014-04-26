@@ -12,6 +12,7 @@ var paths = {
   images: 'images/**/*',
   other: 'other/**/*',
   sounds: 'sounds/**/*',
+  models: 'models/**/*',
 };
 
 gulp.task('other', function () {
@@ -22,6 +23,11 @@ gulp.task('other', function () {
 gulp.task('sounds', function () {
   gulp.src(paths.sounds)
   .pipe(gulp.dest('./dist/sounds/'));
+});
+
+gulp.task('models', function () {
+  gulp.src(paths.models)
+  .pipe(gulp.dest('./dist/models/'));
 });
 
 gulp.task('html', function() {
@@ -50,7 +56,7 @@ gulp.task('styles', function(){
 
 gulp.task('images', function(){
   return gulp.src(paths.images)
-    .pipe(imagemin())
+    // .pipe(imagemin())
     .pipe(gulp.dest('./dist/images/'));
 });
 
@@ -61,6 +67,7 @@ gulp.task('watch', function () {
   gulp.watch(paths.images, ['images']);
   gulp.watch(paths.styles, ['styles']);
   gulp.watch(paths.sounds, ['sounds']);
+  gulp.watch(paths.models, ['models']);
 });
 
 gulp.task('server', function () {
@@ -76,5 +83,5 @@ gulp.task('server', function () {
   });
 });
 
-gulp.task('build', ['other', 'html', 'scripts', 'styles', 'images', 'sounds'], function () {});
+gulp.task('build', ['other', 'html', 'scripts', 'styles', 'images', 'sounds', 'models'], function () {});
 gulp.task('default', ['build', 'server', 'watch'], function() {});
