@@ -213,7 +213,7 @@ keys.onright = function () {
   player.right();
 };
 keys.onup = function () {
-  screenShake += 1.0;
+	player.digUp();
 };
 keys.ondown = function () {
   player.digDown();

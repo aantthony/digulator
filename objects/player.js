@@ -21,48 +21,54 @@ var exports = module.exports = function (details) {
   scene.add(this.object);
 };
 exports.prototype.digLeft = function () {
-  return this.digInDirection(-1);
+  return this.digInDirection(-1, 0);
 };
 
-exports.prototype.digInDirection = function (xDir) {
+exports.prototype.digInDirection = function (xDir, yDir) {
   var pos = this.object.position;
   if (this._currentDig) {
-    if (this._currentDigX === xDir) return;
-    this._currentDigX = 0;
+    if (this._currentDigX === xDir && this._currentDigY === yDir) return;
+    this._currentDigX = this._currentDigY = 0;
     clearTimeout(this._currentDig);
-    pos.x-=xDir;
   }
-  var block = this._world.getBlock(pos.x + xDir, pos.y);
+  var block = this._world.getBlock(pos.x + xDir, pos.y + yDir);
   if (block) {
     shake(8);
     var world = this._world;
     var x = pos.x + xDir;
-    var y = pos.y;
+    var y = pos.y + yDir;
     var self = this;
     this._currentDig = setTimeout(function () {
       shake(4.5);
       pos.x = x;
+      pos.y = y;
       self._currentDigX = 0;
+      self._currentDigY = 0;
       delete self._currentDig;
-      world.setBlock(x - xDir, y, 'sand');
+      world.setBlock(x - xDir, y - yDir, 'sand');
       world.setBlock(x, y, null);
     }, 200);
+
+    // until we have a better digging animation:
     pos.x += 0.4 * xDir;
+    pos.y += 0.4 * yDir;
+
     this._currentDigX = xDir;
+    this._currentDigY = yDir;
 
   } else {
     pos.x += xDir;
+    pos.y += yDir;
   }
 }
 exports.prototype.digRight = function () {
-  return this.digInDirection(+1);
+  return this.digInDirection(+1, 0);
 };
 exports.prototype.digDown = function () {
-  this.object.position.y--;
-
+  return this.digInDirection(0, -1);
 };
 exports.prototype.digUp = function() {
-
+  return this.digInDirection(0, +1);
 };
 exports.prototype.faceLeft = function () {
   this.faceX = -1;
