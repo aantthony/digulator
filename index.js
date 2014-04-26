@@ -12,6 +12,9 @@ var Player = require('./objects/player');
 
 var renderer = new THREE.WebGLRenderer();
 
+var readme = require('./README.md');
+console.log(readme);
+
 var stats = new Stats();
 stats.setMode(0);
 stats.domElement.style.position = 'absolute';

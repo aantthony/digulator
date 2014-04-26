@@ -18,7 +18,8 @@
   },
   "homepage": "https://github.com/aantthony/digulator",
   "dependencies": {
-    "three": "^0.66.2"
+    "three": "^0.66.2",
+    "partialify": "^3.1.1"
   },
   "devDependencies": {
     "gulp-minify-html": "^0.1.3",

@@ -24,11 +24,14 @@ gulp.task('html', function() {
   .pipe(gulp.dest('./dist'));
 });
 
+var p = require('partialify/custom');
+
 gulp.task('scripts', function() {
   gulp.src(paths.scripts)
   .pipe(browserify({
     insertGlobals : true,
-    debug : process.env.NODE_ENV !== 'production'
+    debug : process.env.NODE_ENV !== 'production',
+    transform: [p.alsoAllow('md', 'vert', 'frag')]
   }))
   .pipe(gulp.dest('./dist/scripts'));
 });
