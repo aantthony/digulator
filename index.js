@@ -219,8 +219,8 @@ Game = function()
 	this.fixedUpdateTimer = 0.0;
 	this.update = function(dt)
 	{
-		if(loss == true)
-			return;
+		//if(loss == true)
+		//	return;
 		//loop until processed all fixed updates
 		this.fixedUpdateTimer += dt;
 		while (this.fixedUpdateTimer > this.fixedUpdateTime)
@@ -285,12 +285,12 @@ Game = function()
 				document.getElementById("lossText").innerHTML = "Outta Time!";
 				break;
 			case 'monstered':
+				this.beginSpin();
 				document.getElementById("lossText").innerHTML = "MONSTERED!";
 				break;
 		}
 		//changeGameState(new LossState());
 		// swap when game state changes properly
-		loss = true;
 		document.getElementById("loss").style.display = "block";
 	}
 

@@ -7,7 +7,7 @@ var exports = module.exports = function (details) {
   this.object.scale.z = 0.03;
   this.object.rotation.y = Math.PI;
 
-  this.object.position.set(10,-5,0.5);
+  this.object.position.set(10,-5,0.75);
 
   // var light = new THREE.PointLight(0xAA0000);
   // light.position.z = -3;
