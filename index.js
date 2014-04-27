@@ -32,7 +32,8 @@ var objectLoader = require('./objects/objectLoader');
 
 var backgroundFragShader = require('./shaders/background.frag');
 var backgroundVertShader = require('./shaders/background.vert');
-function shake(x)
+
+function shakeFunction(x)
 {
 	var r = 0.0;
 	var a = 1.0;
@@ -44,6 +45,7 @@ function shake(x)
 	}
 	return r;
 }
+window.shakeFunction = shakeFunction;
 var screenShake = 0.0;
 var screenShakeTime = 0.0;
 window.shake = function (value) {
@@ -174,8 +176,8 @@ Game = function()
 		cameraFocus.y += (targetY - cameraFocus.y) * 0.04;
 	
 		screenShakeTime += dt;	
-		camera.position.x = cameraFocus.x + shake(100.0 * screenShakeTime) * Math.sqrt(screenShake) * 0.03;
-		camera.position.y = cameraFocus.y + shake(100.0 * screenShakeTime + 12383.23487) * Math.sqrt(screenShake) * 0.03;
+		camera.position.x = cameraFocus.x + shakeFunction(100.0 * screenShakeTime) * Math.sqrt(screenShake) * 0.03;
+		camera.position.y = cameraFocus.y + shakeFunction(100.0 * screenShakeTime + 12383.23487) * Math.sqrt(screenShake) * 0.03;
 		screenShake *= 0.9;
 		
 		this.particles.step(dt);
@@ -186,6 +188,7 @@ Game = function()
 	this.fixedUpdateTimer = 0.0;
 	this.update = function(dt)
 	{
+	
 		//loop until processed all fixed updates
 		this.fixedUpdateTimer += dt;
 		while (this.fixedUpdateTimer > this.fixedUpdateTime)
@@ -201,6 +204,8 @@ Game = function()
 			this.secondTimer = 0.0;
 			//screenShake += 4.0;
 		}
+		
+		player.update(dt);
 		
 		//soundPlayer.play('test');
 		

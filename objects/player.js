@@ -25,6 +25,29 @@ var exports = module.exports = function (details) {
   this._currentDigX = 0;
   this._x = Math.round(this.object.position.x);
   this._y = Math.round(this.object.position.y);
+  this.digTarget = new THREE.Vector3(0,0,0);
+  
+  this.digShakeTimer = 0.0;
+  this.digTimeLeft = 0.0;
+  
+  this.update = function(dt)
+  {
+	if (this._currentDig && this.digTarget)
+	{
+		this.digTimeLeft -= dt;
+		var digSpasticAmplitude = 0.2;
+		var digSpasticFrequency = 5.0;
+		this.digShakeTimer += dt;
+		var tmp = this.digFrom.clone();
+		tmp.x += window.shakeFunction(this.digShakeTimer * digSpasticFrequency) * digSpasticAmplitude;
+		tmp.y += window.shakeFunction(this.digShakeTimer * digSpasticFrequency+98.412) * digSpasticAmplitude;
+		tmp.sub(this.digTarget);
+		tmp.setLength((window.shakeFunction(this.digShakeTimer * digSpasticFrequency+9.9812) * 0.25 + 0.75) * Math.min(Math.max(this.digTimeLeft, 0.0), 1.0));
+		this.object.position.copy(this.digTarget);
+		this.object.position.add(tmp);
+		this.object.rotation.y = Math.atan2(tmp.x, -tmp.y);
+	}
+  }
 
   scene.add(this.object);
 };
@@ -54,22 +77,24 @@ exports.prototype.digInDirection = function (xDir, yDir) {
   pos.x = this._x;
   pos.y = this._y;
   var block = this._world.getBlock(pos.x + xDir, pos.y + yDir);
+  this.digFrom = this.object.position.clone();
   if (block) {
+	this.digTarget = block.position.clone();
     shake(3);
     var world = this._world;
     var x = this._x + xDir;
     var y = this._y + yDir;
     var self = this;
-
     var d = difficulty(block);
     var mineTime = d * 80;
+	this.digTimeLeft = mineTime / 1000.0;
     var timers = [];
     soundPlayer.play(d > 5 ? 'DrillMed' : 'DrillFast');
     
     timers.push(setTimeout(function () {
       shake(3);
       block.scale.set(0.5, 0.5, 0.5);
-      pos.x += 0.5 * xDir;
+      //pos.x += 0.5 * xDir;
       block.position.x = x + 0.25 * xDir;
       block.position.y = y - 0.25;
       if (d > 5) soundPlayer.play('DrillMed');
@@ -87,6 +112,7 @@ exports.prototype.digInDirection = function (xDir, yDir) {
       self._currentDigX = 0;
       self._currentDigY = 0;
       delete self._currentDig;
+	  delete self.digTarget;
       if (d > 5) soundPlayer.play('DrillFast');
       // world.setBlock(x - xDir, y - yDir, 'sand');
       world.setBlock(x, y, 'sand');
@@ -97,6 +123,7 @@ exports.prototype.digInDirection = function (xDir, yDir) {
       timers.forEach(clearTimeout);
       self._currentDigX = timers._currentDigY = 0;
       delete self._currentDig;
+	  delete self.digTarget;
       pos.x = self._x;
       pos.y = self._y;
       block.scale.set(1,1,1);
@@ -104,8 +131,8 @@ exports.prototype.digInDirection = function (xDir, yDir) {
     };
 
     // until we have a better digging animation:
-    pos.x += 0.4 * xDir;
-    pos.y += 0.4 * yDir;
+    //pos.x += 0.4 * xDir;
+    //pos.y += 0.4 * yDir;
 
     this._currentDigX = xDir;
     this._currentDigY = yDir;
@@ -114,6 +141,17 @@ exports.prototype.digInDirection = function (xDir, yDir) {
     this._x = pos.x += xDir;
     this._y = pos.y += yDir;
   }
+
+  if(this._y == 10){
+    this._world.destroyPalm(this._x-1);
+  }
+  else if(this._y == 9 && xDir){
+    this._world.destroyPalm(this._x);
+  }
+  else if(this._y == 8 && yDir == 1){
+    this._world.destroyPalm(this._x-1);
+  }
+  soundPlayer.setAtmosGain(this._y);
 }
 
 /**
@@ -124,15 +162,22 @@ exports.prototype._failAttemptToDig = function (dx, dy) {
   soundPlayer.play('DrillMed');
   if (this._currentDig) this._currentDigCancel();
   this._currentDig = true;
+  this.digFrom = this.object.position.clone();
   var self = this;
   var pos = this.object.position;
+  this._x = pos.x; //back up position
+  this._y = pos.y;
   var x = pos.x;
   pos.x += dx * 0.5;
+  this.digTarget = this.object.position.clone(); //animate drilling into wall
   this._currentDigCancel = function () {
     delete self._currentDig;
-    pos.x = x;
+	delete self.digTarget;
+    pos.x = self._x; //reset position
+    pos.y = self._y;
   };
   setTimeout(this._currentDigCancel, 500);
+  this.digTimeLeft = 800.0/1000.0; //a little higher so aniation won't complete
 };
 
 exports.prototype.digLeft = function () {

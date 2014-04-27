@@ -20,6 +20,7 @@ var exports = module.exports = function (details) {
 
   this.lastPlayerPos = undefined;
   this.goalPos = undefined;
+  this.lastDir = -1;
 };
 exports.prototype.digLeft = function () {
  this.object.position.x--;
@@ -43,6 +44,7 @@ exports.prototype.AI = function(player) {
 
 	if(squirt < 5) {
 		this.lastPlayerPos = pPos.clone();
+		this.lastDir = -1;
 	}
 
 	if(this.lastPlayerPos != undefined) {
@@ -69,15 +71,35 @@ exports.prototype.AI = function(player) {
 			}
 		}
 	} else {
-		var r = Math.random();
-		if(r < 0.25) this.digLeft();
-		else if(r < 0.5) this.digRight();
-		else if(r < 0.75) this.digDown();
-		else this.digUp();
+
+		var dir = 0;
+		while(dir == 0) {
+			var r = Math.random();
+			if(r < 0.25 && this.lastDir != 1 && this._world.canDig(pos.x-1,pos.y)) dir = 1;
+			else if(r < 0.5 && this.lastDir != 4 && this._world.canDig(pos.x+1,pos.y)) dir = 4;
+			else if(r < 0.75 && this.lastDir != 3 && this._world.canDig(pos.x,pos.y-1)) dir = 3;
+			else if(this.lastDir != 2 && this._world.canDig(pos.x,pos.y+1)) dir = 2;
+		}
+		switch(dir) {
+			case 1:
+				this.digLeft();
+				break;
+			case 4:
+				this.digRight();
+				break;
+			case 3:
+				this.digDown();
+				break;
+			case 2:
+				this.digUp();
+				break;
+		}
+		this.lastDir = (5 - dir);
 	}
 }
 
 exports.prototype.digRight = function () {
+
   this.object.position.x++;
 };
 exports.prototype.digDown = function () {

@@ -366,10 +366,7 @@ ObjectLoader.prototype.loadObject = function(url) {
   this.objectLoader.load('models/' + url + '.obj', function (event) {
     obj = event.children[0];
     ctx.objects[url] = obj;
-
     obj.material = material;
-
-    console.log(obj);
 
   }, function(){}, function(err){
     console.log(err);
