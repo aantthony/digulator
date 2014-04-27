@@ -359,7 +359,7 @@ function ObjectLoader() {
 ObjectLoader.prototype.loadObject = function(url, texOverride) {
   var ctx = this;
   var texture = this.textureLoader.getTexture(texOverride || url);
-  var normal = this.textureLoader.getNormal((texOverride || url) + 'NM');
+  var normal = this.textureLoader.getNormal((texOverride || url));
 
   var material = new THREE.MeshPhongMaterial({color:0xDDDDDD, specular:0x222222});
   material.map = texture;

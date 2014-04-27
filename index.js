@@ -415,8 +415,8 @@ var mainloop = function()
 window.onload = function()
 {
 	setTimeout(function () {
-		//changeGameState(new MainMenu());
-		changeGameState(new Game());
+		changeGameState(new MainMenu());
+		// changeGameState(new Game());
 		document.getElementById("loadingscreen").style.display = "none";
 		mainloop();
 	}, 50);
