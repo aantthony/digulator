@@ -73,6 +73,7 @@ function World() {
 					var pos = new THREE.Vector3(0, i * 330.0/10.0, 0, 1);
 					pos.applyMatrix4(trunk.matrixWorld);
 					game.particles.spawn([pos.x, pos.y, pos.z, 1], [Math.random()-0.5,Math.random()*2.0+1.0,0,0]);
+					soundPlayer.play('TreeFall');
 				}
 			}
 		}
@@ -198,7 +199,7 @@ function World() {
 
 	this.destroyPalm = function(x){
 	
-		if(!this.palms[x]){
+		if(this.palms[x] === undefined){
 			return;
 		}
 		scene.remove(this.palms[x]);

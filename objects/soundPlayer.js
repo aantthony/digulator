@@ -5,6 +5,7 @@ function SoundPlayer() {
   this.audio = new AudioContext();
   this.audioGain = this.audio.createGain();
   this.audioGain.gain.value = 0.15;
+  this.audioCompressor = this.audio.createDynamicsCompressor();
 
   this.atmosAudio = new AudioContext();
   this.atmosGain = this.atmosAudio.createGain();
@@ -29,6 +30,7 @@ function SoundPlayer() {
 
   //misc
   this.loadSound('DestroyTree');
+  this.loadSound('TreeFall');
   this.loadSound('Leaves');
   this.loadSound('Engine');
   this.loadSound('Explosion');
@@ -83,7 +85,7 @@ SoundPlayer.prototype.setAtmosGain = function(val) {
 
 SoundPlayer.prototype.setVolume = function(val) {
   // console.log(this.audioGain.gain.value);
-  var val = val/4;
+  var val = (val/100)/4;
   if(val < 0){
     val = 0;
   }
@@ -92,13 +94,15 @@ SoundPlayer.prototype.setVolume = function(val) {
 }
 
 SoundPlayer.prototype.play = function(sound) {
+  // console.log("Playing sound: " + sound);
   if(!this.sounds[sound]){
     console.log("Sound not loaded: " + sound);
     return;
   }
   var source = this.audio.createBufferSource();
   source.buffer = this.sounds[sound];
-  source.connect(this.audioGain);
+  source.connect(this.audioCompressor);
+  this.audioCompressor.connect(this.audioGain);
   this.audioGain.connect(this.audio.destination);
   source.start(0);
 }

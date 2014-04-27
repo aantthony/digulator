@@ -324,9 +324,11 @@ Game = function()
 		var score = 0;
 		switch(name) {
 			case 'gold':
+				soundPlayer.play('Gold');
 				score = 10;
 				break;
 			case 'diamond':
+				soundPlayer.play('Gold');
 				score = 50;
 				break;
 			case 'rock':
@@ -496,7 +498,11 @@ window.onload = function()
 	}, 50);
 	document.getElementById("volslider").addEventListener('change',function (){
 		soundPlayer.setVolume(this.value);
-	})
+	});
+	document.getElementById("volslider").addEventListener('focus',function (){
+		// soundPlayer.setVolume(this.value);
+		this.blur();
+	});
 }
 
 window.onresize = function(){

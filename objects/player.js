@@ -119,7 +119,8 @@ var exports = module.exports = function (details) {
         pos.y = this._y += this._currentDigY;
         delete this._currentDig;
         delete this.digTarget;
-        soundPlayer.play('Sand');
+        if(!this.aboveGroundMove)
+          soundPlayer.play('Sand');
         // soundPlayer.play('DrillFast');
         soundPlayer.stopLoop('Laser');
         var block = this._targetBlock;
