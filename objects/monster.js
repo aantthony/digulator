@@ -6,8 +6,8 @@ var exports = module.exports = function (details) {
   this.object.scale.y = 0.03;
   this.object.scale.z = 0.03;
   this.object.rotation.y = Math.PI;
-
-  this.object.position.set(10,-5,0.75);
+  this.loc = {x: 10, y: -5};
+  this.object.position.set(this.loc.x,this.loc.y,0.75);
 
   // var light = new THREE.PointLight(0xAA0000);
   // light.position.z = -3;
@@ -29,14 +29,15 @@ var exports = module.exports = function (details) {
   this.lastDir = -1;
 };
 exports.prototype.digLeft = function () {
- this.object.position.x--;
+ this.loc.x--;
 };
 
 exports.prototype.updateFunc = function(dt,player) {
 	this.delta += dt;
-
-	if(this.object.position.x == player.object.position.x
-		&& this.object.position.y == player.object.position.y)
+  this.object.position.x += 3.0 * dt * (this.loc.x - this.object.position.x);
+  this.object.position.y += 3.0 * dt * (this.loc.y - this.object.position.y);
+	if(this.loc.x == player._x
+		&& this.loc.y == player._y)
 		game.forceLoss('monstered');
 
 	if(this.delta >= this.deltaDelay) {
@@ -46,20 +47,20 @@ exports.prototype.updateFunc = function(dt,player) {
 }
 
 exports.prototype.AI = function(player) {
-	var pos = this.object.position;
-	var pPos = player.object.position;
+	var pos = this.loc;
+	var pPos = {x: player._x, y: player._y};
 
 	var x = pos.x - pPos.x;
 	var y = pos.y - pPos.y;
 	var squirt = Math.sqrt(x*x + y*y);
 
 	if(squirt < 5) {
-		this.lastPlayerPos = pPos.clone();
+		this.lastPlayerPos = {x: pPos.x, y: pPos.y};
 		this.lastDir = -1;
 	}
 
 	if(this.lastPlayerPos != undefined) {
-		this.goalPos = this.lastPlayerPos.clone();
+		this.goalPos = {x: this.lastPlayerPos.x, y: this.lastPlayerPos.y};
 	}
 
 	if(this.goalPos != undefined && pos.x == this.goalPos.x && pos.y == this.goalPos.y && squirt >= 5) {
@@ -110,15 +111,13 @@ exports.prototype.AI = function(player) {
 }
 
 exports.prototype.digRight = function () {
-
-  this.object.position.x++;
+  this.loc.x++;
 };
 exports.prototype.digDown = function () {
-  this.object.position.y--;
-
+  this.loc.y--;
 };
 exports.prototype.digUp = function() {
-	this.object.position.y++;
+  this.loc.y++;
 };
 exports.prototype.faceLeft = function () {
   this.faceX = -1;
