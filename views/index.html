@@ -49,6 +49,7 @@
 			#gold,#time, #depthometer {
 				text-align: left;
 				width: 50%;
+				padding-right: 3.5px;
 			}
 			#depthBack {
 				background-color: #FFFFFF;
@@ -57,7 +58,7 @@
 				background-color: #770077;
 			}
 			.lame {
-				width: 50%;
+				width: 48%;
 				text-align: right;
 				padding-right: 15px;
 				display: inline-block;
@@ -71,6 +72,15 @@
 				color: #000000;
 				text-align: left;
 			}
+			#monstered {
+				font-size: 7em;
+				color: #FF0000;
+				text-align: center;
+				width: 100%;
+				position: absolute;
+				top: 40%;
+				display: none;
+			}
 		</style>
 		<title>Digulator!</title>
 		<script type="text/javascript" src="./stats.js"></script>
@@ -79,6 +89,7 @@
 		<script type="text/javascript" src="scripts/index.js"></script>
 		<div class="relative">
 			<div id="gamewrap">
+				<div id="monstered">MONSTERED!</div>
 			</div>
 			<div id="hud">
 				<h1>Digulator!</h1>
