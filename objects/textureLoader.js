@@ -25,8 +25,9 @@ function TextureLoader() {
   
   this.loadTexture('Palm');
   this.loadNormal('PalmNM');
-  
-  this.loadTexture('spark');
+
+  this.loadTexture('Player');
+  // this.loadTexture('spark');
 }
 
 TextureLoader.prototype.getTexture = function(tex) {

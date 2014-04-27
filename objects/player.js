@@ -1,10 +1,25 @@
 var soundPlayer = require('./soundPlayer');
+var objectLoader = require('./objectLoader');
 
 var exports = module.exports = function (details) {
 
-  var geometry = new THREE.CubeGeometry(0.4,0.4, 0.4);
-  var material = new THREE.MeshBasicMaterial({color: 0x0066CC, depthTest: false});
-  this.object = new THREE.Mesh(geometry, material);
+  this.model = objectLoader.getObject('Player');
+  this.model.material.depthTest = false;
+  this.model.scale.x = 0.05;
+  this.model.scale.y = 0.05;
+  this.model.scale.z = 0.05;
+  // var axes = new THREE.AxisHelper();
+  // axes.scale.x = 500;
+  // axes.scale.y = 500;
+  // axes.scale.z = 500;
+  // this.model.add(axes);
+
+  this.model.rotation.x = Math.PI;
+  this.model.rotation.y = Math.PI/8;
+  this.model.rotation.z = Math.PI/2;
+
+  this.object = new THREE.Object3D();
+  this.object.add(this.model);
 
   var light = new THREE.PointLight(0xFFFFFF);
   light.position.y = 3;
@@ -143,13 +158,13 @@ exports.prototype.digInDirection = function (xDir, yDir) {
     this._y = pos.y += yDir;
   }
 
-  if(this._y == 10){
+  if(this._y == 0){
     this._world.destroyPalm(this._x-1);
   }
-  else if(this._y == 9 && xDir){
+  else if(this._y == -1 && xDir){
     this._world.destroyPalm(this._x);
   }
-  else if(this._y == 8 && yDir == 1){
+  else if(this._y == -2 && yDir == 1){
     this._world.destroyPalm(this._x-1);
   }
   soundPlayer.setAtmosGain(this._y);
