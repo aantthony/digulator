@@ -72,7 +72,7 @@ exports.prototype.digInDirection = function (xDir, yDir) {
   if (this._currentDig) {
     if (this._currentDigX === xDir && this._currentDigY === yDir) return;
     // uncomment this line to allow digging to be canceled:
-    // this._currentDigCancel();
+    this._currentDigCancel();
     return;
   }
   pos.x = this._x;
@@ -214,13 +214,13 @@ exports.prototype.digUp = function() {
 exports.prototype.faceLeft = function () {
   this.faceX = -1;
   if (this._currentDigX === +1) {
-    // this._currentDigCancel();
+    this._currentDigCancel();
   }
 };
 exports.prototype.faceRight = function () {
   this.faceX = +1;
   if (this._currentDigX === -1) {
-    // this._currentDigCancel();
+    this._currentDigCancel();
   }
 };
 
