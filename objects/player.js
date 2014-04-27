@@ -34,6 +34,7 @@ var exports = module.exports = function (details) {
 
   this._world = details.world;
   this._game = details.game;
+  this._keys = details.keys;
 
   // timer for current digging action:
   this._currentDig = null;
@@ -46,8 +47,28 @@ var exports = module.exports = function (details) {
   this.digShakeTimer = 0.0;
   this.digTimeLeft = 0.0;
   
+  this._updateKeys = function () {
+    var keys = this._keys;
+    var kL = keys.pressed('left');
+    var kR = keys.pressed('right');
+    var kU = keys.pressed('up');
+    var kD = keys.pressed('down');
+    if (this._currentDig) {
+      if (this._currentDigX === +1 && kR) return;
+      if (this._currentDigX === -1 && kL) return;
+      if (this._currentDigY === +1 && kU) return;
+      if (this._currentDigY === -1 && kD) return;
+      this._currentDigCancel();
+    } else {
+      if (kL && !kR) return this.left();
+      if (kR && !kL) return this.right();
+      if (kU && !kD) return this.digUp();
+      if (kD && !kU) return this.digDown();
+    }
+  }
   this.update = function(dt)
   {
+    this._updateKeys();
 	if (this._currentDig && this.digTarget)
 	{
 		this.digTimeLeft -= dt;
@@ -87,20 +108,22 @@ exports.prototype.digInDirection = function (xDir, yDir) {
   if (this._currentDig) {
     if (this._currentDigX === xDir && this._currentDigY === yDir) return;
     // uncomment this line to allow digging to be canceled:
-    this._currentDigCancel();
+    // this._currentDigCancel();
     return;
   }
   pos.x = this._x;
   pos.y = this._y;
   var block = this._world.getBlock(pos.x + xDir, pos.y + yDir);
   this.digFrom = this.object.position.clone();
+
+  var x = this._x + xDir;
+  var y = this._y + yDir;
+  var self = this;
+
   if (block) {
 	this.digTarget = block.position.clone();
     shake(3);
     var world = this._world;
-    var x = this._x + xDir;
-    var y = this._y + yDir;
-    var self = this;
     var d = difficulty(block);
     var mineTime = d * 300;
 	this.digTimeLeft = mineTime / 1000.0;
@@ -140,12 +163,11 @@ exports.prototype.digInDirection = function (xDir, yDir) {
 
     this._currentDigCancel = function () {
       timers.forEach(clearTimeout);
-      self._currentDigX = timers._currentDigY = 0;
+      self._currentDigX = self._currentDigY = 0;
       delete self._currentDig;
 	  delete self.digTarget;
       pos.x = self._x;
       pos.y = self._y;
-      block.scale.set(1,1,1);
       // block.position.set(self._x + xDir, self._y + yDir, 0.0);
     };
 
@@ -157,8 +179,20 @@ exports.prototype.digInDirection = function (xDir, yDir) {
     this._currentDigY = yDir;
 
   } else {
-    this._x = pos.x += xDir;
-    this._y = pos.y += yDir;
+
+    this._currentDigX = xDir;
+    this._currentDigY = yDir;
+    setTimeout(function () {
+      self._currentDigX = self._currentDigY = 0;
+      delete self._currentDig;
+      self._x = pos.x = x;
+      self._y = pos.y = y;
+    }, 100);
+    this._currentDigCancel = function () {
+    };
+
+    pos.x = x;
+    pos.y = y;
   }
 
   if(this._y == 0){
@@ -179,7 +213,7 @@ exports.prototype.digInDirection = function (xDir, yDir) {
  */
 exports.prototype._failAttemptToDig = function (dx, dy) {
   soundPlayer.play('DrillMed');
-  if (this._currentDig) this._currentDigCancel();
+  // if (this._currentDig) this._currentDigCancel();
   this._currentDig = true;
   this.digFrom = this.object.position.clone();
   var self = this;
@@ -232,13 +266,13 @@ exports.prototype.digUp = function() {
 exports.prototype.faceLeft = function () {
   this.faceX = -1;
   if (this._currentDigX === +1) {
-    this._currentDigCancel();
+    // this._currentDigCancel();
   }
 };
 exports.prototype.faceRight = function () {
   this.faceX = +1;
   if (this._currentDigX === -1) {
-    this._currentDigCancel();
+    // this._currentDigCancel();
   }
 };
 

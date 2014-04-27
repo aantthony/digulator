@@ -83,21 +83,10 @@ Game = function()
 
 	var player = new Player({
 		world: world,
-		game: game
+		game: game,
+		keys: keys
 	});
 	var monster = new Monster({world:world});
-
-	setInterval(function () {
-		if (keys.pressed('left')) {
-			player.left();
-		} else if (keys.pressed('right')) {
-			player.right();
-		} else if (keys.pressed('down')) {
-			player.digDown();
-		} else if (keys.pressed('up')) {
-			player.digUp();
-		}
-	}, 50);
 
 	this.bloom = new Bloom(width, height);
 	window.bloom = this.bloom;
