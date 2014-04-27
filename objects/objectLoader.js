@@ -348,9 +348,12 @@ function ObjectLoader() {
   this.loadObject('Diamond');
   this.loadObject('Palm');
   this.loadObject('Leaf', 'Palm');
+  this.loadObject('Trunk', 'Palm');
 
   this.loadObject('Player');
   this.loadObject('Monster');
+  
+  this.loadObject('Sign');
 }
 
 ObjectLoader.prototype.loadObject = function(url, texOverride) {
@@ -358,6 +361,7 @@ ObjectLoader.prototype.loadObject = function(url, texOverride) {
   var texture = this.textureLoader.getTexture(texOverride || url);
   // var specular = this.textureLoader.getTexture('spark');
   var normal = this.textureLoader.getNormal((texOverride || url) + 'NM');
+  var normal = this.textureLoader.getNormal(url);
 
   var material = new THREE.MeshPhongMaterial({color:0xFFFFFF, specular:0x222222});
   material.map = texture;

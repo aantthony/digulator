@@ -81,6 +81,14 @@ SoundPlayer.prototype.setAtmosGain = function(val) {
   this.atmosGainValue = val;
 }
 
+SoundPlayer.prototype.setVolume = function(val) {
+  var val = val/4;
+  if(val < 0){
+    val = 0;
+  }
+  this.audioGain.gain.value = val;
+}
+
 SoundPlayer.prototype.play = function(sound) {
   if(!this.sounds[sound]){
     console.log("Sound not loaded: " + sound);

@@ -148,6 +148,13 @@ Game = function()
 		}
 	}
 	
+	this.camera.spinning = false;
+	this.beginSpin = function()
+	{
+		this.camera.spinning = true;
+		this.camera.spinTime = 0.0;
+	}
+	
 	this.enter = function()
 	{
 		// cube = new Digulator.Sand();
