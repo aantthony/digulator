@@ -35,6 +35,8 @@ var timeHack = undefined;
 var backgroundFragShader = require('./shaders/background.frag');
 var backgroundVertShader = require('./shaders/background.vert');
 
+var bloom = true;
+
 function shakeFunction(x)
 {
 	var r = 0.0;
@@ -345,7 +347,7 @@ Game = function()
 		sunpos.y = sunpos.y * 0.5 + 0.5;
 		backgroundMesh.material.uniforms.sun.value.copy(sunpos);
 		
-		this.bloom.bind();
+		if (bloom) this.bloom.bind();
 		
 		renderer.autoClear = false;
 		renderer.clear();
@@ -357,7 +359,7 @@ Game = function()
 		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 		this.particles.draw(camera.projectionMatrix.elements, camera.matrixWorldInverse.elements);
 		gl.disable(gl.BLEND);
-		this.bloom.unbind(null, sunpos);
+		if (bloom) this.bloom.unbind(null, sunpos);
 	}
 }
 
