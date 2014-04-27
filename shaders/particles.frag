@@ -36,7 +36,7 @@ void main()
 			position.x += sin(velocity.w * 20.0) * abs(velocity.y) * 0.5 * dt;
 		else
 			position.y += sin(velocity.w * 20.0) * abs(velocity.x) * 0.5 * dt;
-	}	
+	}
 	
 	velocity.w += dt;
 	

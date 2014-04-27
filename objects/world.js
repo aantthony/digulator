@@ -25,7 +25,20 @@ function World() {
 	this.grass = [];
 	this.sign = [];
 	
+	this.particleEmitters = [];
+	this.emitTimer = 0.0;
+	
 	this.update = function(dt){
+	
+		this.emitTimer += dt;
+		if (this.emitTimer > 0.1)
+		{
+			this.emitTimer = 0.0;
+			var i = Math.floor(Math.random() * this.particleEmitters.length);
+			game.emitParticles({x:this.particleEmitters[i][0], y:this.particleEmitters[i][1],z:0}, game.PARTICLE_GLOW);
+		}
+	
+	
 		var remleaves = [];
 		for (var l in this.leaves)
 		{
@@ -206,6 +219,9 @@ function World() {
 	this.makeBlock = function(type,i,j){
 		var block = this.chooseBlock(type);
 		var cube = block.mesh;
+		
+		if (type == GOLD || type == DIAMOND)
+			this.particleEmitters.push([i, j]);
 
 		// cube.rotation.set((Math.random() - 0.5) * 0.2, (Math.random()-0.5) * 0.2, 0.0);
 		cube.rotation.set(Math.PI/2 * Math.floor(Math.random()*8), Math.PI/2 * Math.floor(Math.random()*8), 0.0);

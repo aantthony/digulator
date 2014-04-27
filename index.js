@@ -120,16 +120,17 @@ Game = function()
 	this.PARTICLE_SPARK = 0;
 	this.PARTICLE_DIRT = 1; //needs direction
 	this.PARTICLE_BEAM = 2; //needs direction
+	this.PARTICLE_GLOW = 3;
 	
 	this.emitParticles = function(pos, type, direction) //direction.xy
 	{
-		var zoff = 2.0;
+		var zoff = 1.0;
 		var scaleVelZ = 0.1;
 		if (type == this.PARTICLE_SPARK)
 		{
 			var speed = 20.0;
 			var spread = 0.2;
-			for (var i = 0; i < 10; ++i)
+			for (var i = 0; i < 2; ++i)
 				this.particles.spawn([pos.x + (Math.random()-0.5)*spread, pos.y + (Math.random()-0.5)*spread, pos.z + zoff, type], [(Math.random()-0.5)*speed, (Math.random()-0.5)*speed, (Math.random()-0.5)*speed*scaleVelZ, Math.random()*0.2]);
 		}
 		else if (type == this.PARTICLE_DIRT) //FIXME: might need its own colour
@@ -146,6 +147,14 @@ Game = function()
 			for (var i = 0; i < 2; ++i)
 				this.particles.spawn([pos.x + direction.y*(Math.random()-0.5) * spreadTrans + (Math.random()-0.5)*spread, pos.y + direction.x*(Math.random()-0.5)*spreadTrans + (Math.random()-0.5)*spread, pos.z + zoff, type], [direction.x, direction.y, 0.0, -Math.random()]);
 		}
+		else if (type == this.PARTICLE_GLOW)
+		{
+			var spread = 0.4;
+			for (var i = 0; i < 1; ++i)
+				this.particles.spawn([pos.x + (Math.random()-0.5)*spread, pos.y + (Math.random()-0.5)*spread, pos.z + zoff, type], [0,0,0,0]);
+		}
+		else
+			console.log("Error: invalid particle type in game.emitParticles()");
 	};
 	
 	this.camera.spinning = false;
@@ -179,7 +188,6 @@ Game = function()
 		if (this.camera.spinning)
 		{
 			this.camera.spinTime += dt;
-			console.log(this.camera.spinTime);
 			if (this.camera.spinTime < 3.0)
 			{
 				this.camera.fov = 10 + (this.camera.fovBak-10) * (0.5+0.5*Math.cos(this.camera.spinTime * Math.PI * 2.0));
@@ -415,8 +423,8 @@ var mainloop = function()
 window.onload = function()
 {
 	setTimeout(function () {
-		changeGameState(new MainMenu());
-		// changeGameState(new Game());
+		//changeGameState(new MainMenu());
+		changeGameState(new Game());
 		document.getElementById("loadingscreen").style.display = "none";
 		mainloop();
 	}, 50);

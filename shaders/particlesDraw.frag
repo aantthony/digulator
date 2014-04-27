@@ -42,6 +42,11 @@ void main()
 	else if (type == 2.0)
 	{
 		col = mix(vec3(1, 1, 1), vec3(0, 0.8, 0.8), 1.0 - fade * fade);
+	}	
+	else if (type == 3.0)
+	{
+		col = vec3(sin(fade * 3.1416 * 2.0)*0.5+1.0);
+		circle = max(4.0-fade*4.0,0.0) * ceil(circle);
 	}
 	
 	float d = fade * circle;
