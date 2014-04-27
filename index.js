@@ -35,6 +35,12 @@ var timeHack = undefined;
 var backgroundFragShader = require('./shaders/background.frag');
 var backgroundVertShader = require('./shaders/background.vert');
 
+var bloom = true;
+var flags = window.location.hash.replace(/^#/, '').split(',');
+if (~flags.indexOf('nobloom')) {
+	bloom = false;
+}
+
 function shakeFunction(x)
 {
 	var r = 0.0;
@@ -193,7 +199,7 @@ Game = function()
 		screenShake *= 0.9;
 		if (this.camera.spinning)
 		{
-			this.camera.spinTime += dt;
+			this.camera.spinTime += dt * 2.0;
 			if (this.camera.spinTime < 3.0)
 			{
 				this.camera.fov = 10 + (this.camera.fovBak-10) * (0.5+0.5*Math.cos(this.camera.spinTime * Math.PI * 2.0));
@@ -229,8 +235,6 @@ Game = function()
 	this.fixedUpdateTimer = 0.0;
 	this.update = function(dt)
 	{
-		// if(loss == true)
-		// 	return;
 		//loop until processed all fixed updates
 		this.fixedUpdateTimer += dt;
 		while (this.fixedUpdateTimer > this.fixedUpdateTime)
@@ -300,12 +304,12 @@ Game = function()
 				document.getElementById("lossText").innerHTML = "Outta Time!";
 				break;
 			case 'monstered':
+				this.beginSpin();
 				document.getElementById("lossText").innerHTML = "MONSTERED!";
 				break;
 		}
 		//changeGameState(new LossState());
 		// swap when game state changes properly
-		loss = true;
 		document.getElementById("loss").style.display = "block";
 	}
 
@@ -360,7 +364,7 @@ Game = function()
 		sunpos.y = sunpos.y * 0.5 + 0.5;
 		backgroundMesh.material.uniforms.sun.value.copy(sunpos);
 		
-		this.bloom.bind();
+		if (bloom) this.bloom.bind();
 		
 		renderer.autoClear = false;
 		renderer.clear();
@@ -372,7 +376,7 @@ Game = function()
 		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 		this.particles.draw(camera.projectionMatrix.elements, camera.matrixWorldInverse.elements);
 		gl.disable(gl.BLEND);
-		this.bloom.unbind(null, sunpos);
+		if (bloom) this.bloom.unbind(null, sunpos);
 	}
 }
 

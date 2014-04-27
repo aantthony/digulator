@@ -6,6 +6,8 @@ var GLUtil = require('./glutil');
 
 function Bloom(w, h) {
 	
+	this.threshold = 0.8;
+	
 	this.w = w;
 	this.h = h;
 	
@@ -71,12 +73,15 @@ function Bloom(w, h) {
 		Shader.setActiveTexture(this.volumetrics, "tex", 0, this.RTT);
 		gl.uniform2f(gl.getUniformLocation(this.volumetrics, "size"), 1.0/this.w, 1.0/this.h);
 		gl.uniform2f(gl.getUniformLocation(this.volumetrics, "sun"), sunPos.x, sunPos.y);
+		gl.uniform1f(gl.getUniformLocation(this.volumetrics, "bloomThresh"), this.threshold);
 		this.quad.draw(this.volumetrics);
 		
 		//first full rez blur pass
 		gl.useProgram(this.blur);
 		gl.uniform1i(gl.getUniformLocation(this.blur, "pass"), 0);
 		gl.uniform2f(gl.getUniformLocation(this.blur, "size"), 1.0/this.w, 1.0/this.h);
+		gl.uniform1f(gl.getUniformLocation(this.blur, "thresh"), this.threshold);
+		this.threshold
 		Shader.setActiveTexture(this.blur, "tex", 0, this.RTT);
 		gl.bindFramebuffer(gl.FRAMEBUFFER, this.blurFBO);
 		this.quad.draw(this.blur);
@@ -107,6 +112,7 @@ function Bloom(w, h) {
 		gl.useProgram(this.blur);
 		gl.uniform1i(gl.getUniformLocation(this.blur, "pass"), 0);
 		gl.uniform2f(gl.getUniformLocation(this.blur, "size"), 1.0/(this.w/4), 1.0/(this.h/4));
+		gl.uniform1f(gl.getUniformLocation(this.blur, "thresh"), this.threshold);
 		Shader.setActiveTexture(this.blur, "tex", 0, this.RTTdown);
 		gl.bindFramebuffer(gl.FRAMEBUFFER, this.blurFBOdown);
 		this.quad.draw(this.blur);

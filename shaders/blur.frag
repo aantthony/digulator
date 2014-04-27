@@ -4,17 +4,20 @@ precision mediump float;
 uniform sampler2D tex;
 uniform sampler2D orig;
 uniform vec2 size;
+uniform float thresh;
 
 uniform int pass;
 
 vec4 getTex(vec2 coord)
 {
 	vec4 col = texture2D(tex, coord);
-	return pass == 0 ? max(col - 0.8, vec4(0.0)) : col;
+	return pass == 0 ? max(col - thresh, vec4(0.0)) : col;
 }
 
 void main()
 {
+	float ithresh = 1.0 - thresh;
+
 	float weight[5];
 	weight[0] = 0.2270270270;
 	weight[1] = 0.1945945946;
@@ -29,7 +32,7 @@ void main()
 	for (int i = 0; i < 4; ++i)
 		accum += getTex((gl_FragCoord.xy + dir * float(i)) * size) * weight[i];
 	if (pass == 0)
-		accum *= 1.0/0.2;
+		accum *= 1.0/ithresh;
 	else if (pass == 1)
 	{
 		/*
@@ -38,9 +41,9 @@ void main()
 		if (sourceCol.a == 0.0)
 			accum.x = 1.0;
 		*/
-		accum *= 0.2;
+		accum *= ithresh;
 	}
 	else
-		accum *= 0.2;
+		accum *= ithresh;
 	gl_FragColor = accum;
 }

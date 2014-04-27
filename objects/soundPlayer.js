@@ -127,7 +127,7 @@ SoundPlayer.prototype.stopLoop = function(sound) {
     console.log("Sound not Playing: " + sound);
     return;
   }
-  this.loops[sound].stop();
+  this.loops[sound].stop(0);
   delete this.loops[sound];
 }
 
