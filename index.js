@@ -216,7 +216,7 @@ Game = function()
 	}
 
 	this.setUpHUD = function() {
-		document.getElementById("time").innerHTML = 5;
+		document.getElementById("time").innerHTML = 60;
 		document.getElementById("gold").innerHTML = 0;
 		document.getElementById("depthometer").innerHTML = 0;
 		this.updateDepth();
@@ -226,13 +226,42 @@ Game = function()
 	this.updateTimerHUD = function() {
 		var i = document.getElementById("time").innerHTML;
 		if(isNaN(i) || i == 0)
-			document.getElementById("time").innerHTML = "Time's Up!";			// changeGameState("timeout");
+			this.forceLoss("timeout");
 		else
 			document.getElementById("time").innerHTML = (i - 1);
 	}
 
+	this.forceLoss = function(losstype) {
+		switch(losstype) {
+			case 'timeout':
+				document.getElementById("time").innerHTML = "Time's Up!";
+				break;
+			case 'mosntered':
+				break;
+		}
+	}
+
 	this.updateDepth = function() {
 		document.getElementById("depthometer").innerHTML = Math.round( (-player.object.position.y) * 10 ) / 10;
+	}
+
+	this.updateScore = function(name) {
+		var score = 0;
+		switch(name) {
+			case 'gold':
+				score = 10;
+				break;
+			case 'diamond':
+				score = 50;
+				break;
+			case 'rock':
+				score = 1;
+				break;
+			default:
+				break;
+		}
+		var t = document.getElementById("gold").innerHTML;
+		document.getElementById("gold").innerHTML = parseInt(t) + parseInt(score);
 	}
 	
 	this.resize = function(width, height)

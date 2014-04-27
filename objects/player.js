@@ -25,7 +25,7 @@ var exports = module.exports = function (details) {
   light.position.y = 3;
   this.object.add(light);
 
-  this.object.position.set(0,0,0);
+  this.object.position.set(15,0,0);
   this.object.rotation.set(1.4,0,0);
 
   // The direction the player is facing:
@@ -132,6 +132,9 @@ exports.prototype.digInDirection = function (xDir, yDir) {
       if (d > 5) soundPlayer.play('DrillFast');
       // world.setBlock(x - xDir, y - yDir, 'sand');
       world.setBlock(x, y, 'sand');
+      if(block.name == 'gold') game.updateScore('gold');
+      if(block.name == 'diamond') game.updateScore('diamond');
+      if(block.name == 'rock') game.updateScore('rock');
     }, mineTime));
     this._currentDig = true;
 

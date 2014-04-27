@@ -96,6 +96,8 @@ exports.prototype.AI = function(player) {
 		}
 		this.lastDir = (5 - dir);
 	}
+	if(squirt == 0)
+		game.forceLoss('monstered');
 }
 
 exports.prototype.digRight = function () {
