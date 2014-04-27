@@ -4,7 +4,7 @@ var objectLoader = require('./objectLoader');
 var exports = module.exports = function (details) {
 
   this.model = objectLoader.getObject('Player');
-  this.model.material.depthTest = false;
+  // this.model.material.depthTest = false;
   this.model.scale.x = 0.05;
   this.model.scale.y = 0.05;
   this.model.scale.z = 0.05;
