@@ -20,6 +20,7 @@ function SoundPlayer() {
 
   //misc
   this.loadSound('DestroyTree');
+  this.loadSound('Leaves');
   this.loadSound('Engine');
   this.loadSound('Explosion');
   this.loadSound('Grenade');
