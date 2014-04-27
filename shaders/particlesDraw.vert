@@ -32,7 +32,6 @@ void main()
 	fade = clamp(1.0 - veldat.w, 0.0, 1.0);
 	
 	vec3 velocity = vec3(modelviewMat * vec4(veldat.xyz, 0.0));
-	vec3 n = normalize(cross(velocity, vec3(0, 0, 1)));
 	vec4 esVert = modelviewMat * vec4(particle.xyz, 1.0);
 	
 	float size;
@@ -46,11 +45,18 @@ void main()
 	}
 	else if (type == 2.0)
 		size = 0.6;
+	else
+	{
+		velocity = vec3(0.5,0,0);
+		size = 0.2;
+	}
 		
 	if (veldat.w > 1.0)
 		size = 0.0;
 	
 	vec2 square = osVert.xy * vec2(0.2, 0.1) * size;
+	
+	vec3 n = normalize(cross(velocity, vec3(0, 0, 1)));
 	
 	#if 1
 	esVert.xyz += velocity * square.x + n * square.y;
