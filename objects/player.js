@@ -17,7 +17,7 @@ var exports = module.exports = function (details) {
   this.model.rotation.x = 0;
   this.model.rotation.y = Math.PI/2;
   this.model.rotation.z = 0;
-  this.model.position.y = -0.45;
+  this.model.position.y = -0.3;
 
   this.object = new THREE.Object3D();
   this.object.add(this.model);
