@@ -74,7 +74,7 @@ Game = function()
 	window.world = this.world;
 	console.log('created a world!');
 
-	this.camera.position.z = 15;
+	this.camera.position.z = 12;
 	var cameraFocus = new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z);
 	
 	var sunPosition = new THREE.Vector3(-100, 50, -300);
