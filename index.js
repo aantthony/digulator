@@ -104,7 +104,7 @@ Game = function()
 	window.bloom = this.bloom;
 	this.particles = new Particles(64);
 	
-	this.lensflare = new LensFlare();
+	// this.lensflare = new LensFlare();
 	
 	// full screen quad:
 	var geo = new THREE.PlaneGeometry(2, 2);
@@ -382,7 +382,7 @@ Game = function()
 		if (bloom)
 			this.bloom.unbind(null, sunpos);
 		
-		this.lensflare.draw(camera.projectionMatrix.elements, camera.matrixWorldInverse.elements, sunPosition);
+		// this.lensflare.draw(camera.projectionMatrix.elements, camera.matrixWorldInverse.elements, sunPosition);
 	}
 }
 
