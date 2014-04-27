@@ -136,18 +136,17 @@ exports.prototype.digInDirection = function (xDir, yDir) {
     var mineTime = d * 300;
 	this.digTimeLeft = this.digTime = mineTime / 1000.0;
     var timers = [];
-    soundPlayer.play(d > 5 ? 'DrillMed' : 'DrillFast');
     
-    timers.push(setTimeout(function () {
-      shake(3);
-      if (d > 5) soundPlayer.play('DrillMed');
-    }, mineTime / 3));
-    timers.push(setTimeout(function () {
-      shake(2);
-      if (d > 5) soundPlayer.play('DrillMed');
-    }, mineTime * 2 / 3));
+    // timers.push(setTimeout(function () {
+    //   shake(3);
+    //   if (d > 5) soundPlayer.play('DrillMed');
+    // }, mineTime / 3));
+    // timers.push(setTimeout(function () {
+    //   shake(2);
+    //   if (d > 5) soundPlayer.play('DrillMed');
+    // }, mineTime * 2 / 3));
 
-    var interval;
+    var intervals = [];
     if (block.name === 'gold' || block.name === 'diamond' || block.name === 'rock') {
       var sparkPosX = block.position.x - xDir * 0.5;
       var sparkPosY = block.position.y - yDir * 0.5;
@@ -155,29 +154,36 @@ exports.prototype.digInDirection = function (xDir, yDir) {
       var xO = 0;
       var yO = 0;
       var mO = 0.45;
-      interval = setInterval(function () {
+      intervals.push(setInterval(function () {
         if (xDir) yO += (Math.random() - 0.5) * 0.3;
         if (yDir) xO += (Math.random() - 0.5) * 0.3;
         xO = Math.min(mO, Math.max(-mO, xO));
         yO = Math.min(mO, Math.max(-mO, yO));
         self._game.emitParticles({x: sparkPosX + xO, y: sparkPosY + yO, z: sparkPosZ}, 0);
-      }, 20);
+      }, 20));
+      intervals.push(setInterval(function () {
+        soundPlayer.play('DrillMed');
+      }, 200));
     } else if (block.name === 'dirt' || block.name === 'sand') {
-      interval = setInterval(function () {
+      intervals.push(setInterval(function () {
         self._game.emitParticles(block.position, 1, {x:-xDir,y:-yDir});
-      }, 20);
+      }, 20));
     }
+    soundPlayer.playLoop('Laser');
 
     timers.push(setTimeout(function () {
       shake(0.5);
-      clearInterval(interval);
+      intervals.forEach(clearInterval);
       pos.x = self._x = x;
       pos.y = self._y = y;
       self._currentDigX = 0;
       self._currentDigY = 0;
       delete self._currentDig;
 	  delete self.digTarget;
-      if (d > 5) soundPlayer.play('DrillFast');
+      soundPlayer.play('Sand');
+      soundPlayer.play('DrillFast');
+      soundPlayer.stopLoop('Laser');
+
       world.setBlock(x, y, downgradeBlock(block));
       if(block.name == 'gold') game.updateScore('gold');
       if(block.name == 'diamond') game.updateScore('diamond');
@@ -187,7 +193,8 @@ exports.prototype.digInDirection = function (xDir, yDir) {
 
     this._currentDigCancel = function () {
       timers.forEach(clearTimeout);
-      clearInterval(interval);
+      soundPlayer.stopLoop('Laser');
+      intervals.forEach(clearInterval);
       self._currentDigX = self._currentDigY = 0;
       delete self._currentDig;
 	  delete self.digTarget;
