@@ -191,6 +191,8 @@ function World() {
 	}
 
 	this.monOccupy = function(x,y) {
+		if(x >= width || x < 0 || y <= -width || y > 0) 
+			return false;
 		return (this.monsterLocs[x][y] == 1);
 	}
 
