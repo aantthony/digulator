@@ -21,6 +21,7 @@ function World() {
 	this.blocks = [];
 	this.palms = [];
 	this.leaves = [];
+	this.trunks = [];
 	this.grass = [];
 	this.sign = [];
 	
@@ -41,11 +42,35 @@ function World() {
 			scene.remove(this.leaves[remleaves[i]]);
 			delete this.leaves[remleaves[i]];
 		}
+		var remtrunks = [];
+		for (var l in this.trunks)
+		{
+			var trunk = this.trunks[l];
+			trunk.time += dt * 0.4;
+			trunk.fall += trunk.time * dt;
+			trunk.rotation.z -= trunk.fall * dt;
+			if (trunk.fall > 1.5)
+			{
+				remtrunks.push(l);
+				for (var i = 0; i < 10; ++i)
+				{
+					var pos = new THREE.Vector3(0, i * 330.0/10.0, 0, 1);
+					pos.applyMatrix4(trunk.matrixWorld);
+					game.particles.spawn([pos.x, pos.y, pos.z, 1], [Math.random()-0.5,Math.random()*2.0+1.0,0,0]);
+				}
+			}
+		}
+		for (var i = remtrunks.length-1; i >= 0; --i)
+		{
+			scene.remove(this.trunks[remtrunks[i]]);
+			delete this.trunks[remtrunks[i]];
+		}
 		
 		this.grassMat.uniforms.time.value += dt;
 	};
 
 	this.createWorld = function(){
+	
 		this.sign = objectLoader.getObject('Sign');
 		this.sign.position.x = width/2-2;
 		this.sign.scale.x = 0.05;
@@ -129,14 +154,24 @@ function World() {
 
 			}
 		}
+		
 	};
-	
-	this.createLeaves = function(pos){
+
+	this.destroyPalm = function(x){
+		if(!this.palms[x]){
+			return;
+		}
+		scene.remove(this.palms[x]);
+		soundPlayer.play('Leaves');
+		
+		var pos = new THREE.Vector3(0, 330, 0);
+		pos.applyMatrix4(this.palms[x].matrixWorld);
+		
 		for (var i = 0; i < 3; ++i)
 		{
-			var leaf = objectLoader.getObject('Palm');
+			var leaf = objectLoader.getObject('Leaf');
 
-			leaf.scale.x = leaf.scale.y = leaf.scale.z = Math.random()*0.001+0.005;
+			leaf.scale.x = leaf.scale.y = leaf.scale.z = Math.random()*0.02+0.04;
 
 			leaf.rotation.x = Math.random()*0.25-0.125;
 			leaf.rotation.y = Math.random()*Math.PI*2;
@@ -152,18 +187,15 @@ function World() {
 			scene.add(leaf);
 			this.leaves.push(leaf);
 		}
-	};
-
-	this.destroyPalm = function(x){
-		if(!this.palms[x]){
-			return;
-		}
-		scene.remove(this.palms[x]);
-		soundPlayer.play('Leaves');
 		
-		var pos = new THREE.Vector3(0, 200, 0);
-		pos.applyMatrix4(this.palms[x].matrixWorld);
-		this.createLeaves(pos);
+		var trunk = objectLoader.getObject('Trunk');
+		trunk.scale.copy(this.palms[x].scale);
+		trunk.position.copy(this.palms[x].position);
+		trunk.rotation.copy(this.palms[x].rotation);
+		trunk.time = 0.0;
+		trunk.fall = 0.0;
+		scene.add(trunk);
+		this.trunks.push(trunk);
 		
 		this.palms[x] = undefined;
 	};
