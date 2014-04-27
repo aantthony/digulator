@@ -7,9 +7,8 @@ var ROCK = 4;
 var GOLD = 5;
 var DIAMOND = 6;
 var EMPTY = 7;
-var size = 10;
-// var width = 10;
-// var height = 10;
+var width = 15;
+var height = 5;
 var NUMDIAMONDS = 2;
 var NUMSPACE = 4;
 
@@ -43,14 +42,16 @@ function World() {
 
 	this.createWorld = function(){
 		this.blocks = [];
-		for(var i = 0; i < size; i++){
+		if(height < 5)
+			height = 5;
+		for(var i = 0; i < width; i++){
 			this.blocks[i] = [];
 		}
-		if(NUMSPACE >= size / 2)
-			NUMSPACE = Math.floor(size / 2);
-		NUMDIAMONDS = Math.floor(size / 10) + 1;
+		if(NUMSPACE >= ((width + height) / 4) - 1)
+			NUMSPACE = Math.floor((width + height) / 4) - 1;
+		NUMDIAMONDS = Math.floor((width + height) / 20) + 1;
 
-		for(var i = 1; i < size; i++){
+		for(var i = 1; i < width; i++){
 			var tree = objectLoader.getObject('Palm');
 
 			tree.scale.x = 0.005;
@@ -62,7 +63,7 @@ function World() {
 			tree.rotation.z = Math.random()*0.25-0.125;
 
 			tree.position.x = i + Math.random()*0.5-0.25;
-			tree.position.y = 9.5;
+			tree.position.y = -0.5
 			tree.position.z = Math.random()*0.5-0.25;
 			scene.add(tree);
 			this.palms.push(tree);
@@ -72,8 +73,8 @@ function World() {
 		this.addGold();
 		this.addRocks();
 
-		for(var i = 0; i < size; i++) {
-			for(var j = 0; j < size; j++) {
+		for(var i = 0; i < width; i++) {
+			for(var j = -height; j < 0; j++) {
 				if(this.blocks[i][j] == undefined) {
 					if(j == 0) {
 						this.makeBlock(EMPTY,i,j);
@@ -81,7 +82,7 @@ function World() {
 						var r = Math.random();
 						if(r < 0.5)
 							this.makeBlock(DIRT,i,j);
-						else if(r < 0.8)
+						else if(r < 0.9)
 							this.makeBlock(CLAY,i,j);
 						else
 							this.makeBlock(SAND,i,j);
@@ -170,9 +171,9 @@ function World() {
 
 	this.canDig = function (x, y) {
 		if (x < 0) return false;
-		if (y < 0) return false;
-		if (x >= size) return false;
-		if (y > size) return false;
+		if (y > 0) return false;
+		if (x >= width) return false;
+		if (y < -height) return false;
 		return true;
 	};
 
@@ -228,16 +229,16 @@ function World() {
 	this.addDiamonds = function() {
 		var fail = false;
 		for(var i = 0; i < NUMDIAMONDS; ++ i) {
-			var x = Math.floor(Math.random()*size);
-			var y = Math.floor(Math.random()*size);
+			var x = Math.floor(Math.random()*width);
+			var y = Math.floor(Math.random()*height);
 			fail = false;
-			while(y < 4)
-				y = Math.floor(Math.random()*size);
+			while(y < (height * 0.6))
+				y = Math.floor(Math.random()*height);
 
 			if(this.blocks[x][y] == undefined) {
-				for(var a = Math.max(x - NUMSPACE,0); a < Math.min(x + NUMSPACE,size); ++ a) {
-					for(var b = Math.max(y - NUMSPACE,0); b < Math.min(y + NUMSPACE,size); ++ b) {
-						if((a == 0 && b == 0) || (this.blocks[a][b] != undefined && this.blocks[a][b].name == 'diamond'))
+				for(var a = Math.floor(Math.max(x - NUMSPACE,0)); a < Math.min(x + NUMSPACE,width); ++ a) {
+					for(var b = Math.floor(Math.max(y - NUMSPACE,0)); b < Math.min(y + NUMSPACE,height); ++ b) {
+						if(this.blocks[a][b] != undefined && this.blocks[a][b].name == 'diamond')
 							fail = true;
 					}
 				}
@@ -248,24 +249,24 @@ function World() {
 			if(fail == true)
 				-- i;
 			else
-				this.makeBlock(DIAMOND,x,y);
+				this.makeBlock(DIAMOND,x,-y);
 		}
 	}
 
 	this.addGold = function() {
-		var numGold = Math.floor(((size * size) + 2) * 0.04);
+		var numGold = Math.floor(((width * height) + 2) * 0.04);
 		var fail = false;
 		for(var i = 0; i < numGold; ++ i) {
-			var x = Math.floor(Math.random()*size);
-			var y = Math.floor(Math.random()*size);
+			var x = Math.floor(Math.random()*width);
+			var y = Math.floor(Math.random()*height);
 			fail = false;
-			while(y < 3)
-				y = Math.floor(Math.random()*size);
+			while(y < (height * 0.4))
+				y = Math.floor(Math.random()*height);
 			
 			if(this.blocks[x][y] == undefined) {
-				for(var a = Math.max(x - (NUMSPACE/2),0); a < Math.min(x + (NUMSPACE/2),size); ++ a) {
-					for(var b = Math.max(y - (NUMSPACE/2),0); b < Math.min(y + (NUMSPACE/2),size); ++ b) {
-						if((a == 0 && b == 0) || (this.blocks[a][b] != undefined && (this.blocks[a][b].name == 'diamond' || this.blocks[a][b].name == 'gold')))
+				for(var a = Math.floor(Math.max(x - (NUMSPACE/2),0)); a < Math.min(x + (NUMSPACE/2),width); ++ a) {
+					for(var b = Math.floor(Math.max(y - (NUMSPACE/2),0)); b < Math.min(y + (NUMSPACE/2),height); ++ b) {
+						if(this.blocks[a][b] != undefined && (this.blocks[a][b].name == 'diamond' || this.blocks[a][b].name == 'gold'))
 							fail = true;
 					}
 				}
@@ -276,33 +277,33 @@ function World() {
 			if(fail == true)
 				-- i;
 			else
-				this.makeBlock(GOLD,x,y);
+				this.makeBlock(GOLD,x,-y);
 		}
 	}
 
 	this.addRocks = function() {
-		var numRock = (size * size) * 0.05;
-		if(size > 2) numRock += 2;
+		var numRock = (width * height) * 0.05;
+		if(width > 2 || height > 2) numRock += 2;
 		
 		for(var i = 0; i < numRock; ++ i) {
-			var x = Math.floor(Math.random()*size);
-			var y = Math.floor(Math.random()*size);
-			while(y < 1)
-				y = Math.floor(Math.random()*size);
+			var x = Math.floor(Math.random()*width);
+			var y = Math.floor(Math.random()*height);
+			while(y < 2)
+				y = Math.floor(Math.random()*height);
 				
 			if(this.blocks[x][y] == undefined) {
-				this.makeBlock(ROCK,x,y);
+				this.makeBlock(ROCK,x,-y);
 				var r = Math.random();
 				if(r < 0.5) {
-					if(x != size - 1 && this.blocks[x+1][y] == undefined) this.makeBlock(ROCK,x+1,y);
-					else if(x != 0 && this.blocks[x-1][y] == undefined) this.makeBlock(ROCK,x-1,y);
-					else if(y != size - 1 && this.blocks[x][y+1] == undefined) this.makeBlock(ROCK,x,y+1);
-					else if(y != 0 && this.blocks[x][y-1] == undefined) this.makeBlock(ROCK,x,y-1);
+					if(x != width - 1 && this.blocks[x+1][y] == undefined) this.makeBlock(ROCK,x+1,-y);
+					else if(x != 0 && this.blocks[x-1][y] == undefined) this.makeBlock(ROCK,x-1,-y);
+					else if(y != height - 1 && this.blocks[x][y+1] == undefined) this.makeBlock(ROCK,x,-y+1);
+					else if(y != 0 && this.blocks[x][y-1] == undefined) this.makeBlock(ROCK,x,-y-1);
 				} else {
-					if(y != size - 1 && this.blocks[x][y+1] == undefined) this.makeBlock(ROCK,x,y+1);
-					else if(y != 0 && this.blocks[x][y-1] == undefined) this.makeBlock(ROCK,x,y-1);
-					else if(x != size - 1 && this.blocks[x+1][y] == undefined) this.makeBlock(ROCK,x+1,y);
-					else if(x != 0 && this.blocks[x-1][y] == undefined) this.makeBlock(ROCK,x-1,y);
+					if(y != height - 1 && this.blocks[x][y+1] == undefined) this.makeBlock(ROCK,x,-y+1);
+					else if(y != 0 && this.blocks[x][y-1] == undefined) this.makeBlock(ROCK,x,-y-1);
+					else if(x != width - 1 && this.blocks[x+1][y] == undefined) this.makeBlock(ROCK,x+1,-y);
+					else if(x != 0 && this.blocks[x-1][y] == undefined) this.makeBlock(ROCK,x-1,-y);
 					
 				}
 			} else
@@ -310,4 +311,3 @@ function World() {
 		}
 	}
 }
-
