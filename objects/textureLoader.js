@@ -29,7 +29,13 @@ function TextureLoader() {
   this.loadTexture('Grass');
   
   this.loadTexture('Player');
+  this.loadNormal('PlayerNM');
   this.loadTexture('Monster');
+  this.loadNormal('MonsterNM');
+
+  this.loadTexture('Sign');
+  this.loadNormal('SignNM');
+
   // this.loadTexture('spark');
 }
 
@@ -42,11 +48,11 @@ TextureLoader.prototype.getTexture = function(tex) {
 }
 
 TextureLoader.prototype.getNormal = function(tex) {
-  if(!this.normals[tex]){
-    console.log("Texture not loaded: " + tex);
+  if(!this.normals[tex+'NM']){
+    console.log("Texture not loaded: " + tex+'NM');
     return;
   }
-  return this.normals[tex];
+  return this.normals[tex+'NM'];
 }
 
 TextureLoader.prototype.loadTexture = function(url) {

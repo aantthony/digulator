@@ -18,10 +18,11 @@ var textureLoader = require('./textureLoader');
 
 function World() {
 	this.objectLoader = objectLoader;
-	this.blocks = [],
-	this.palms = [],
+	this.blocks = [];
+	this.palms = [];
 	this.leaves = [];
 	this.grass = [];
+	this.sign = [];
 	
 	this.update = function(dt){
 		var remleaves = [];
@@ -45,6 +46,15 @@ function World() {
 	};
 
 	this.createWorld = function(){
+		this.sign = objectLoader.getObject('Sign');
+		this.sign.position.x = width/2-2;
+		this.sign.scale.x = 0.05;
+		this.sign.scale.y = 0.05;
+		this.sign.scale.z = 0.05;
+		this.sign.position.z = -1;
+		this.sign.rotation.y = Math.PI;
+		scene.add(this.sign);
+
 		this.blocks = [];
 		if(height < 5)
 			height = 5;

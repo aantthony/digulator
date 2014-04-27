@@ -350,13 +350,15 @@ function ObjectLoader() {
 
   this.loadObject('Player');
   this.loadObject('Monster');
+  
+  this.loadObject('Sign');
 }
 
 ObjectLoader.prototype.loadObject = function(url) {
   var ctx = this;
   var texture = this.textureLoader.getTexture(url);
   // var specular = this.textureLoader.getTexture('spark');
-  var normal = this.textureLoader.getTexture(url);
+  var normal = this.textureLoader.getNormal(url);
 
   var material = new THREE.MeshPhongMaterial({color:0xFFFFFF, specular:0x222222});
   material.map = texture;
