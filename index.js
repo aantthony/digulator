@@ -68,8 +68,8 @@ Game = function()
 	window.renderer = this.renderer;
 	gl = renderer.context;
 
-	var width = window.innerWidth - 100;
-	var height = window.innerHeight - 100;
+	var width = window.innerWidth;
+	var height = window.innerHeight;
 	this.camera = new THREE.PerspectiveCamera( 45, width / height, 0.1, 20 );
 	window.camera = this.camera;
 	gl.viewportWidth = width; //FFS. can't query GL viewport state. this is a workaround for Particles
@@ -481,8 +481,8 @@ window.onload = function()
 }
 
 window.onresize = function(){
-	var width = window.innerWidth - 100;
-	var height = window.innerHeight - 100;
+	var width = window.innerWidth;
+	var height = window.innerHeight;
 
 	currentGameState.resize(width, height);
 }
