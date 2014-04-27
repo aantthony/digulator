@@ -104,13 +104,19 @@ var exports = module.exports = function (details) {
 
         this._currentDigX = 0;
         this._currentDigY = 0;
+        this.aboveGroundMove = false;
 
         this.timers.forEach(clearTimeout);
         this.intervals.forEach(clearInterval);
       }
     }
-	if (this._currentDig && this.digTarget)
-	{
+  if (this._currentDig && this.aboveGroundMove) {
+    var t = 1.0 - this.digTimeLeft/this.digTime;
+    t = Math.min(1.0, Math.max(t, 0.0));
+    pos.x = this.digFrom.x + t * (this.digTarget.x - this.digFrom.x);
+    pos.y = this.digFrom.y + t * (this.digTarget.y - this.digFrom.y);
+    console.log(t);
+  } else if (this._currentDig && this.digTarget) {
 		var digSpasticAmplitude = 0.2;
 		var digSpasticFrequency = 5.0;
 		this.digShakeTimer += dt;
@@ -211,18 +217,20 @@ exports.prototype.digInDirection = function (xDir, yDir) {
     this._targetBlock = block;
 
   } else {
-
     this._currentDigX = xDir;
     this._currentDigY = yDir;
     this._currentDig = true;
     this._targetBlock = null;
     var inBlock = this._world.getBlock(this._x, this._y);
     this.digTimeLeft = this.digTime = inBlock ? 0.5 : 0.3;
-    pos.x = this._x + xDir * 0.35;
-    pos.y = this._y + yDir * 0.35;
+    if (inBlock) {
+      pos.x = this._x + xDir * 0.35;
+      pos.y = this._y + yDir * 0.35;
+    }
+    this.digTarget = new THREE.Vector3(x, y, pos.z);
+
     if (!inBlock) {
-      pos.x = x;
-      pos.y = y;
+      this.aboveGroundMove = true;
       this._cannotCancel = true;
     }
   }
@@ -263,6 +271,7 @@ exports.prototype._currentDigCancel = function () {
   if (this._cannotCancel) return;
   delete this._currentDig;
   delete this.digTarget;
+  this.aboveGroundMove = false;
   var pos = this.object.position;
   pos.x = this._x;
   pos.y = this._y;
