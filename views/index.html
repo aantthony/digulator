@@ -44,7 +44,7 @@
 				margin-right: 50px;
 				margin-top: 50px;
 				text-align: center;
-				color: #FF0000;
+				color: #000000;
 				display: none;
 				z-index: 7;
 			}
@@ -85,7 +85,7 @@
 			}
 			#title {
 				font-size: 7em;
-				color: #145f98;
+				color: #000000;
 			}
 			#desc {
 				background-color: rgba(255,255,255,0.5);
@@ -115,6 +115,7 @@
 				cursor: default;
 			}
 			#vsdiv {
+				color: white;
 				position: fixed;
 				right: 50px;
 				bottom: 50px;
@@ -169,7 +170,7 @@
 					<div class="hd" id="timeBack"><div class="lame">Timer: </div><span id="time">60</span><span>s</span></div>
 				</div>
 				<div id="vsdiv">
-					<input id="volslider" type="range" name="volume" min="0" max ="100" value="50"/>
+					Volume: <input id="volslider" type="range" name="volume" min="0" max ="100" value="50"/>
 				</div>
 				<div id="loadingscreen"><img src="http://i.imgur.com/WUFGJqR.gif?1" /></div>
 			</div>
