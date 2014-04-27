@@ -89,6 +89,13 @@ var exports = module.exports = function (details) {
 
   scene.add(this.object);
 };
+
+function downgradeBlock(block) {
+  if (block.name === 'diamond' || block.name === 'gold') return 'rock'; 
+  if (block.name === 'rock') return 'clay';
+  if (block.name === 'clay') return 'dirt';
+  return 'sand';
+}
 function difficulty (block) {
   switch(block.name) {
     case 'diamond': return 12;
@@ -154,11 +161,11 @@ exports.prototype.digInDirection = function (xDir, yDir) {
         xO = Math.min(mO, Math.max(-mO, xO));
         yO = Math.min(mO, Math.max(-mO, yO));
         self._game.emitParticles({x: sparkPosX + xO, y: sparkPosY + yO, z: sparkPosZ}, 0);
-      }, 10);
+      }, 20);
     } else if (block.name === 'dirt' || block.name === 'sand') {
       interval = setInterval(function () {
         self._game.emitParticles(block.position, 1, {x:-xDir,y:-yDir});
-      }, 10);
+      }, 20);
     }
 
     timers.push(setTimeout(function () {
@@ -171,7 +178,7 @@ exports.prototype.digInDirection = function (xDir, yDir) {
       delete self._currentDig;
 	  delete self.digTarget;
       if (d > 5) soundPlayer.play('DrillFast');
-      world.setBlock(x, y, 'sand');
+      world.setBlock(x, y, downgradeBlock(block));
       if(block.name == 'gold') game.updateScore('gold');
       if(block.name == 'diamond') game.updateScore('diamond');
       if(block.name == 'rock') game.updateScore('rock');
