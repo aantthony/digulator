@@ -74,7 +74,7 @@ Game = function()
 	window.world = this.world;
 	console.log('created a world!');
 
-	this.camera.position.z = 15;
+	this.camera.position.z = 12;
 	var cameraFocus = new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z);
 	
 	var sunPosition = new THREE.Vector3(-100, 50, -300);
@@ -83,21 +83,10 @@ Game = function()
 
 	var player = new Player({
 		world: world,
-		game: game
+		game: game,
+		keys: keys
 	});
 	var monster = new Monster({world:world});
-
-	setInterval(function () {
-		if (keys.pressed('left')) {
-			player.left();
-		} else if (keys.pressed('right')) {
-			player.right();
-		} else if (keys.pressed('down')) {
-			player.digDown();
-		} else if (keys.pressed('up')) {
-			player.digUp();
-		}
-	}, 50);
 
 	this.bloom = new Bloom(width, height);
 	window.bloom = this.bloom;
@@ -217,7 +206,7 @@ Game = function()
 	}
 
 	this.setUpHUD = function() {
-		document.getElementById("time").innerHTML = 5;
+		document.getElementById("time").innerHTML = 60;
 		document.getElementById("gold").innerHTML = 0;
 		document.getElementById("depthometer").innerHTML = 0;
 		this.updateDepth();
@@ -227,13 +216,42 @@ Game = function()
 	this.updateTimerHUD = function() {
 		var i = document.getElementById("time").innerHTML;
 		if(isNaN(i) || i == 0)
-			document.getElementById("time").innerHTML = "Time's Up!";			// changeGameState("timeout");
+			this.forceLoss("timeout");
 		else
 			document.getElementById("time").innerHTML = (i - 1);
 	}
 
+	this.forceLoss = function(losstype) {
+		switch(losstype) {
+			case 'timeout':
+				document.getElementById("time").innerHTML = "Time's Up!";
+				break;
+			case 'mosntered':
+				break;
+		}
+	}
+
 	this.updateDepth = function() {
 		document.getElementById("depthometer").innerHTML = Math.round( (-player.object.position.y) * 10 ) / 10;
+	}
+
+	this.updateScore = function(name) {
+		var score = 0;
+		switch(name) {
+			case 'gold':
+				score = 10;
+				break;
+			case 'diamond':
+				score = 50;
+				break;
+			case 'rock':
+				score = 1;
+				break;
+			default:
+				break;
+		}
+		var t = document.getElementById("gold").innerHTML;
+		document.getElementById("gold").innerHTML = parseInt(t) + parseInt(score);
 	}
 	
 	this.resize = function(width, height)

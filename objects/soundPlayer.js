@@ -3,12 +3,15 @@ window.AudioContext = window.AudioContext || window.webkitAudioContext;
 function SoundPlayer() {
   var ctx = this;
   this.audio = new AudioContext();
+  this.audioGain = this.audio.createGain();
+  this.audioGain.gain.value = 0.15;
 
   this.atmosAudio = new AudioContext();
-  this.atmosGain = this.atmosAudio.createGainNode();
+  this.atmosGain = this.atmosAudio.createGain();
   this.atmosGainValue = 0.1;
 
   this.sounds = {};
+  this.loops = {};
 
   //Drill
   this.loadSound('DrillFast');
@@ -39,6 +42,14 @@ function SoundPlayer() {
   //Death
   this.loadSound('Death');
 
+  this.loadSound('Laser');
+
+  /*setTimeout(function(){
+    instance.playLoop('Laser');
+    setTimeout(function(){
+      instance.stopLoop('Laser');
+    }, 1000);
+  }, 1000);*/
 }
 
 SoundPlayer.prototype.playAtmospheric = function() {
@@ -48,7 +59,7 @@ SoundPlayer.prototype.playAtmospheric = function() {
   var pos = Math.floor(Math.random()*atmos.length);
 
   if(!instance.sounds[atmos[pos]]){
-    console.log("not loaded");
+    console.log("Sound not loaded: " + sound);
     return;
   }
 
@@ -72,13 +83,42 @@ SoundPlayer.prototype.setAtmosGain = function(val) {
 
 SoundPlayer.prototype.play = function(sound) {
   if(!this.sounds[sound]){
-    console.log("not loaded");
+    console.log("Sound not loaded: " + sound);
     return;
   }
   var source = this.audio.createBufferSource();
   source.buffer = this.sounds[sound];
-  source.connect(this.audio.destination);
+  source.connect(this.audioGain);
+  this.audioGain.connect(this.audio.destination);
   source.start(0);
+}
+
+SoundPlayer.prototype.playLoop = function(sound) {
+  if(!this.sounds[sound]){
+    console.log("Sound not loaded: " + sound);
+    return;
+  }
+  if(this.loops[sound]){
+    console.log("Sound already looping: " + sound);
+    return;
+  }
+  var source = this.audio.createBufferSource();
+  source.loop = true;
+  source.buffer = this.sounds[sound];
+  source.connect(this.audioGain);
+  this.audioGain.connect(this.audio.destination);
+  source.start(0);
+
+  this.loops[sound] = source;
+}
+
+SoundPlayer.prototype.stopLoop = function(sound) {
+  if(!this.loops[sound]){
+    console.log("Sound not Playing: " + sound);
+    return;
+  }
+  this.loops[sound].stop();
+  delete this.loops[sound];
 }
 
 SoundPlayer.prototype.loadSound = function(url) {

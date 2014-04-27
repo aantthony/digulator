@@ -7,8 +7,8 @@ var ROCK = 4;
 var GOLD = 5;
 var DIAMOND = 6;
 var EMPTY = 7;
-var width = 15;
-var height = 5;
+var width = 25;
+var height = 25;
 var NUMDIAMONDS = 2;
 var NUMSPACE = 4;
 
