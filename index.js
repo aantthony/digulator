@@ -116,7 +116,7 @@ Game = function()
 			vertexShader: backgroundVertShader,
       fragmentShader: backgroundFragShader,
       uniforms: {
-      	time: {type: 'f', value: 0}
+      	aspect: {type: 'f', value: width / height }
       },
 			depthTest: true,
 			depthWrite: false
@@ -225,7 +225,9 @@ Game = function()
 
 		this.renderer.setSize(width, height);
 
-		this.bloom.resize(width, height)
+		this.bloom.resize(width, height);
+
+		backgroundMesh.material.uniforms.aspect.value = width / height;
 	}
 	
 	this.display = function()
