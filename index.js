@@ -29,6 +29,7 @@ var Bloom = require('./objects/bloom');
 var soundPlayer = require('./objects/soundPlayer');
 var textureLoader = require('./objects/textureLoader');
 var objectLoader = require('./objects/objectLoader');
+var loss = false;
 
 var backgroundFragShader = require('./shaders/background.frag');
 var backgroundVertShader = require('./shaders/background.vert');
@@ -157,8 +158,8 @@ Game = function()
 	this.fixedUpdate = function(dt)
 	{
 		var playerpos = player.object.position;
-		var targetX = Math.max(-50, Math.min(5, playerpos.x - 5)) + 5;
-		var targetY = Math.max(-50, Math.min(5, playerpos.y - 5)) + 5;
+		var targetX = Math.max(-50, Math.min(40, playerpos.x - 5)) + 5;
+		var targetY = Math.max(-50, Math.min(40, playerpos.y - 5)) + 5;
 		cameraFocus.x += (targetX - cameraFocus.x) * 0.04;
 		cameraFocus.y += (targetY - cameraFocus.y) * 0.04;
 	
@@ -213,19 +214,24 @@ Game = function()
 	}
 	
 	this.updateTimerHUD = function() {
-		var i = document.getElementById("time").innerHTML;
-		if(isNaN(i) || i == 0)
-			this.forceLoss("timeout");
-		else
-			document.getElementById("time").innerHTML = (i - 1);
+		if(loss != true) {
+			var i = document.getElementById("time").innerHTML;
+			if(isNaN(i) || i == 0)
+				this.forceLoss("timeout");
+			else
+				document.getElementById("time").innerHTML = (i - 1);
+		}
 	}
 
 	this.forceLoss = function(losstype) {
+		loss = true;
 		switch(losstype) {
 			case 'timeout':
-				document.getElementById("time").innerHTML = "Time's Up!";
+				document.getElementById("timeBack").innerHTML = "Time's Up!";
+				document.getElementById("timeBack").style.textAlign = "center";
 				break;
-			case 'mosntered':
+			case 'monstered':
+				document.getElementById("monstered").style.display = "block";
 				break;
 		}
 	}
