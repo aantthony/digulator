@@ -349,6 +349,7 @@ function ObjectLoader() {
   this.loadObject('Palm');
 
   this.loadObject('Player');
+  this.loadObject('Monster');
 }
 
 ObjectLoader.prototype.loadObject = function(url) {

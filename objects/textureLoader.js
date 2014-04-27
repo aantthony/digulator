@@ -29,6 +29,7 @@ function TextureLoader() {
   this.loadTexture('Grass');
   
   this.loadTexture('Player');
+  this.loadTexture('Monster');
   // this.loadTexture('spark');
 }
 
