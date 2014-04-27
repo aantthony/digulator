@@ -366,13 +366,13 @@ ObjectLoader.prototype.loadObject = function(url, texOverride) {
     specCol = 0xffe400;
   }
   else if(url == "Sand"){
-    specCol = 0x2c2c14;
+    specCol = 0x111111;
   }
   else if(url == "Dirt"){
-    specCol = 0x302211;
+    specCol = 0x010101;
   }
   else if(url == "Clay"){
-    specCol = 0x2d2323;
+    specCol = 0x111111;
   }
   else if(url == "Diamond"){
     specCol = 0x00a2ff;
