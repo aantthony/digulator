@@ -53,6 +53,10 @@ function shakeFunction(x)
 	}
 	return r;
 }
+var monTimer = 5;
+var monTimerRate = 1.5;
+var monster = [];
+var numMon = 1;
 window.shakeFunction = shakeFunction;
 var screenShake = 0.0;
 var screenShakeTime = 0.0;
@@ -94,7 +98,6 @@ Game = function()
 		game: game,
 		keys: keys
 	});
-	var monster = new Monster({world:world});
 
 	this.bloom = new Bloom(width, height);
 	window.bloom = this.bloom;
@@ -179,6 +182,7 @@ Game = function()
 
 		loss = false;
 		world.createWorld();
+		this.createMonster();
 		this.setUpHUD();
 	};
 	this.fixedUpdate = function(dt)
@@ -220,13 +224,17 @@ Game = function()
 		this.world.update(dt);
 	}
 
+	this.createMonster = function() {
+		monster[numMon] = new Monster({world:world});
+		numMon += 1;
+		console.log("creating monster");
+	}
+
 	this.secondTimer = 0.0;
 	this.fixedUpdateTime = 1.0/120.0;
 	this.fixedUpdateTimer = 0.0;
 	this.update = function(dt)
 	{
-		//if(loss == true)
-		//	return;
 		//loop until processed all fixed updates
 		this.fixedUpdateTimer += dt;
 		while (this.fixedUpdateTimer > this.fixedUpdateTime)
@@ -249,14 +257,17 @@ Game = function()
 		
 		//soundPlayer.play('test');
 		
-		if(monster)
-			monster.updateFunc(dt,player);
+		if(monster != undefined) {
+			for(var i = 0; i < numMon; ++ i)
+				if(monster[i] != undefined)
+					monster[i].updateFunc(dt,player);
+		}
 	};
 
 	this.setUpHUD = function() {
 		if(timeHack != undefined)
 			document.getElementById("timeBack").innerHTML = timeHack;
-		document.getElementById("time").innerHTML = 60;
+		document.getElementById("time").innerHTML = 0;
 		document.getElementById("gold").innerHTML = 0;
 		document.getElementById("depthometer").innerHTML = 0;
 		document.getElementById("vsdiv").style.display = "block";
@@ -267,10 +278,12 @@ Game = function()
 	this.updateTimerHUD = function() {
 		if(loss != true) {
 			var i = document.getElementById("time").innerHTML;
-			if(isNaN(i) || i == 0)
-				this.forceLoss("timeout");
-			else
-				document.getElementById("time").innerHTML = (i - 1);
+			if(i >= monTimer) {
+				this.createMonster();
+				monTimer = monTimer + (monTimerRate * monTimer);
+				console.log(monTimer+"mtimer");
+			} else
+				document.getElementById("time").innerHTML = (parseInt(i) + 1);
 		}
 	};
 
@@ -470,8 +483,8 @@ var mainloop = function()
 window.onload = function()
 {
 	setTimeout(function () {
-		//changeGameState(new MainMenu());
-		changeGameState(new Game());
+		changeGameState(new MainMenu());
+		//changeGameState(new Game());
 		document.getElementById("loadingscreen").style.display = "none";
 		mainloop();
 	}, 50);

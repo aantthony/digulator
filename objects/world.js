@@ -24,11 +24,12 @@ function World() {
 	this.trunks = [];
 	this.grass = [];
 	this.sign = [];
+	this.monsterLocs = [];
 	
 	this.particleEmitters = [];
 	this.emitTimer = 0.0;
 	
-	this.update = function(dt){
+	this.update = function(dt) {
 	
 		this.emitTimer += dt;
 		if (this.emitTimer > 0.1)
@@ -100,10 +101,10 @@ function World() {
 			height = 5;
 		for(var i = 0; i < width; i++){
 			this.blocks[i] = [];
+			this.monsterLocs[i] = [];
 		}
 		if(NUMSPACE >= ((width + height) / 4) - 1)
 			NUMSPACE = Math.floor((width + height) / 4) - 1;
-		NUMDIAMONDS = Math.floor((width + height) / 20) + 1;
 
 		var boundaryMesh = new THREE.Mesh(
 			new THREE.PlaneGeometry(width * 2, height * 2),
@@ -164,6 +165,7 @@ function World() {
 
 		for(var i = 0; i < width; i++) {
 			for(var j = -height; j < 0; j++) {
+				this.monsterLocs[i][j] = 0;
 				if(this.blocks[i][j] == undefined) {
 					if(j == 0) {
 						this.makeBlock(EMPTY,i,j);
@@ -182,6 +184,15 @@ function World() {
 		}
 		
 	};
+
+	this.updateMonPos = function(x,y,a,b) {
+		this.monsterLocs[x][y] = 0;
+		this.monsterLocs[a][b] = 1;
+	}
+
+	this.monOccupy = function(x,y) {
+		return (this.monsterLocs[x][y] == 1);
+	}
 
 	this.destroyPalm = function(x){
 	
