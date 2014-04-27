@@ -83,6 +83,7 @@
 				color: #FF0000;
 			}
 			#desc {
+				background-color: rgba(255,255,255,0.5);
 				font-size: 1.5em;
 				color: #000;
 				width: 80%;
@@ -178,7 +179,18 @@
 				But be warned, you only have a limited time and there is a monster who doesn't like you mining his home. <br/><br/>
 				Good Luck! 
 				<div id="start">Begin</div>
+				<div id="nogl" style="display: none;"><br/>Unfortunately you do not have WebGL enabled in your browser. Please either enable it or use a compatible browser like Chrome, Opera, Firefox or Safari. If you are using one of these browsers, then try updating or searching for how to enable WebGL.</div>
 			</div>
 		</div>
+
+		<script type="text/javascript">
+			var canvas = document.createElement("canvas");
+			var context = canvas.getContext("experimental-webgl") || canvas.getContext("webgl") || canvas.getContext("moz-webgl") || canvas.getContext("webkit-3d");
+			if(!context){
+				document.getElementById("nogl").style.display = "block";
+				document.getElementById("start").style.display = "none";
+			}
+		</script>
+
 	</body>
 </html>
