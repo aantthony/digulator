@@ -29,7 +29,7 @@ void main()
 	type = particle.w;
 	
 	vec4 veldat = texture2D(velocities, texCoord);
-	fade = clamp(1.0 - veldat.w * 2.0, 0.0, 1.0);
+	fade = clamp(1.0 - veldat.w, 0.0, 1.0);
 	
 	vec3 velocity = vec3(modelviewMat * vec4(veldat.xyz, 0.0));
 	vec3 n = normalize(cross(velocity, vec3(0, 0, 1)));
@@ -47,7 +47,7 @@ void main()
 	else if (type == 2.0)
 		size = 0.6;
 		
-	if (veldat.w > 4.0)
+	if (veldat.w > 1.0)
 		size = 0.0;
 	
 	vec2 square = osVert.xy * vec2(0.2, 0.1) * size;

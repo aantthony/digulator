@@ -25,6 +25,29 @@ var exports = module.exports = function (details) {
   this._currentDigX = 0;
   this._x = Math.round(this.object.position.x);
   this._y = Math.round(this.object.position.y);
+  this.digTarget = new THREE.Vector3(0,0,0);
+  
+  this.digShakeTimer = 0.0;
+  this.digTimeLeft = 0.0;
+  
+  this.update = function(dt)
+  {
+	if (this._currentDig)
+	{
+		this.digTimeLeft -= dt;
+		var digSpasticAmplitude = 0.2;
+		var digSpasticFrequency = 5.0;
+		this.digShakeTimer += dt;
+		var tmp = this.digFrom.clone();
+		tmp.x += window.shakeFunction(this.digShakeTimer * digSpasticFrequency) * digSpasticAmplitude;
+		tmp.y += window.shakeFunction(this.digShakeTimer * digSpasticFrequency+98.412) * digSpasticAmplitude;
+		tmp.sub(this.digTarget);
+		tmp.setLength((window.shakeFunction(this.digShakeTimer * digSpasticFrequency+9.9812) * 0.25 + 0.75) * Math.min(this.digTimeLeft, 1.0));
+		this.object.position.copy(this.digTarget);
+		this.object.position.add(tmp);
+		this.object.rotation.y = Math.atan2(tmp.x, -tmp.y);
+	}
+  }
 
   scene.add(this.object);
 };
@@ -54,6 +77,8 @@ exports.prototype.digInDirection = function (xDir, yDir) {
   pos.x = this._x;
   pos.y = this._y;
   var block = this._world.getBlock(pos.x + xDir, pos.y + yDir);
+  this.digFrom = this.object.position.clone();
+  this.digTarget = block.position.clone();
   if (block) {
     shake(3);
     var world = this._world;
@@ -63,13 +88,14 @@ exports.prototype.digInDirection = function (xDir, yDir) {
 
     var d = difficulty(block);
     var mineTime = d * 80;
+	this.digTimeLeft = mineTime / 1000.0;
     var timers = [];
     soundPlayer.play(d > 5 ? 'DrillMed' : 'DrillFast');
     
     timers.push(setTimeout(function () {
       shake(3);
       block.scale.set(0.5, 0.5, 0.5);
-      pos.x += 0.5 * xDir;
+      //pos.x += 0.5 * xDir;
       block.position.x = x + 0.25 * xDir;
       block.position.y = y - 0.25;
       if (d > 5) soundPlayer.play('DrillMed');
@@ -104,8 +130,8 @@ exports.prototype.digInDirection = function (xDir, yDir) {
     };
 
     // until we have a better digging animation:
-    pos.x += 0.4 * xDir;
-    pos.y += 0.4 * yDir;
+    //pos.x += 0.4 * xDir;
+    //pos.y += 0.4 * yDir;
 
     this._currentDigX = xDir;
     this._currentDigY = yDir;
