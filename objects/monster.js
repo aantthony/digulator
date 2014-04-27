@@ -9,9 +9,9 @@ var exports = module.exports = function (details) {
 
   this.object.position.set(10,-5,0.5);
 
-  var light = new THREE.PointLight(0xAA0000);
-  light.position.z = -3;
-  this.object.add(light);
+  // var light = new THREE.PointLight(0xAA0000);
+  // light.position.z = -3;
+  // this.object.add(light);
 
   // The direction the monster is facing:
   this.faceX = +1;
