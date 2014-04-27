@@ -234,8 +234,8 @@ Game = function()
 		
 		renderer.autoClear = false;
 		renderer.clear();
-		renderer.render(scene, camera);
 		renderer.render(backgroundScene, backgroundCamera );
+		renderer.render(scene, camera);
 
 		gl.disable(gl.DEPTH_TEST);
 		gl.enable(gl.BLEND);
