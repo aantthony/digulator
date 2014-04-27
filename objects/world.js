@@ -14,6 +14,7 @@ var NUMDIAMONDS = 2;
 var NUMSPACE = 4;
 
 var objectLoader = require('./objectLoader');
+var soundPlayer = require('./soundPlayer');
 
 function World() {
 	this.objectLoader = objectLoader;
@@ -29,7 +30,7 @@ function World() {
 			NUMSPACE = Math.floor(size / 2);
 		NUMDIAMONDS = Math.floor(size / 10) + 1;
 
-		for(var i = 0; i < size; i++){
+		for(var i = 1; i < size; i++){
 			var tree = objectLoader.getObject('Palm');
 
 			tree.scale.x = 0.005;
@@ -72,7 +73,11 @@ function World() {
 	},
 
 	this.destroyPalm = function(x){
+		if(!this.palms[x]){
+			return;
+		}
 		scene.remove(this.palms[x]);
+		soundPlayer.play('Leaves');
 
 		this.palms[x] = undefined;
 	},

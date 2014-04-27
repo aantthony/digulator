@@ -85,7 +85,6 @@ exports.prototype.digInDirection = function (xDir, yDir) {
     var x = this._x + xDir;
     var y = this._y + yDir;
     var self = this;
-
     var d = difficulty(block);
     var mineTime = d * 80;
 	this.digTimeLeft = mineTime / 1000.0;
@@ -139,6 +138,16 @@ exports.prototype.digInDirection = function (xDir, yDir) {
   } else {
     this._x = pos.x += xDir;
     this._y = pos.y += yDir;
+  }
+
+  if(this._y == 10){
+    this._world.destroyPalm(this._x-1);
+  }
+  else if(this._y == 9 && xDir){
+    this._world.destroyPalm(this._x);
+  }
+  else if(this._y == 8 && yDir == 1){
+    this._world.destroyPalm(this._x-1);
   }
 }
 
