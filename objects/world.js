@@ -14,12 +14,14 @@ var NUMSPACE = 4;
 
 var objectLoader = require('./objectLoader');
 var soundPlayer = require('./soundPlayer');
+var textureLoader = require('./textureLoader');
 
 function World() {
 	this.objectLoader = objectLoader;
 	this.blocks = [],
 	this.palms = [],
 	this.leaves = [];
+	this.grass = [];
 	
 	this.update = function(dt){
 		var remleaves = [];
@@ -30,7 +32,7 @@ function World() {
 			leaf.position.y -= dt * 0.2;
 			leaf.position.x += Math.sin(leaf.time * 4.0) * dt;
 			leaf.position.y += Math.pow(Math.abs(Math.cos(leaf.time * 4.0+0.5)),6) * dt * 0.4;
-			if (leaf.position.y < 10.0) //FIXME: 10... ?? wtf
+			if (leaf.position.y < 0.0)
 				remleaves.push(l);
 		}
 		for (var i = remleaves.length-1; i >= 0; --i)
@@ -38,6 +40,8 @@ function World() {
 			scene.remove(this.leaves[remleaves[i]]);
 			delete this.leaves[remleaves[i]];
 		}
+		
+		this.grassMat.uniforms.time.value += dt;
 	};
 
 	this.createWorld = function(){
@@ -67,6 +71,30 @@ function World() {
 			tree.position.z = Math.random()*0.5-0.25;
 			scene.add(tree);
 			this.palms.push(tree);
+		}
+		
+		var grasswidth = 16;
+		var grassFragShader = require('../shaders/grass.frag');
+		var grassVertShader = require('../shaders/grass.vert');
+		var grassGeom = new THREE.PlaneGeometry(grasswidth, grasswidth*128/1024);
+		var grassTex = textureLoader.getTexture("Grass");
+		grassTex.wrapS = grassTex.wrapT = THREE.RepeatWrapping;
+		var grassMat = new THREE.ShaderMaterial({
+			blending: THREE.NormalBlending,
+			vertexShader: grassVertShader,
+			fragmentShader: grassFragShader,
+			uniforms: {time: {type: 'f', value: 0.0}, texture: {type: 't', value: grassTex}},
+			transparent: true,
+			depthTest: true,
+			depthWrite: false
+		});
+		this.grassMat = grassMat;
+		for (var i = 0; i < width / grasswidth; ++i)
+		{
+			var grass = new THREE.Mesh(grassGeom, grassMat);
+			grass.position.set((i+0.5)*grasswidth-0.5,0.5*grasswidth*128/1024-0.5,0.5);
+			scene.add(grass);
+			this.grass.push(grass);
 		}
 
 		this.addDiamonds();
