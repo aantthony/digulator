@@ -82,26 +82,22 @@ Game = function()
 	var keys = new Keyboard();
 
 	var player = new Player({
-		world: world
+		world: world,
+		game: game
 	});
 	var monster = new Monster({world:world});
 
-	keys.onleft = function () {
-		player.left();
-		game.emitParticles(player.object.position, 0);
-	};
-	keys.onright = function () {
-		player.right();
-		game.emitParticles(player.object.position, 2, {x:0,y:1});
-	};
-	keys.onup = function () {
-		player.digUp();
-		game.emitParticles(player.object.position, 2, {x:1,y:0});
-	};
-	keys.ondown = function () {
-		player.digDown();
-		game.emitParticles(player.object.position, 1, {x:0,y:1});
-	};
+	setInterval(function () {
+		if (keys.pressed('left')) {
+			player.left();
+		} else if (keys.pressed('right')) {
+			player.right();
+		} else if (keys.pressed('down')) {
+			player.digDown();
+		} else if (keys.pressed('up')) {
+			player.digUp();
+		}
+	}, 50);
 
 	this.bloom = new Bloom(width, height);
 	window.bloom = this.bloom;
