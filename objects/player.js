@@ -113,12 +113,13 @@ exports.prototype.digInDirection = function (xDir, yDir) {
   }
   pos.x = this._x;
   pos.y = this._y;
-  var block = this._world.getBlock(pos.x + xDir, pos.y + yDir);
-  this.digFrom = this.object.position.clone();
 
   var x = this._x + xDir;
   var y = this._y + yDir;
   var self = this;
+
+  var block = this._world.getBlock(x, y);
+  this.digFrom = this.object.position.clone();
 
   if (block) {
 	this.digTarget = block.position.clone();
@@ -182,14 +183,13 @@ exports.prototype.digInDirection = function (xDir, yDir) {
 
     this._currentDigX = xDir;
     this._currentDigY = yDir;
-    setTimeout(function () {
+    var t = setTimeout(function () {
       self._currentDigX = self._currentDigY = 0;
       delete self._currentDig;
       self._x = pos.x = x;
       self._y = pos.y = y;
     }, 100);
-    this._currentDigCancel = function () {
-    };
+    this._currentDigCancel = function () {};
 
     pos.x = x;
     pos.y = y;
@@ -217,10 +217,7 @@ exports.prototype._failAttemptToDig = function (dx, dy) {
   this._currentDig = true;
   this.digFrom = this.object.position.clone();
   var self = this;
-  var pos = this.object.position;
-  this._x = pos.x; //back up position
-  this._y = pos.y;
-  var x = pos.x;
+  var x = this._x;
   pos.x += dx * 0.5;
   this.digTarget = this.object.position.clone(); //animate drilling into wall
   this._currentDigCancel = function () {
