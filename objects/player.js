@@ -126,18 +126,20 @@ var exports = module.exports = function (details) {
     pos.x = this.digFrom.x + t * (this.digTarget.x - this.digFrom.x);
     pos.y = this.digFrom.y + t * (this.digTarget.y - this.digFrom.y);
   } else if (this._currentDig && this.digTarget) {
-		var digSpasticAmplitude = 0.2;
-		var digSpasticFrequency = 5.0;
+		var digSpasticAmplitude = 0.1;
+		var digSpasticFrequency = 3.0;
 		this.digShakeTimer += dt;
 		var tmp = this.digFrom.clone();
 		tmp.x += window.shakeFunction(this.digShakeTimer * digSpasticFrequency) * digSpasticAmplitude;
 		tmp.y += window.shakeFunction(this.digShakeTimer * digSpasticFrequency+98.412) * digSpasticAmplitude;
 		tmp.sub(this.digTarget);
-		tmp.setLength((window.shakeFunction(this.digShakeTimer * digSpasticFrequency+9.9812) * 0.25 + 0.75) * Math.min(Math.max(this.digTimeLeft/this.digTime, 0.0), 1.0));
+		var randomDist = window.shakeFunction(this.digShakeTimer * digSpasticFrequency+9.9812);
+		var progress = Math.min(Math.max(this.digTimeLeft/this.digTime, 0.0), 1.0);
+		tmp.setLength((randomDist * 0.25 + 0.5) * progress + 1.0);
 		this.object.position.copy(this.digTarget);
-    this.object.position.add(tmp);
-    // this.object.rotation.y = Math.atan2(tmp.x, -tmp.y);
-    this.object.position.z = 1.0;
+		this.object.position.add(tmp);
+		// this.object.rotation.y = Math.atan2(tmp.x, -tmp.y);
+		this.object.position.z = 1.0;
 	}
   }
 

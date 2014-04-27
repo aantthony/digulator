@@ -189,7 +189,7 @@ Game = function()
 		screenShake *= 0.9;
 		if (this.camera.spinning)
 		{
-			this.camera.spinTime += dt;
+			this.camera.spinTime += dt * 2.0;
 			if (this.camera.spinTime < 3.0)
 			{
 				this.camera.fov = 10 + (this.camera.fovBak-10) * (0.5+0.5*Math.cos(this.camera.spinTime * Math.PI * 2.0));
