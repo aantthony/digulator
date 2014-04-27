@@ -26,6 +26,7 @@ var World = require('./objects/world');
 var Particles = require('./objects/particles');
 var GameState = require('./objects/gamestate');
 var Bloom = require('./objects/bloom');
+var LensFlare = require('./objects/lensflare');
 var soundPlayer = require('./objects/soundPlayer');
 var textureLoader = require('./objects/textureLoader');
 var objectLoader = require('./objects/objectLoader');
@@ -74,7 +75,7 @@ Game = function()
 
 	var width = window.innerWidth;
 	var height = window.innerHeight;
-	this.camera = new THREE.PerspectiveCamera( 45, width / height, 0.1, 20 );
+	this.camera = new THREE.PerspectiveCamera( 45, width / height, 0.1, 50 );
 	window.camera = this.camera;
 	gl.viewportWidth = width; //FFS. can't query GL viewport state. this is a workaround for Particles
 	gl.viewportHeight = height;
@@ -89,7 +90,7 @@ Game = function()
 	this.camera.position.z = 12;
 	var cameraFocus = new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z);
 	
-	var sunPosition = new THREE.Vector3(-100, 50, -300);
+	var sunPosition = new THREE.Vector3(-10, 5, -30);
 	
 	var keys = new Keyboard();
 
@@ -102,6 +103,8 @@ Game = function()
 	this.bloom = new Bloom(width, height);
 	window.bloom = this.bloom;
 	this.particles = new Particles(64);
+	
+	this.lensflare = new LensFlare();
 	
 	// full screen quad:
 	var geo = new THREE.PlaneGeometry(2, 2);
@@ -376,7 +379,10 @@ Game = function()
 		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 		this.particles.draw(camera.projectionMatrix.elements, camera.matrixWorldInverse.elements);
 		gl.disable(gl.BLEND);
-		if (bloom) this.bloom.unbind(null, sunpos);
+		if (bloom)
+			this.bloom.unbind(null, sunpos);
+		
+		this.lensflare.draw(camera.projectionMatrix.elements, camera.matrixWorldInverse.elements, sunPosition);
 	}
 }
 
