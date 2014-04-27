@@ -36,10 +36,15 @@ var exports = module.exports = function (details) {
   this._game = details.game;
   this._keys = details.keys;
 
+  // todo: replace this
+  this.intervals = [];
+  this.timers = [];
+
   // timer for current digging action:
   this._currentDig = null;
   // current dig direction (if _currentDig is falsy, then this should be zero)
   this._currentDigX = 0;
+  this._currentDigY = 0;
   this._x = Math.round(this.object.position.x);
   this._y = Math.round(this.object.position.y);
   this.digTarget = undefined;
@@ -70,9 +75,42 @@ var exports = module.exports = function (details) {
   this.update = function(dt)
   {
     this._updateKeys();
+    var pos = this.object.position;
+    if (this._currentDig) {
+      this.digTimeLeft -= dt;
+      if (this.digTimeLeft <= 0) {
+        this._cannotCancel = false;
+        console.log('finished digging ', block ? block.name : null);
+        // finished digging:
+        shake(0.5);
+        // move the player into the new block:
+        pos.x = this._x += this._currentDigX;
+        pos.y = this._y += this._currentDigY;
+        delete this._currentDig;
+        delete this.digTarget;
+        soundPlayer.play('Sand');
+        // soundPlayer.play('DrillFast');
+        soundPlayer.stopLoop('Laser');
+        var block = this._targetBlock;
+        if (block) {
+          if (block.name === 'dirt' || block.name === 'sand' || block.name === 'clay') {
+            this._game.emitParticles(block.position, 1, {x:-this._currentDigX,y:-this._currentDigY});
+          }
+          world.setBlock(this._x, this._y, downgradeBlock(block));
+          if(block.name == 'gold') game.updateScore('gold');
+          if(block.name == 'diamond') game.updateScore('diamond');
+          if(block.name == 'rock') game.updateScore('rock');
+        }
+
+        this._currentDigX = 0;
+        this._currentDigY = 0;
+
+        this.timers.forEach(clearTimeout);
+        this.intervals.forEach(clearInterval);
+      }
+    }
 	if (this._currentDig && this.digTarget)
 	{
-		this.digTimeLeft -= dt;
 		var digSpasticAmplitude = 0.2;
 		var digSpasticFrequency = 5.0;
 		this.digShakeTimer += dt;
@@ -82,8 +120,8 @@ var exports = module.exports = function (details) {
 		tmp.sub(this.digTarget);
 		tmp.setLength((window.shakeFunction(this.digShakeTimer * digSpasticFrequency+9.9812) * 0.25 + 0.75) * Math.min(Math.max(this.digTimeLeft/this.digTime, 0.0), 1.0));
 		this.object.position.copy(this.digTarget);
-		this.object.position.add(tmp);
-		this.object.rotation.y = Math.atan2(tmp.x, -tmp.y);
+    this.object.position.add(tmp);
+    this.object.rotation.y = Math.atan2(tmp.x, -tmp.y);
 	}
   }
 
@@ -135,7 +173,7 @@ exports.prototype.digInDirection = function (xDir, yDir) {
     var d = difficulty(block);
     var mineTime = d * 300;
 	this.digTimeLeft = this.digTime = mineTime / 1000.0;
-    var timers = [];
+    var timers = this.timers;
     
     // timers.push(setTimeout(function () {
     //   shake(3);
@@ -146,7 +184,7 @@ exports.prototype.digInDirection = function (xDir, yDir) {
     //   if (d > 5) soundPlayer.play('DrillMed');
     // }, mineTime * 2 / 3));
 
-    var intervals = [];
+    var intervals = this.intervals;
     if (block.name === 'gold' || block.name === 'diamond' || block.name === 'rock') {
       var sparkPosX = block.position.x - xDir * 0.5;
       var sparkPosY = block.position.y - yDir * 0.5;
@@ -164,61 +202,29 @@ exports.prototype.digInDirection = function (xDir, yDir) {
       intervals.push(setInterval(function () {
         soundPlayer.play('DrillMed');
       }, 200));
-    } else if (block.name === 'dirt' || block.name === 'sand') {
-      intervals.push(setInterval(function () {
-        self._game.emitParticles(block.position, 1, {x:-xDir,y:-yDir});
-      }, 20));
     }
     soundPlayer.playLoop('Laser');
 
-    timers.push(setTimeout(function () {
-      shake(0.5);
-      intervals.forEach(clearInterval);
-      pos.x = self._x = x;
-      pos.y = self._y = y;
-      self._currentDigX = 0;
-      self._currentDigY = 0;
-      delete self._currentDig;
-	  delete self.digTarget;
-      soundPlayer.play('Sand');
-      soundPlayer.play('DrillFast');
-      soundPlayer.stopLoop('Laser');
-
-      world.setBlock(x, y, downgradeBlock(block));
-      if(block.name == 'gold') game.updateScore('gold');
-      if(block.name == 'diamond') game.updateScore('diamond');
-      if(block.name == 'rock') game.updateScore('rock');
-    }, mineTime));
     this._currentDig = true;
-
-    this._currentDigCancel = function () {
-      timers.forEach(clearTimeout);
-      soundPlayer.stopLoop('Laser');
-      intervals.forEach(clearInterval);
-      self._currentDigX = self._currentDigY = 0;
-      delete self._currentDig;
-	  delete self.digTarget;
-      pos.x = self._x;
-      pos.y = self._y;
-    };
-
     this._currentDigX = xDir;
     this._currentDigY = yDir;
+    this._targetBlock = block;
 
   } else {
 
     this._currentDigX = xDir;
     this._currentDigY = yDir;
     this._currentDig = true;
-    var t = setTimeout(function () {
-      self._currentDigX = self._currentDigY = 0;
-      delete self._currentDig;
-      self._x = pos.x = x;
-      self._y = pos.y = y;
-    }, 100);
-    this._currentDigCancel = function () {};
-    pos.x = x;
-    pos.y = y;
+    this._targetBlock = null;
+    var inBlock = this._world.getBlock(this._x, this._y);
+    this.digTimeLeft = this.digTime = inBlock ? 0.5 : 0.3;
+    pos.x = this._x + xDir * 0.35;
+    pos.y = this._y + yDir * 0.35;
+    if (!inBlock) {
+      pos.x = x;
+      pos.y = y;
+      this._cannotCancel = true;
+    }
   }
 
   if(this._y == 0){
@@ -248,15 +254,24 @@ exports.prototype._failAttemptToDig = function (dx, dy) {
   var pos = this.object.position;
   pos.x += dx * 0.5;
   this.digTarget = this.object.position.clone(); //animate drilling into wall
-  this._currentDigCancel = function () {
-    delete self._currentDig;
-	delete self.digTarget;
-    pos.x = self._x; //reset position
-    pos.y = self._y;
-  };
   setTimeout(this._currentDigCancel, 500);
   this.digTime = 500.0/1000.0;
   this.digTimeLeft = 800.0/1000.0; //a little higher so aniation won't complete
+};
+
+exports.prototype._currentDigCancel = function () {
+  if (this._cannotCancel) return;
+  delete this._currentDig;
+  delete this.digTarget;
+  var pos = this.object.position;
+  pos.x = this._x;
+  pos.y = this._y;
+
+  this.timers.forEach(clearTimeout);
+  this.intervals.forEach(clearInterval);
+  soundPlayer.stopLoop('Laser');
+  this._currentDigX = this._currentDigY = 0;
+  this.digTime = 0;
 };
 
 exports.prototype.digLeft = function () {
