@@ -304,6 +304,27 @@ Game = function()
 	}
 }
 
+MainMenu = function()
+{
+	GameState.call(this);
+	
+	this.startGame = function()
+	{
+		alert("qwe");
+		changeGameState(new Game());
+	}
+	
+	//change this to the start game event thing and stuff
+	document.body.onclick = this.startGame.bind(this);
+	
+	this.enter = function()
+	{
+	}
+	this.leave = function()
+	{
+	}
+}
+
 var currentGameState = null;
 
 var changeGameState = function(newState)
@@ -356,7 +377,7 @@ var mainloop = function()
 window.onload = function()
 {
 	setTimeout(function () {
-		changeGameState(new Game());
+		changeGameState(new MainMenu());
 		document.getElementById("loadingscreen").style.display = "none";
 		mainloop();
 	}, 50);
