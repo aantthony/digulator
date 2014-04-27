@@ -14,19 +14,20 @@ var exports = module.exports = function (details) {
   // axes.scale.z = 500;
   // this.model.add(axes);
 
-  this.model.rotation.x = Math.PI;
-  this.model.rotation.y = Math.PI/8;
-  this.model.rotation.z = Math.PI/2;
+  this.model.rotation.x = 0;
+  this.model.rotation.y = Math.PI/2;
+  this.model.rotation.z = 0;
+  this.model.position.y = -0.45;
 
   this.object = new THREE.Object3D();
   this.object.add(this.model);
 
   var light = new THREE.PointLight(0xFFFFFF);
-  light.position.y = 3;
+  light.position.z = 3;
   this.object.add(light);
 
   this.object.position.set(14,0,0);
-  this.object.rotation.set(1.4,0,0);
+  // this.object.rotation.set(1.4,0,0);
 
   // The direction the player is facing:
   this.faceX = +1;
@@ -75,6 +76,13 @@ var exports = module.exports = function (details) {
   this.update = function(dt)
   {
     this._updateKeys();
+
+    if (this.faceX === +1) {
+      this._game.emitParticles(this.object.position.clone().sub(new THREE.Vector3(0.1,0.1,0)), 2, {x:0,y:-0.25});
+    } else {
+      this._game.emitParticles(this.object.position.clone().sub(new THREE.Vector3(-0.1,0.1,0)), 2, {x:0,y:-0.25});
+    }
+    
     var pos = this.object.position;
     if (this._currentDig) {
       this.digTimeLeft -= dt;
@@ -126,7 +134,7 @@ var exports = module.exports = function (details) {
 		tmp.setLength((window.shakeFunction(this.digShakeTimer * digSpasticFrequency+9.9812) * 0.25 + 0.75) * Math.min(Math.max(this.digTimeLeft/this.digTime, 0.0), 1.0));
 		this.object.position.copy(this.digTarget);
     this.object.position.add(tmp);
-    this.object.rotation.y = Math.atan2(tmp.x, -tmp.y);
+    // this.object.rotation.y = Math.atan2(tmp.x, -tmp.y);
 	}
   }
 
@@ -302,7 +310,7 @@ exports.prototype.digDown = function () {
   return this.digInDirection(0, -1);
 };
 exports.prototype.digUp = function() {
-  this._game.emitParticles(this.object.position, 2, {x:1,y:0});
+  // this._game.emitParticles(this.object.position, 2, {x:1,y:0});
   var on = this._world.getBlock(this._x, this._y);
   if (!on) return; // no flying!
 
@@ -312,14 +320,16 @@ exports.prototype.digUp = function() {
   return this.digInDirection(0, +1);
 };
 exports.prototype.faceLeft = function () {
+  this.model.rotation.y = -Math.PI/2;
   this.faceX = -1;
 };
 exports.prototype.faceRight = function () {
+  this.model.rotation.y = Math.PI/2;
   this.faceX = +1;
 };
 
 exports.prototype.right = function () {
-  this._game.emitParticles(this.object.position, 2, {x:0,y:1});
+  // this._game.emitParticles(this.object.position, 2, {x:0,y:1});
   if (this.faceX === +1) {
     this.digRight();
   } else {
