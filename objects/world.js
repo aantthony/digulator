@@ -103,7 +103,7 @@ function World() {
 		boundaryMesh.position.set(width / 2,-height - 0.5,0);
 		scene.add(boundaryMesh);
 
-		for(var i = 1; i < width; i++){
+		for(var i = 0; i < width; i++){
 			var tree = objectLoader.getObject('Palm');
 
 			tree.scale.x = 0.005;

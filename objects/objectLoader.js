@@ -375,7 +375,7 @@ ObjectLoader.prototype.loadObject = function(url, texOverride) {
     specCol = 0x111111;
   }
   else if(url == "Diamond"){
-    specCol = 0x00a2ff;
+    specCol = 0x005a89;
   }
   else if(url == "Rock"){
     specCol = 0x222222;

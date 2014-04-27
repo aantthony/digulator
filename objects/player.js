@@ -235,13 +235,13 @@ exports.prototype.digInDirection = function (xDir, yDir) {
   }
 
   if(this._y == 0){
-    this._world.destroyPalm(this._x);
+    this._world.destroyPalm(this._x+xDir);
   }
   else if(this._y == -1 && xDir){
-    this._world.destroyPalm(this._x+1);
+    this._world.destroyPalm(this._x+xDir);
   }
   else if(this._y == -2 && yDir == 1){
-    this._world.destroyPalm(this._x-1);
+    this._world.destroyPalm(this._x);
   }
   soundPlayer.setAtmosGain(this._y);
 }
