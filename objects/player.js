@@ -4,7 +4,7 @@ var objectLoader = require('./objectLoader');
 var exports = module.exports = function (details) {
 
   this.model = objectLoader.getObject('Player');
-  this.model.material.depthTest = false;
+  // this.model.material.depthTest = false;
   this.model.scale.x = 0.05;
   this.model.scale.y = 0.05;
   this.model.scale.z = 0.05;
@@ -33,7 +33,7 @@ var exports = module.exports = function (details) {
 
   // The direction the player is facing:
   this.faceX = +1;
-  this.faceY = +1;
+  this.faceY = +0;
 
   this._world = details.world;
   this._game = details.game;
@@ -84,6 +84,27 @@ var exports = module.exports = function (details) {
     } else {
       this._game.emitParticles(this.object.position.clone().sub(new THREE.Vector3(-0.1,0.1,0)), 2, {x:0,y:-0.25});
     }
+
+    var yRot = 0.0;
+    var xRot = 0.0;
+    if (this.faceX === -1) {
+      yRot = -Math.PI/2;
+    } else if (this.faceX === +1) {
+      yRot = Math.PI / 2;
+    } else {
+      yRot = 0;
+    }
+
+    if (this.faceY === +1) {
+      xRot = -Math.PI / 2;
+    } else if (this.faceY === -1) {
+      xRot = Math.PI / 2;
+    } else {
+      xRot = 0.0;
+    }
+
+    this.model.rotation.y += 6.0 * dt * (yRot - this.model.rotation.y);
+    this.model.rotation.x += 6.0 * dt * (xRot - this.model.rotation.x);
     
     var pos = this.object.position;
     if (this._currentDig) {
@@ -311,7 +332,8 @@ exports.prototype.digDown = function () {
   if (!this._world.canDig(this._x, this._y - 1)) {
     return this._failAttemptToDig(0, -1);
   }
-  this.faceX = -1;
+  this.faceX = +0;
+  this.faceY = -1;
   return this.digInDirection(0, -1);
 };
 exports.prototype.digUp = function() {
@@ -322,16 +344,17 @@ exports.prototype.digUp = function() {
   if (!this._world.canDig(this._x, this._y + 1)) {
     return;
   }
-  this.faceX = +1;
+  this.faceX = +0;
+  this.faceY = +1;
   return this.digInDirection(0, +1);
 };
 exports.prototype.faceLeft = function () {
-  this.model.rotation.y = -Math.PI/2;
   this.faceX = -1;
+  this.faceY = +0;
 };
 exports.prototype.faceRight = function () {
-  this.model.rotation.y = Math.PI/2;
   this.faceX = +1;
+  this.faceY = +0;
 };
 
 exports.prototype.right = function () {

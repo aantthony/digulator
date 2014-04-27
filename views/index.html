@@ -3,10 +3,13 @@
 	<head>
 		<style type="text/css">
 			canvas{
-				border-width: 50px;
-				border-style: ridge;
-				border-color: brown;
+				/*border-width: 50px;*/
+				/*border-style: ridge;*/
+				/*border-color: brown;*/
+				/*border-image-source: url('./images/Border.png');*/
+				/*border-image-repeat: space;*/
 				z-index: 0;
+				/*margin: 50px;*/
 			}
 			#relative {
 				display: inline-block;
@@ -30,7 +33,9 @@
 				position: relative;
 				height: 100%;
 				width: 100%;
-
+				background-color: #145f98;
+				/*border-image-source: url('./images/Border.png');*/
+				/*background-image: url('./images/Border.png');*/
 			}
 			#hud{
 				position: relative;
@@ -80,9 +85,10 @@
 			}
 			#title {
 				font-size: 7em;
-				color: #FF0000;
+				color: #145f98;
 			}
 			#desc {
+				background-color: rgba(255,255,255,0.5);
 				font-size: 1.5em;
 				color: #000;
 				width: 80%;
@@ -160,7 +166,7 @@
 					<h1>Digulator!</h1>
 					<div class="hd" id="goldBack"><div class="lame">Gold: </div><span id="gold">0</span><span>oz</span></div>
 					<div class="hd" id="depthBack"><div class="lame">Depth: </div><span id="depthometer">0</span><span>m</span></div>
-					<div class="hd" id="timeBack"><div class="lame">Time Left: </div><span id="time">60</span><span>s</span></div>
+					<div class="hd" id="timeBack"><div class="lame">Timer: </div><span id="time">60</span><span>s</span></div>
 				</div>
 				<div id="vsdiv">
 					<input id="volslider" type="range" name="volume" min="0" max ="100" value="50"/>
@@ -178,7 +184,18 @@
 				But be warned, you only have a limited time and there is a monster who doesn't like you mining his home. <br/><br/>
 				Good Luck! 
 				<div id="start">Begin</div>
+				<div id="nogl" style="display: none;"><br/>Unfortunately you do not have WebGL enabled in your browser. Please either enable it or use a compatible browser like Chrome, Opera, Firefox or Safari. If you are using one of these browsers, then try updating or searching for how to enable WebGL.</div>
 			</div>
 		</div>
+
+		<script type="text/javascript">
+			var canvas = document.createElement("canvas");
+			var context = canvas.getContext("experimental-webgl") || canvas.getContext("webgl") || canvas.getContext("moz-webgl") || canvas.getContext("webkit-3d");
+			if(!context){
+				document.getElementById("nogl").style.display = "block";
+				document.getElementById("start").style.display = "none";
+			}
+		</script>
+
 	</body>
 </html>
