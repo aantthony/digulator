@@ -45,6 +45,7 @@ function World() {
 	};
 
 	this.createWorld = function(){
+	
 		this.blocks = [];
 		if(height < 5)
 			height = 5;
@@ -119,14 +120,15 @@ function World() {
 
 			}
 		}
+		
 	};
 	
 	this.createLeaves = function(pos){
 		for (var i = 0; i < 3; ++i)
 		{
-			var leaf = objectLoader.getObject('Palm');
+			var leaf = objectLoader.getObject('Leaf');
 
-			leaf.scale.x = leaf.scale.y = leaf.scale.z = Math.random()*0.001+0.005;
+			leaf.scale.x = leaf.scale.y = leaf.scale.z = Math.random()*0.02+0.04;
 
 			leaf.rotation.x = Math.random()*0.25-0.125;
 			leaf.rotation.y = Math.random()*Math.PI*2;
@@ -151,7 +153,7 @@ function World() {
 		scene.remove(this.palms[x]);
 		soundPlayer.play('Leaves');
 		
-		var pos = new THREE.Vector3(0, 200, 0);
+		var pos = new THREE.Vector3(0, 330, 0);
 		pos.applyMatrix4(this.palms[x].matrixWorld);
 		this.createLeaves(pos);
 		

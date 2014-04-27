@@ -347,21 +347,23 @@ function ObjectLoader() {
   this.loadObject('Gold');
   this.loadObject('Diamond');
   this.loadObject('Palm');
+  this.loadObject('Leaf', 'Palm');
 
   this.loadObject('Player');
   this.loadObject('Monster');
 }
 
-ObjectLoader.prototype.loadObject = function(url) {
+ObjectLoader.prototype.loadObject = function(url, texOverride) {
   var ctx = this;
-  var texture = this.textureLoader.getTexture(url);
+  var texture = this.textureLoader.getTexture(texOverride || url);
   // var specular = this.textureLoader.getTexture('spark');
-  var normal = this.textureLoader.getTexture(url);
+  var normal = this.textureLoader.getNormal((texOverride || url) + 'NM');
 
   var material = new THREE.MeshPhongMaterial({color:0xFFFFFF, specular:0x222222});
   material.map = texture;
-  material.bumpMap = normal;
-  material.bumpScale = 0.5;
+  material.transparent = true;
+  material.normalMap = normal;
+  //material.bumpScale = 0.5;
   // material.specularMap = specular;
   material.needsUpdate = true;
 
