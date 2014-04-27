@@ -18,6 +18,7 @@ var objectLoader = require('./objectLoader');
 function World() {
 	this.objectLoader = objectLoader;
 	this.blocks = [],
+	this.palms = [],
 
 	this.createWorld = function(){
 		this.blocks = [];
@@ -43,6 +44,7 @@ function World() {
 			tree.position.y = 9.5;
 			tree.position.z = Math.random()*0.5-0.25;
 			scene.add(tree);
+			this.palms.push(tree);
 		}
 
 		this.addDiamonds();
@@ -67,6 +69,12 @@ function World() {
 
 			}
 		}
+	},
+
+	this.destroyPalm = function(x){
+		scene.remove(this.palms[x]);
+
+		this.palms[x] = undefined;
 	},
 
 	this.makeBlock = function(type,i,j){
