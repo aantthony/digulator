@@ -29,13 +29,13 @@ function SoundPlayer() {
   this.loadSound('Wind3');
 
   //misc
-  this.loadSound('DestroyTree');
+  // this.loadSound('DestroyTree');
   this.loadSound('TreeFall');
   this.loadSound('Leaves');
-  this.loadSound('Engine');
-  this.loadSound('Explosion');
-  this.loadSound('Grenade');
-  this.loadSound('Rocket');
+  // this.loadSound('Engine');
+  this.loadSound('Ending');
+  // this.loadSound('Grenade');
+  // this.loadSound('Rocket');
   this.loadSound('Sand');
 
   //Success

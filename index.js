@@ -308,6 +308,7 @@ Game = function()
 				break;
 			case 'monstered':
 				this.beginSpin();
+				soundPlayer.play('Ending');
 				document.getElementById("lossText").innerHTML = "MONSTERED!";
 				break;
 		}
