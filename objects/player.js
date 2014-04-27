@@ -20,13 +20,14 @@ var exports = module.exports = function (details) {
 
   this.object = new THREE.Object3D();
   this.object.add(this.model);
-
   var light = new THREE.PointLight(0xFFFFFF);
   light.position.y = 3;
   this.object.add(light);
 
-  this.object.position.set(15,0,0);
+  this.object.position.set(14,0,1);
   this.object.rotation.set(1.4,0,0);
+
+  window.p = this.object.position;
 
   // The direction the player is facing:
   this.faceX = +1;
@@ -115,7 +116,6 @@ var exports = module.exports = function (details) {
     t = Math.min(1.0, Math.max(t, 0.0));
     pos.x = this.digFrom.x + t * (this.digTarget.x - this.digFrom.x);
     pos.y = this.digFrom.y + t * (this.digTarget.y - this.digFrom.y);
-    console.log(t);
   } else if (this._currentDig && this.digTarget) {
 		var digSpasticAmplitude = 0.2;
 		var digSpasticFrequency = 5.0;
@@ -128,6 +128,7 @@ var exports = module.exports = function (details) {
 		this.object.position.copy(this.digTarget);
     this.object.position.add(tmp);
     this.object.rotation.y = Math.atan2(tmp.x, -tmp.y);
+    this.object.position.z = 1.0;
 	}
   }
 
@@ -135,8 +136,8 @@ var exports = module.exports = function (details) {
 };
 
 function downgradeBlock(block) {
-  if (block.name === 'diamond' || block.name === 'gold') return 'rock'; 
-  if (block.name === 'rock') return 'clay';
+  if (block.name === 'diamond' || block.name === 'gold') return 'dirt'; 
+  if (block.name === 'rock') return 'dirt';
   if (block.name === 'clay') return 'dirt';
   return 'sand';
 }
@@ -194,7 +195,6 @@ exports.prototype.digInDirection = function (xDir, yDir) {
     if (block.name === 'gold' || block.name === 'diamond' || block.name === 'rock') {
       var sparkPosX = block.position.x - xDir * 0.5;
       var sparkPosY = block.position.y - yDir * 0.5;
-      var sparkPosZ = block.position.z;
       var xO = 0;
       var yO = 0;
       var mO = 0.45;
@@ -203,7 +203,7 @@ exports.prototype.digInDirection = function (xDir, yDir) {
         if (yDir) xO += (Math.random() - 0.5) * 0.3;
         xO = Math.min(mO, Math.max(-mO, xO));
         yO = Math.min(mO, Math.max(-mO, yO));
-        self._game.emitParticles({x: sparkPosX + xO, y: sparkPosY + yO, z: sparkPosZ}, 0);
+        self._game.emitParticles({x: sparkPosX + xO, y: sparkPosY + yO, z: 0}, 0);
       }, 20));
       intervals.push(setInterval(function () {
         soundPlayer.play('DrillMed');
@@ -227,7 +227,7 @@ exports.prototype.digInDirection = function (xDir, yDir) {
       pos.x = this._x + xDir * 0.35;
       pos.y = this._y + yDir * 0.35;
     }
-    this.digTarget = new THREE.Vector3(x, y, pos.z);
+    this.digTarget = new THREE.Vector3(x, y, 0);
 
     if (!inBlock) {
       this.aboveGroundMove = true;
@@ -236,13 +236,13 @@ exports.prototype.digInDirection = function (xDir, yDir) {
   }
 
   if(this._y == 0){
-    this._world.destroyPalm(this._x-1);
+    this._world.destroyPalm(this._x+xDir);
   }
   else if(this._y == -1 && xDir){
-    this._world.destroyPalm(this._x);
+    this._world.destroyPalm(this._x+xDir);
   }
   else if(this._y == -2 && yDir == 1){
-    this._world.destroyPalm(this._x-1);
+    this._world.destroyPalm(this._x);
   }
   soundPlayer.setAtmosGain(this._y);
 }

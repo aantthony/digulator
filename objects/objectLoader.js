@@ -361,11 +361,31 @@ ObjectLoader.prototype.loadObject = function(url, texOverride) {
   var texture = this.textureLoader.getTexture(texOverride || url);
   var normal = this.textureLoader.getNormal((texOverride || url));
 
-  var material = new THREE.MeshPhongMaterial({color:0xDDDDDD, specular:0x222222});
+  var specCol = 0x222222;
+  if(url == "Gold"){
+    specCol = 0xffe400;
+  }
+  else if(url == "Sand"){
+    specCol = 0x111111;
+  }
+  else if(url == "Dirt"){
+    specCol = 0x010101;
+  }
+  else if(url == "Clay"){
+    specCol = 0x111111;
+  }
+  else if(url == "Diamond"){
+    specCol = 0x005a89;
+  }
+  else if(url == "Rock"){
+    specCol = 0x222222;
+  }
+
+  var material = new THREE.MeshPhongMaterial({color:0xDDDDDD, specular: specCol});
   material.map = texture;
   material.transparent = true;
   material.normalMap = normal;
-  // material.normalScale = new THREE.Vector3(0.5,0.5);
+  material.normalScale = new THREE.Vector3(0.25,0.25);
   // material.specularMap = specular;
   // material.bumpScale = 0.5;
   material.needsUpdate = true;

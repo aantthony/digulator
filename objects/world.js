@@ -9,7 +9,7 @@ var DIAMOND = 6;
 var EMPTY = 7;
 var width = 32;
 var height = 12;
-var NUMDIAMONDS = 2;
+var NUMDIAMONDS = 10;
 var NUMSPACE = 4;
 
 var objectLoader = require('./objectLoader');
@@ -105,7 +105,18 @@ function World() {
 			NUMSPACE = Math.floor((width + height) / 4) - 1;
 		NUMDIAMONDS = Math.floor((width + height) / 20) + 1;
 
-		for(var i = 1; i < width; i++){
+		var boundaryMesh = new THREE.Mesh(
+			new THREE.PlaneGeometry(width * 2, height * 2),
+			new THREE.MeshBasicMaterial({
+				color: 0,
+				depthTest: false,
+				depthWrite: false
+			})
+		);
+		boundaryMesh.position.set(width / 2,-height - 0.5,0);
+		scene.add(boundaryMesh);
+
+		for(var i = 0; i < width; i++){
 			var tree = objectLoader.getObject('Palm');
 
 			tree.scale.x = 0.005;
@@ -343,7 +354,7 @@ function World() {
 	}
 
 	this.addGold = function() {
-		var numGold = Math.floor(((width * height) + 2) * 0.04);
+		var numGold = Math.floor(((width * height) + 2) * 0.1);
 		var fail = false;
 		for(var i = 0; i < numGold; ++ i) {
 			var x = Math.floor(Math.random()*width);
@@ -371,7 +382,7 @@ function World() {
 	}
 
 	this.addRocks = function() {
-		var numRock = (width * height) * 0.05;
+		var numRock = (width * height) * 0.25;
 		if(width > 2 || height > 2) numRock += 2;
 		
 		for(var i = 0; i < numRock; ++ i) {

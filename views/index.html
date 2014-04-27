@@ -8,7 +8,7 @@
 				border-color: brown;
 				z-index: 0;
 			}
-			.relative {
+			#relative {
 				display: inline-block;
 				position: relative;
 				width: 100%;
@@ -72,16 +72,6 @@
 				color: #000000;
 				text-align: left;
 			}
-			#monstered {
-				font-size: 7em;
-				color: #FF0000;
-				text-align: center;
-				width: 100%;
-				position: absolute;
-				top: 250px;
-				display: none;
-				z-index: 7;
-			}
 			#startscreen {
 				position: absolute;
 				width: 100%;
@@ -126,6 +116,33 @@
 				float: right;
 				display: none;
 			}
+			#loss {
+				font-size: 7em;
+				color: #FF0000;
+				text-align: center;
+				width: 100%;
+				position: absolute;
+				top: 250px;
+				display: none;
+				z-index: 7;
+			}
+			.ms {
+				font-size: 0.6em;
+				border-style: groove;
+				border-color: rgb(0,0,255);
+				border-width: 5px;
+				display: inline;
+				color: #000;
+			}
+			.ms:hover {
+				cursor: default;
+			}
+			#rs {
+				margin-right: 35px;
+			}
+			#mm {
+				margin-left: 35px;
+			}
 		</style>
 		<title>Digulator!</title>
 		<script type="text/javascript" src="./stats.js"></script>
@@ -133,13 +150,17 @@
 	<body style="margin: 0; padding: 0; overflow: hidden">
 		<script type="text/javascript" src="scripts/index.js"></script>
 
-		<div class="relative">
-			<div id="monstered">MONSTERED!</div>
+		<div id="relative">
+			<div id="loss">
+				<div id="lossText">MONSTERED!</div>
+				<div id="rs" class="ms">Try Again</div>
+				<div id="mm" class="ms">Main Menu</div>
+			</div>
 				<div id="hud">
 					<h1>Digulator!</h1>
-					<div class="hd" id="goldBack"><div class="lame">Gold: </div><span id="gold">800</span><span>oz</span></div>
-					<div class="hd" id="depthBack"><div class="lame">Depth: </div><span id="depthometer">500</span><span>m</span></div>
-					<div class="hd" id="timeBack"><div class="lame">Time Left: </div><span id="time">400</span><span>s</span></div>
+					<div class="hd" id="goldBack"><div class="lame">Gold: </div><span id="gold">0</span><span>oz</span></div>
+					<div class="hd" id="depthBack"><div class="lame">Depth: </div><span id="depthometer">0</span><span>m</span></div>
+					<div class="hd" id="timeBack"><div class="lame">Time Left: </div><span id="time">60</span><span>s</span></div>
 				</div>
 				<div id="vsdiv">
 					<input id="volslider" type="range" name="volume" min="0" max ="100" value="50"/>

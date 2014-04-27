@@ -30,6 +30,7 @@ var soundPlayer = require('./objects/soundPlayer');
 var textureLoader = require('./objects/textureLoader');
 var objectLoader = require('./objects/objectLoader');
 var loss = false;
+var timeHack = undefined;
 
 var backgroundFragShader = require('./shaders/background.frag');
 var backgroundVertShader = require('./shaders/background.vert');
@@ -170,6 +171,7 @@ Game = function()
 		// cube = new Digulator.Sand();
 		// scene.add(cube);
 
+		loss = false;
 		world.createWorld();
 		this.setUpHUD();
 	};
@@ -217,7 +219,8 @@ Game = function()
 	this.fixedUpdateTimer = 0.0;
 	this.update = function(dt)
 	{
-	
+		if(loss == true)
+			return;
 		//loop until processed all fixed updates
 		this.fixedUpdateTimer += dt;
 		while (this.fixedUpdateTimer > this.fixedUpdateTime)
@@ -245,6 +248,8 @@ Game = function()
 	};
 
 	this.setUpHUD = function() {
+		if(timeHack != undefined)
+			document.getElementById("timeBack").innerHTML = timeHack;
 		document.getElementById("time").innerHTML = 60;
 		document.getElementById("gold").innerHTML = 0;
 		document.getElementById("depthometer").innerHTML = 0;
@@ -270,17 +275,24 @@ Game = function()
 			return;
 		}
 		loss = true;
+
+		
 		switch(losstype) {
 			case 'timeout':
+				timeHack = document.getElementById("timeBack").innerHTML;
 				document.getElementById("timeBack").innerHTML = "Time's Up!";
 				document.getElementById("timeBack").style.textAlign = "center";
+				document.getElementById("lossText").innerHTML = "Outta Time!";
 				break;
 			case 'monstered':
-				game.beginSpin();
-				document.getElementById("monstered").style.display = "block";
+				document.getElementById("lossText").innerHTML = "MONSTERED!";
 				break;
 		}
-	};
+		//changeGameState(new LossState());
+		// swap when game state changes properly
+		loss = true;
+		document.getElementById("loss").style.display = "block";
+	}
 
 	this.updateDepth = function() {
 		document.getElementById("depthometer").innerHTML = Math.round( (-player.object.position.y) * 10 ) / 10;
@@ -356,7 +368,6 @@ MainMenu = function()
 	this.startGame = function()
 	{
 		// alert("qwe");
-		document.getElementById("startscreen").style.display = "none";
 		changeGameState(new Game());
 	}
 	
@@ -365,10 +376,40 @@ MainMenu = function()
 	
 	this.enter = function()
 	{
+		document.getElementById("relative").style.display = "none";
+		document.getElementById("startscreen").style.display = "block";
 	}
 	this.leave = function()
 	{
+		document.getElementById("relative").style.display = "block";
+		document.getElementById("startscreen").style.display = "none";
 	}
+}
+
+LossState = function() {
+	GameState.call(this);
+
+	this.startNewGame = function() {
+		changeGameState(new Game())
+	}
+
+	this.mainMenu = function() {
+		document.getElementById("relative").style.display = "none";
+		changeGameState(new MainMenu());
+	}
+
+	document.getElementById("rs").onclick = this.startNewGame.bind(this);
+	document.getElementById("mm").onclick = this.mainMenu.bind(this);
+
+	this.enter = function() {
+		loss = true;
+		document.getElementById("loss").style.display = "block";
+	}
+
+	this.leave = function() {
+		loss = false;
+	}
+
 }
 
 var currentGameState = null;
@@ -430,11 +471,7 @@ window.onload = function()
 	}, 50);
 	document.getElementById("volslider").addEventListener('change',function (){
 		soundPlayer.setVolume(this.value);
-})
-
-document.getElementById("volslider").addEventListener('focus',function (){
-		this.blur();
-})
+	})
 }
 
 window.onresize = function(){
