@@ -67,7 +67,8 @@ Game = function()
 	renderer.setSize(width, height);
 	document.getElementById("gamewrap").appendChild(renderer.domElement);
 
-	var world = new World();
+	this.world = new World();
+	window.world = this.world;
 	console.log('created a world!');
 
 	this.camera.position.z = 15;
@@ -183,6 +184,8 @@ Game = function()
 		screenShake *= 0.9;
 		
 		this.particles.step(dt);
+		
+		this.world.update(dt);
 	}
 
 	this.secondTimer = 0.0;

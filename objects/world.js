@@ -20,6 +20,26 @@ function World() {
 	this.objectLoader = objectLoader;
 	this.blocks = [],
 	this.palms = [],
+	this.leaves = [];
+	
+	this.update = function(dt){
+		var remleaves = [];
+		for (var l in this.leaves)
+		{
+			var leaf = this.leaves[l];
+			leaf.time += dt;
+			leaf.position.y -= dt * 0.2;
+			leaf.position.x += Math.sin(leaf.time * 4.0) * dt;
+			leaf.position.y += Math.pow(Math.abs(Math.cos(leaf.time * 4.0+0.5)),6) * dt * 0.4;
+			if (leaf.position.y < 10.0) //FIXME: 10... ?? wtf
+				remleaves.push(l);
+		}
+		for (var i = remleaves.length-1; i >= 0; --i)
+		{
+			scene.remove(this.leaves[remleaves[i]]);
+			delete this.leaves[remleaves[i]];
+		}
+	};
 
 	this.createWorld = function(){
 		this.blocks = [];
@@ -70,7 +90,30 @@ function World() {
 
 			}
 		}
-	},
+	};
+	
+	this.createLeaves = function(pos){
+		for (var i = 0; i < 3; ++i)
+		{
+			var leaf = objectLoader.getObject('Palm');
+
+			leaf.scale.x = leaf.scale.y = leaf.scale.z = Math.random()*0.001+0.005;
+
+			leaf.rotation.x = Math.random()*0.25-0.125;
+			leaf.rotation.y = Math.random()*Math.PI*2;
+			leaf.rotation.z = Math.random()*0.25-0.125;
+
+			leaf.position.copy(pos);
+			
+			leaf.time = Math.random() * 3.0;
+			
+			leaf.position.x += Math.random()*0.5-0.25;
+			leaf.position.y += Math.random()*0.5-0.25;
+			
+			scene.add(leaf);
+			this.leaves.push(leaf);
+		}
+	};
 
 	this.destroyPalm = function(x){
 		if(!this.palms[x]){
@@ -78,9 +121,13 @@ function World() {
 		}
 		scene.remove(this.palms[x]);
 		soundPlayer.play('Leaves');
-
+		
+		var pos = new THREE.Vector3(0, 200, 0);
+		pos.applyMatrix4(this.palms[x].matrixWorld);
+		this.createLeaves(pos);
+		
 		this.palms[x] = undefined;
-	},
+	};
 
 	this.makeBlock = function(type,i,j){
 		var block = this.chooseBlock(type);
@@ -96,7 +143,7 @@ function World() {
 		this.blocks[i][j] = cube;
 
 		return cube;
-	},
+	};
 
 	this.getBlock = function (x, y) {
 		var col = this.blocks[x];
