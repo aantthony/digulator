@@ -9,7 +9,7 @@ var DIAMOND = 6;
 var EMPTY = 7;
 var width = 32;
 var height = 12;
-var NUMDIAMONDS = 2;
+var NUMDIAMONDS = 10;
 var NUMSPACE = 4;
 
 var objectLoader = require('./objectLoader');
@@ -338,7 +338,7 @@ function World() {
 	}
 
 	this.addGold = function() {
-		var numGold = Math.floor(((width * height) + 2) * 0.04);
+		var numGold = Math.floor(((width * height) + 2) * 0.1);
 		var fail = false;
 		for(var i = 0; i < numGold; ++ i) {
 			var x = Math.floor(Math.random()*width);
@@ -366,7 +366,7 @@ function World() {
 	}
 
 	this.addRocks = function() {
-		var numRock = (width * height) * 0.05;
+		var numRock = (width * height) * 0.25;
 		if(width > 2 || height > 2) numRock += 2;
 		
 		for(var i = 0; i < numRock; ++ i) {
