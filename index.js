@@ -36,6 +36,10 @@ var backgroundFragShader = require('./shaders/background.frag');
 var backgroundVertShader = require('./shaders/background.vert');
 
 var bloom = true;
+var flags = window.location.hash.replace(/^#/, '').split(',');
+if (~flags.indexOf('nobloom')) {
+	bloom = false;
+}
 
 function shakeFunction(x)
 {
