@@ -34,9 +34,11 @@ exports.prototype.digLeft = function () {
 
 exports.prototype.updateFunc = function(dt,player) {
 	this.delta += dt;
+
 	if(this.object.position.x == player.object.position.x
 		&& this.object.position.y == player.object.position.y)
 		game.forceLoss('monstered');
+
 	if(this.delta >= this.deltaDelay) {
 		this.AI(player);
 		this.delta -= this.deltaDelay;

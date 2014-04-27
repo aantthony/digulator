@@ -25,7 +25,7 @@ var exports = module.exports = function (details) {
   light.position.y = 3;
   this.object.add(light);
 
-  this.object.position.set(15,0,0);
+  this.object.position.set(14,0,0);
   this.object.rotation.set(1.4,0,0);
 
   // The direction the player is facing:
@@ -236,10 +236,10 @@ exports.prototype.digInDirection = function (xDir, yDir) {
   }
 
   if(this._y == 0){
-    this._world.destroyPalm(this._x-1);
+    this._world.destroyPalm(this._x);
   }
   else if(this._y == -1 && xDir){
-    this._world.destroyPalm(this._x);
+    this._world.destroyPalm(this._x+1);
   }
   else if(this._y == -2 && yDir == 1){
     this._world.destroyPalm(this._x-1);
