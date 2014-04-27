@@ -3,9 +3,11 @@ window.AudioContext = window.AudioContext || window.webkitAudioContext;
 function SoundPlayer() {
   var ctx = this;
   this.audio = new AudioContext();
+  this.audioGain = this.audio.createGain();
+  this.audioGain.gain.value = 0.15;
 
   this.atmosAudio = new AudioContext();
-  this.atmosGain = this.atmosAudio.createGainNode();
+  this.atmosGain = this.atmosAudio.createGain();
   this.atmosGainValue = 0.1;
 
   this.sounds = {};
@@ -77,9 +79,22 @@ SoundPlayer.prototype.play = function(sound) {
   }
   var source = this.audio.createBufferSource();
   source.buffer = this.sounds[sound];
-  source.connect(this.audio.destination);
+  source.connect(this.audioGain);
+  this.audioGain.connect(this.audio.destination);
   source.start(0);
 }
+
+/*SoundPlayer.prototype.playLoop = function(sound) {
+  if(!this.sounds[sound]){
+    console.log("not loaded");
+    return;
+  }
+  var source = this.audio.createBufferSource();
+  source.buffer = this.sounds[sound];
+  source.connect(this.audioGain);
+  this.audioGain.connect(this.audio.destination);
+  source.start(0);
+}*/
 
 SoundPlayer.prototype.loadSound = function(url) {
   var ctx = this;
