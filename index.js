@@ -103,7 +103,8 @@ Game = function()
 			vertexShader: backgroundVertShader,
       fragmentShader: backgroundFragShader,
       uniforms: {
-      	aspect: {type: 'f', value: width / height }
+      	aspect: {type: 'f', value: width / height },
+      	sun: {type: 'v2', value: new THREE.Vector2(0,0) }
       },
 			depthTest: true,
 			depthWrite: false
@@ -278,6 +279,15 @@ Game = function()
 	
 	this.display = function()
 	{
+		var sunpos = new THREE.Vector4(sunPosition.x,sunPosition.y,sunPosition.z,1);
+		sunpos.applyMatrix4(camera.matrixWorldInverse);
+		sunpos.applyMatrix4(camera.projectionMatrix);
+		sunpos.x /= sunpos.w;
+		sunpos.y /= sunpos.w;
+		sunpos.x = sunpos.x * 0.5 + 0.5;
+		sunpos.y = sunpos.y * 0.5 + 0.5;
+		backgroundMesh.material.uniforms.sun.value.copy(sunpos);
+		
 		this.bloom.bind();
 		
 		renderer.autoClear = false;
@@ -290,15 +300,7 @@ Game = function()
 		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 		this.particles.draw(camera.projectionMatrix.elements, camera.matrixWorldInverse.elements);
 		gl.disable(gl.BLEND);
-		
-		var tmp = new THREE.Vector4(sunPosition.x,sunPosition.y,sunPosition.z,1);
-		tmp.applyMatrix4(camera.matrixWorldInverse);
-		tmp.applyMatrix4(camera.projectionMatrix);
-		tmp.x /= tmp.w;
-		tmp.y /= tmp.w;
-		tmp.x = tmp.x * 0.5 + 0.5;
-		tmp.y = tmp.y * 0.5 + 0.5;
-		this.bloom.unbind(null, tmp);
+		this.bloom.unbind(null, sunpos);
 	}
 }
 

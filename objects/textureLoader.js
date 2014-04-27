@@ -26,6 +26,8 @@ function TextureLoader() {
   this.loadTexture('Palm');
   this.loadNormal('PalmNM');
 
+  this.loadTexture('Grass');
+  
   this.loadTexture('Player');
   this.loadTexture('Monster');
   // this.loadTexture('spark');
