@@ -32,7 +32,7 @@ var exports = module.exports = function (details) {
   
   this.update = function(dt)
   {
-	if (this._currentDig)
+	if (this._currentDig && this.digTarget)
 	{
 		this.digTimeLeft -= dt;
 		var digSpasticAmplitude = 0.2;
@@ -42,7 +42,7 @@ var exports = module.exports = function (details) {
 		tmp.x += window.shakeFunction(this.digShakeTimer * digSpasticFrequency) * digSpasticAmplitude;
 		tmp.y += window.shakeFunction(this.digShakeTimer * digSpasticFrequency+98.412) * digSpasticAmplitude;
 		tmp.sub(this.digTarget);
-		tmp.setLength((window.shakeFunction(this.digShakeTimer * digSpasticFrequency+9.9812) * 0.25 + 0.75) * Math.min(this.digTimeLeft, 1.0));
+		tmp.setLength((window.shakeFunction(this.digShakeTimer * digSpasticFrequency+9.9812) * 0.25 + 0.75) * Math.min(Math.max(this.digTimeLeft, 0.0), 1.0));
 		this.object.position.copy(this.digTarget);
 		this.object.position.add(tmp);
 		this.object.rotation.y = Math.atan2(tmp.x, -tmp.y);
@@ -78,8 +78,8 @@ exports.prototype.digInDirection = function (xDir, yDir) {
   pos.y = this._y;
   var block = this._world.getBlock(pos.x + xDir, pos.y + yDir);
   this.digFrom = this.object.position.clone();
-  this.digTarget = block.position.clone();
   if (block) {
+	this.digTarget = block.position.clone();
     shake(3);
     var world = this._world;
     var x = this._x + xDir;
@@ -112,6 +112,7 @@ exports.prototype.digInDirection = function (xDir, yDir) {
       self._currentDigX = 0;
       self._currentDigY = 0;
       delete self._currentDig;
+	  delete self.digTarget;
       if (d > 5) soundPlayer.play('DrillFast');
       // world.setBlock(x - xDir, y - yDir, 'sand');
       world.setBlock(x, y, 'sand');
@@ -122,6 +123,7 @@ exports.prototype.digInDirection = function (xDir, yDir) {
       timers.forEach(clearTimeout);
       self._currentDigX = timers._currentDigY = 0;
       delete self._currentDig;
+	  delete self.digTarget;
       pos.x = self._x;
       pos.y = self._y;
       block.scale.set(1,1,1);
@@ -159,15 +161,22 @@ exports.prototype._failAttemptToDig = function (dx, dy) {
   soundPlayer.play('DrillMed');
   if (this._currentDig) this._currentDigCancel();
   this._currentDig = true;
+  this.digFrom = this.object.position.clone();
   var self = this;
   var pos = this.object.position;
+  this._x = pos.x; //back up position
+  this._y = pos.y;
   var x = pos.x;
   pos.x += dx * 0.5;
+  this.digTarget = this.object.position.clone(); //animate drilling into wall
   this._currentDigCancel = function () {
     delete self._currentDig;
-    pos.x = x;
+	delete self.digTarget;
+    pos.x = self._x; //reset position
+    pos.y = self._y;
   };
   setTimeout(this._currentDigCancel, 500);
+  this.digTimeLeft = 800.0/1000.0; //a little higher so aniation won't complete
 };
 
 exports.prototype.digLeft = function () {
