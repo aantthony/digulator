@@ -73,7 +73,7 @@ function World() {
 			this.palms.push(tree);
 		}
 		
-		var grasswidth = 16;
+		var grasswidth = 4;
 		var grassFragShader = require('../shaders/grass.frag');
 		var grassVertShader = require('../shaders/grass.vert');
 		var grassGeom = new THREE.PlaneGeometry(grasswidth, grasswidth*128/1024);

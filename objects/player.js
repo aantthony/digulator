@@ -218,6 +218,7 @@ exports.prototype._failAttemptToDig = function (dx, dy) {
   this.digFrom = this.object.position.clone();
   var self = this;
   var x = this._x;
+  var pos = this.object.position;
   pos.x += dx * 0.5;
   this.digTarget = this.object.position.clone(); //animate drilling into wall
   this._currentDigCancel = function () {
