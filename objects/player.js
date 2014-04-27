@@ -309,6 +309,7 @@ exports.prototype.digDown = function () {
   if (!this._world.canDig(this._x, this._y - 1)) {
     return this._failAttemptToDig(0, -1);
   }
+  this.faceX = -1;
   return this.digInDirection(0, -1);
 };
 exports.prototype.digUp = function() {
@@ -319,6 +320,7 @@ exports.prototype.digUp = function() {
   if (!this._world.canDig(this._x, this._y + 1)) {
     return;
   }
+  this.faceX = +1;
   return this.digInDirection(0, +1);
 };
 exports.prototype.faceLeft = function () {
