@@ -206,7 +206,7 @@ Game = function()
 	}
 
 	this.setUpHUD = function() {
-		document.getElementById("time").innerHTML = 60;
+		document.getElementById("time").innerHTML = 5;
 		document.getElementById("gold").innerHTML = 0;
 		document.getElementById("depthometer").innerHTML = 0;
 		this.updateDepth();
