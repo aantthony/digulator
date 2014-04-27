@@ -146,7 +146,7 @@ exports.prototype.faceRight = function () {
 };
 
 exports.prototype.right = function () {
-  if (this.faceX === +1 && this.canDig(this.object.position.x+1,this.object.position.y)) {
+  if (this.faceX === +1 && this.canDig(this.loc.x+1,this.loc.y)) {
     this.digRight();
   } else {
     this.faceRight();
@@ -154,7 +154,7 @@ exports.prototype.right = function () {
 };
 
 exports.prototype.left = function () {
-  if (this.faceX === -1 && this.canDig(this.object.position.x-1,this.object.position.y)) {
+  if (this.faceX === -1 && this.canDig(this.loc.x-1,this.loc.y)) {
     this.digLeft();
   } else {
     this.faceLeft();
