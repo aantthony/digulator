@@ -18,6 +18,7 @@ var exports = module.exports = function (details) {
   this.faceY = +1;
 
   this._world = details.world;
+  this._game = details.game;
 
   // timer for current digging action:
   this._currentDig = null;
@@ -93,16 +94,16 @@ exports.prototype.digInDirection = function (xDir, yDir) {
     
     timers.push(setTimeout(function () {
       shake(3);
-      block.scale.set(0.5, 0.5, 0.5);
+      // block.scale.set(0.5, 0.5, 0.5);
       //pos.x += 0.5 * xDir;
-      block.position.x = x + 0.25 * xDir;
-      block.position.y = y - 0.25;
+      // block.position.x = x + 0.25 * xDir;
+      // block.position.y = y - 0.25;
       if (d > 5) soundPlayer.play('DrillMed');
     }, mineTime / 3));
     timers.push(setTimeout(function () {
       shake(2);
-      block.scale.set(0.25, 0.25, 0.25);
-      block.position.y = y - 0.25 - 0.125;
+      // block.scale.set(0.25, 0.25, 0.25);
+      // block.position.y = y - 0.25 - 0.125;
       if (d > 5) soundPlayer.play('DrillMed');
     }, mineTime * 2 / 3));
     timers.push(setTimeout(function () {
@@ -127,7 +128,7 @@ exports.prototype.digInDirection = function (xDir, yDir) {
       pos.x = self._x;
       pos.y = self._y;
       block.scale.set(1,1,1);
-      block.position.set(self._x + xDir, self._y + yDir, 0.0);
+      // block.position.set(self._x + xDir, self._y + yDir, 0.0);
     };
 
     // until we have a better digging animation:
@@ -194,13 +195,14 @@ exports.prototype.digRight = function () {
   return this.digInDirection(+1, 0);
 };
 exports.prototype.digDown = function () {
+  this._game.emitParticles(this.object.position, 1, {x:0,y:1});
   if (!this._world.canDig(this._x, this._y - 1)) {
     return this._failAttemptToDig(0, -1);
   }
   return this.digInDirection(0, -1);
 };
 exports.prototype.digUp = function() {
-  console.log('up?');
+  this._game.emitParticles(this.object.position, 2, {x:1,y:0});
   var on = this._world.getBlock(this._x, this._y);
   if (!on) return; // no flying!
 
@@ -223,6 +225,7 @@ exports.prototype.faceRight = function () {
 };
 
 exports.prototype.right = function () {
+  this._game.emitParticles(this.object.position, 2, {x:0,y:1});
   if (this.faceX === +1) {
     this.digRight();
   } else {
@@ -231,6 +234,7 @@ exports.prototype.right = function () {
 };
 
 exports.prototype.left = function () {
+  this._game.emitParticles(this.object.position, 0);
   if (this.faceX === -1) {
     this.digLeft();
   } else {

@@ -3,15 +3,6 @@ module.exports = KeyboardState;
 function keydown(event) {
   if (this.keyCodes[event.keyCode]) return;
   this.keyCodes[event.keyCode] = true;
-  if (event.keyCode === KeyboardState.ALIAS['left']) {
-    return this.onleft();
-  } else if (event.keyCode === KeyboardState.ALIAS['right']) {
-    return this.onright();
-  } else if (event.keyCode === KeyboardState.ALIAS['up']) {
-    return this.onup();
-  } else if (event.keyCode === KeyboardState.ALIAS['down']) {
-    return this.ondown();
-  }
 }
 
 function keyup(event) {
@@ -35,6 +26,23 @@ KeyboardState.prototype.destroy  = function() {
   document.removeEventListener('keydown', this._onKeyDown, false);
   document.removeEventListener('keyup', this._onKeyUp, false);
 };
+
+KeyboardState.prototype.pressed = function (keyDesc) {
+  var keys  = keyDesc.split('+');
+  for(var i = 0; i < keys.length; i++){
+    var key = keys[i];
+    var pressed;
+    if( KeyboardState.MODIFIERS.indexOf( key ) !== -1 ){
+      pressed = this.modifiers[key];
+    }else if( Object.keys(KeyboardState.ALIAS).indexOf( key ) != -1 ){
+      pressed = this.keyCodes[KeyboardState.ALIAS[key]];
+    }else {
+      pressed = this.keyCodes[key.toUpperCase().charCodeAt(0)]
+    }
+    if( !pressed) return false;
+  };
+  return true;
+}
 
 KeyboardState.MODIFIERS  = ['shift', 'ctrl', 'alt', 'meta'];
 KeyboardState.ALIAS  = {
