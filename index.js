@@ -146,14 +146,15 @@ Game = function()
 			for (var i = 0; i < 2; ++i)
 				this.particles.spawn([pos.x + direction.y*(Math.random()-0.5) * spreadTrans + (Math.random()-0.5)*spread, pos.y + direction.x*(Math.random()-0.5)*spreadTrans + (Math.random()-0.5)*spread, pos.z + zoff, type], [direction.x, direction.y, 0.0, -Math.random()]);
 		}
-	}
+	};
 	
 	this.camera.spinning = false;
 	this.beginSpin = function()
 	{
 		this.camera.spinning = true;
 		this.camera.spinTime = 0.0;
-	}
+		this.camera.fovBak = this.camera.fov;
+	};
 	
 	this.enter = function()
 	{
@@ -162,7 +163,7 @@ Game = function()
 
 		world.createWorld();
 		this.setUpHUD();
-	}
+	};
 	this.fixedUpdate = function(dt)
 	{
 		var playerpos = player.object.position;
@@ -175,6 +176,28 @@ Game = function()
 		camera.position.x = cameraFocus.x + shakeFunction(100.0 * screenShakeTime) * Math.sqrt(screenShake) * 0.03;
 		camera.position.y = cameraFocus.y + shakeFunction(100.0 * screenShakeTime + 12383.23487) * Math.sqrt(screenShake) * 0.03;
 		screenShake *= 0.9;
+		if (this.camera.spinning)
+		{
+			this.camera.spinTime += dt;
+			console.log(this.camera.spinTime);
+			if (this.camera.spinTime < 3.0)
+			{
+				this.camera.fov = 10 + (this.camera.fovBak-10) * (0.5+0.5*Math.cos(this.camera.spinTime * Math.PI * 2.0));
+				this.camera.updateProjectionMatrix();
+			}
+			else if (this.camera.spinTime < 4.0)
+			{
+				camera.rotation.z = (this.camera.spinTime - 3.0) * Math.PI * 2.0;
+			}
+			else
+			{
+				this.camera.fov = this.camera.fovBak;
+				this.camera.updateProjectionMatrix();
+				camera.rotation.z = 0.0;
+				window.shake(200.0);
+				this.camera.spinning = false;
+			}
+		}
 		
 		this.particles.step(dt);
 		
@@ -211,16 +234,16 @@ Game = function()
 		
 		if(monster)
 			monster.updateFunc(dt,player);
-	}
+	};
 
 	this.setUpHUD = function() {
-		document.getElementById("time").innerHTML = 5;
+		document.getElementById("time").innerHTML = 60;
 		document.getElementById("gold").innerHTML = 0;
 		document.getElementById("depthometer").innerHTML = 0;
 		document.getElementById("vsdiv").style.display = "block";
 		this.updateDepth();
 		document.getElementById("hud").style.display = "block";
-	}
+	};
 	
 	this.updateTimerHUD = function() {
 		if(loss != true) {
@@ -230,9 +253,14 @@ Game = function()
 			else
 				document.getElementById("time").innerHTML = (i - 1);
 		}
-	}
+	};
 
 	this.forceLoss = function(losstype) {
+		if (loss)
+		{
+			console.log("Game.forceLoss but already in loss state");
+			return;
+		}
 		loss = true;
 		switch(losstype) {
 			case 'timeout':
@@ -240,10 +268,11 @@ Game = function()
 				document.getElementById("timeBack").style.textAlign = "center";
 				break;
 			case 'monstered':
+				game.beginSpin();
 				document.getElementById("monstered").style.display = "block";
 				break;
 		}
-	}
+	};
 
 	this.updateDepth = function() {
 		document.getElementById("depthometer").innerHTML = Math.round( (-player.object.position.y) * 10 ) / 10;

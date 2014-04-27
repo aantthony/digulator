@@ -31,10 +31,12 @@ function World() {
 		{
 			var leaf = this.leaves[l];
 			leaf.time += dt;
-			leaf.position.y -= dt * 0.2;
+			leaf.position.y -= dt * 0.6;
 			leaf.position.x += Math.sin(leaf.time * 4.0) * dt;
 			leaf.position.y += Math.pow(Math.abs(Math.cos(leaf.time * 4.0+0.5)),6) * dt * 0.4;
-			if (leaf.position.y < 0.0)
+			leaf.rotation.x += dt * 0.5;
+			leaf.rotation.z += dt * 2.0;
+			if (leaf.position.y < -0.3)
 				remleaves.push(l);
 		}
 		for (var i = remleaves.length-1; i >= 0; --i)
@@ -49,7 +51,7 @@ function World() {
 			trunk.time += dt * 0.4;
 			trunk.fall += trunk.time * dt;
 			trunk.rotation.z -= trunk.fall * dt;
-			if (trunk.fall > 1.5)
+			if (trunk.fall > 1.6)
 			{
 				remtrunks.push(l);
 				for (var i = 0; i < 10; ++i)
@@ -127,7 +129,7 @@ function World() {
 		for (var i = 0; i < width / grasswidth; ++i)
 		{
 			var grass = new THREE.Mesh(grassGeom, grassMat);
-			grass.position.set((i+0.5)*grasswidth-0.5,0.5*grasswidth*128/1024-0.5,0.5);
+			grass.position.set((i+0.5)*grasswidth-0.5,0.5*grasswidth*128/1024-0.55,0.5);
 			scene.add(grass);
 			this.grass.push(grass);
 		}
@@ -158,6 +160,7 @@ function World() {
 	};
 
 	this.destroyPalm = function(x){
+	
 		if(!this.palms[x]){
 			return;
 		}
