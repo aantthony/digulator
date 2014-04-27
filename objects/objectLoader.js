@@ -360,10 +360,11 @@ ObjectLoader.prototype.loadObject = function(url) {
   // var specular = this.textureLoader.getTexture('spark');
   var normal = this.textureLoader.getNormal(url);
 
-  var material = new THREE.MeshPhongMaterial({color:0xFFFFFF, specular:0x222222});
+  var material = new THREE.MeshPhongMaterial({color:0xDDDDDD, specular:0x222222});
   material.map = texture;
-  material.bumpMap = normal;
-  material.bumpScale = 0.5;
+  material.normalMap = normal;
+  // material.normalScale = new THREE.Vector3(0.5,0.5);
+  // material.bumpScale = 0.5;
   // material.specularMap = specular;
   material.needsUpdate = true;
 
