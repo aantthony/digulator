@@ -1,11 +1,19 @@
+var objectLoader = require('./objectLoader');
+
 var exports = module.exports = function (details) {
 
   var geometry = new THREE.CubeGeometry(0.4,0.4, 0.4);
   var material = new THREE.MeshBasicMaterial({color: 0xFFFFFF});
-  this.object = new THREE.Mesh(geometry, material);
+  // this.object = new THREE.Mesh(geometry, material);
+  this.object = objectLoader.getObject('Monster');
+  this.object.scale.x = 0.03;
+  this.object.scale.y = 0.03;
+  this.object.scale.z = 0.03;
+  // this.object.material.depthTest = false;
+  this.object.material = material;
 
   this.object.position.set(10,-5,0.5);
-  this.object.rotation.set(1.4,0,0);
+  // this.object.rotation.set(1.4,0,0);
 
   // The direction the monster is facing:
   this.faceX = +1;
