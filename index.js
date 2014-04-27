@@ -30,6 +30,9 @@ var soundPlayer = require('./objects/soundPlayer');
 var textureLoader = require('./objects/textureLoader');
 var objectLoader = require('./objects/objectLoader');
 
+var backgroundFragShader = require('./shaders/background.frag');
+var backgroundVertShader = require('./shaders/background.vert');
+
 function shakeFunction(x)
 {
 	var r = 0.0;
@@ -104,28 +107,23 @@ Game = function()
 	window.bloom = this.bloom;
 	this.particles = new Particles(64);
 	
-	var texture = THREE.ImageUtils.loadTexture('images/sky.png');
-	texture.wrapS = THREE.RepeatWrapping;
+	// full screen quad:
 	var geo = new THREE.PlaneGeometry(2, 2);
-	var uvs = geo.faceVertexUvs[0];
-	uvs.forEach(function (uvs) {
-		uvs.forEach(function (uvs) {
-			uvs.x *= width / 64;
-			if (uvs.y === 0) {
-				uvs.y = height / 512;
-			} else {
-				uvs.y = 0;
-			}
-		});
-	});
 	var backgroundMesh = new THREE.Mesh(
 		geo,
-		new THREE.MeshBasicMaterial({
-			map: texture,
-			depthTest: false,
+		new THREE.ShaderMaterial({
+			// map: texture,
+			blending: THREE.NoBlending,
+			vertexShader: backgroundVertShader,
+      fragmentShader: backgroundFragShader,
+      uniforms: {
+      	aspect: {type: 'f', value: width / height }
+      },
+			depthTest: true,
 			depthWrite: false
 		})
 	);
+	backgroundMesh.position.set(0,0,1);
 
 	var backgroundScene = new THREE.Scene();
 	var backgroundCamera = new THREE.Camera();
@@ -230,7 +228,9 @@ Game = function()
 
 		this.renderer.setSize(width, height);
 
-		this.bloom.resize(width, height)
+		this.bloom.resize(width, height);
+
+		backgroundMesh.material.uniforms.aspect.value = width / height;
 	}
 	
 	this.display = function()
@@ -239,9 +239,9 @@ Game = function()
 		
 		renderer.autoClear = false;
 		renderer.clear();
-		//renderer.render(backgroundScene, backgroundCamera );
+		renderer.render(backgroundScene, backgroundCamera );
 		renderer.render(scene, camera);
-		
+
 		gl.disable(gl.DEPTH_TEST);
 		gl.enable(gl.BLEND);
 		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);

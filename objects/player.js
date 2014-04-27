@@ -151,6 +151,7 @@ exports.prototype.digInDirection = function (xDir, yDir) {
   else if(this._y == 8 && yDir == 1){
     this._world.destroyPalm(this._x-1);
   }
+  soundPlayer.setAtmosGain(this._y);
 }
 
 /**
