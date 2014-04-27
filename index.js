@@ -210,6 +210,7 @@ Game = function()
 		document.getElementById("time").innerHTML = 5;
 		document.getElementById("gold").innerHTML = 0;
 		document.getElementById("depthometer").innerHTML = 0;
+		document.getElementById("vsdiv").style.display = "block";
 		this.updateDepth();
 		document.getElementById("hud").style.display = "block";
 	}
@@ -310,12 +311,13 @@ MainMenu = function()
 	
 	this.startGame = function()
 	{
-		alert("qwe");
+		// alert("qwe");
+		document.getElementById("startscreen").style.display = "none";
 		changeGameState(new Game());
 	}
 	
 	//change this to the start game event thing and stuff
-	document.body.onclick = this.startGame.bind(this);
+	document.getElementById("start").onclick = this.startGame.bind(this);
 	
 	this.enter = function()
 	{
@@ -381,6 +383,13 @@ window.onload = function()
 		document.getElementById("loadingscreen").style.display = "none";
 		mainloop();
 	}, 50);
+	document.getElementById("volslider").addEventListener('change',function (){
+		soundPlayer.setVolume(this.value);
+})
+
+document.getElementById("volslider").addEventListener('focus',function (){
+		this.blur();
+})
 }
 
 window.onresize = function(){
@@ -389,3 +398,5 @@ window.onresize = function(){
 
 	currentGameState.resize(width, height);
 }
+
+
