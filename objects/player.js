@@ -138,8 +138,31 @@ exports.prototype.digInDirection = function (xDir, yDir) {
       shake(2);
       if (d > 5) soundPlayer.play('DrillMed');
     }, mineTime * 2 / 3));
+
+    var interval;
+    if (block.name === 'gold' || block.name === 'diamond' || block.name === 'rock') {
+      var sparkPosX = block.position.x - xDir * 0.5;
+      var sparkPosY = block.position.y - yDir * 0.5;
+      var sparkPosZ = block.position.z;
+      var xO = 0;
+      var yO = 0;
+      var mO = 0.45;
+      interval = setInterval(function () {
+        if (xDir) yO += (Math.random() - 0.5) * 0.3;
+        if (yDir) xO += (Math.random() - 0.5) * 0.3;
+        xO = Math.min(mO, Math.max(-mO, xO));
+        yO = Math.min(mO, Math.max(-mO, yO));
+        self._game.emitParticles({x: sparkPosX + xO, y: sparkPosY + yO, z: sparkPosZ}, 0);
+      }, 10);
+    } else if (block.name === 'dirt' || block.name === 'sand') {
+      interval = setInterval(function () {
+        self._game.emitParticles(block.position, 1, {x:-xDir,y:-yDir});
+      }, 10);
+    }
+
     timers.push(setTimeout(function () {
       shake(0.5);
+      clearInterval(interval);
       pos.x = self._x = x;
       pos.y = self._y = y;
       self._currentDigX = 0;
@@ -156,6 +179,7 @@ exports.prototype.digInDirection = function (xDir, yDir) {
 
     this._currentDigCancel = function () {
       timers.forEach(clearTimeout);
+      clearInterval(interval);
       self._currentDigX = self._currentDigY = 0;
       delete self._currentDig;
 	  delete self.digTarget;
@@ -233,7 +257,6 @@ exports.prototype.digRight = function () {
   return this.digInDirection(+1, 0);
 };
 exports.prototype.digDown = function () {
-  this._game.emitParticles(this.object.position, 1, {x:0,y:1});
   if (!this._world.canDig(this._x, this._y - 1)) {
     return this._failAttemptToDig(0, -1);
   }
@@ -266,7 +289,6 @@ exports.prototype.right = function () {
 };
 
 exports.prototype.left = function () {
-  this._game.emitParticles(this.object.position, 0);
   if (this.faceX === -1) {
     this.digLeft();
   } else {
