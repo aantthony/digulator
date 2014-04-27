@@ -98,6 +98,10 @@ SoundPlayer.prototype.playLoop = function(sound) {
     console.log("Sound not loaded: " + sound);
     return;
   }
+  if(this.loops[sound]){
+    console.log("Sound already looping: " + sound);
+    return;
+  }
   var source = this.audio.createBufferSource();
   source.loop = true;
   source.buffer = this.sounds[sound];
