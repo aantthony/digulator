@@ -293,7 +293,7 @@ Game = function()
 	this.forceLoss = function(losstype) {
 		if (loss)
 		{
-			console.log("Game.forceLoss but already in loss state");
+			// console.log("Game.forceLoss but already in loss state");
 			return;
 		}
 		loss = true;
