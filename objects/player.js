@@ -10,7 +10,7 @@ var exports = module.exports = function (details) {
   light.position.y = 3;
   this.object.add(light);
 
-  this.object.position.set(0,10,0);
+  this.object.position.set(0,0,0);
   this.object.rotation.set(1.4,0,0);
 
   // The direction the player is facing:

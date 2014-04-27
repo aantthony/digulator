@@ -54,7 +54,7 @@ window.shake = function (value) {
 Game = function()
 {
 	GameState.call(this);
-	var game = this;
+	window.game = this;
 
 	this.renderer = new THREE.WebGLRenderer();
 	window.renderer = this.renderer;
@@ -167,12 +167,13 @@ Game = function()
 		// scene.add(cube);
 
 		world.createWorld();
+		this.setUpHUD();
 	}
 	this.fixedUpdate = function(dt)
 	{
 		var playerpos = player.object.position;
-		var targetX = Math.max(-5, Math.min(5, playerpos.x - 5)) + 5;
-		var targetY = Math.max(-5, Math.min(5, playerpos.y - 5)) + 5;
+		var targetX = Math.max(-50, Math.min(5, playerpos.x - 5)) + 5;
+		var targetY = Math.max(-50, Math.min(5, playerpos.y - 5)) + 5;
 		cameraFocus.x += (targetX - cameraFocus.x) * 0.04;
 		cameraFocus.y += (targetY - cameraFocus.y) * 0.04;
 	
@@ -205,8 +206,10 @@ Game = function()
 		if (this.secondTimer > 1.0)
 		{
 			this.secondTimer = 0.0;
+			this.updateTimerHUD();
 			//screenShake += 4.0;
 		}
+		game.updateDepth();
 		
 		player.update(dt);
 		
@@ -214,6 +217,26 @@ Game = function()
 		
 		if(monster)
 			monster.updateFunc(dt,player);
+	}
+
+	this.setUpHUD = function() {
+		document.getElementById("time").innerHTML = 5;
+		document.getElementById("gold").innerHTML = 0;
+		document.getElementById("depthometer").innerHTML = 0;
+		this.updateDepth();
+		document.getElementById("hud").style.display = "block";
+	}
+	
+	this.updateTimerHUD = function() {
+		var i = document.getElementById("time").innerHTML;
+		if(isNaN(i) || i == 0)
+			document.getElementById("time").innerHTML = "Time's Up!";			// changeGameState("timeout");
+		else
+			document.getElementById("time").innerHTML = (i - 1);
+	}
+
+	this.updateDepth = function() {
+		document.getElementById("depthometer").innerHTML = Math.round( (-player.object.position.y) * 10 ) / 10;
 	}
 	
 	this.resize = function(width, height)

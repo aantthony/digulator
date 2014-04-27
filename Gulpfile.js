@@ -78,7 +78,7 @@ gulp.task('server', function () {
   var app = connect()
   .use(connect.static(__dirname + '/dist'));
 
-  var port = 12345;
+  var port = 12346;
   http.createServer(app).listen(port, function () {
     gutil.log('Development web server started on port', gutil.colors.cyan(port));
   });
