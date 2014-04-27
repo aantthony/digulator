@@ -115,7 +115,6 @@ var exports = module.exports = function (details) {
     t = Math.min(1.0, Math.max(t, 0.0));
     pos.x = this.digFrom.x + t * (this.digTarget.x - this.digFrom.x);
     pos.y = this.digFrom.y + t * (this.digTarget.y - this.digFrom.y);
-    console.log(t);
   } else if (this._currentDig && this.digTarget) {
 		var digSpasticAmplitude = 0.2;
 		var digSpasticFrequency = 5.0;

@@ -92,6 +92,17 @@ function World() {
 			NUMSPACE = Math.floor((width + height) / 4) - 1;
 		NUMDIAMONDS = Math.floor((width + height) / 20) + 1;
 
+		var boundaryMesh = new THREE.Mesh(
+			new THREE.PlaneGeometry(width * 2, height * 2),
+			new THREE.MeshBasicMaterial({
+				color: 0,
+				depthTest: false,
+				depthWrite: false
+			})
+		);
+		boundaryMesh.position.set(width / 2,-height - 0.5,0);
+		scene.add(boundaryMesh);
+
 		for(var i = 1; i < width; i++){
 			var tree = objectLoader.getObject('Palm');
 
