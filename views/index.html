@@ -6,6 +6,7 @@
 				border-width: 50px;
 				border-style: ridge;
 				border-color: brown;
+				z-index: 0;
 			}
 			.relative {
 				display: inline-block;
@@ -29,9 +30,7 @@
 				position: relative;
 				height: 100%;
 				width: 100%;
-			}
-			h1{
-				/*background-color: white;*/
+
 			}
 			#hud{
 				position: relative;
@@ -42,6 +41,7 @@
 				text-align: center;
 				color: #FF0000;
 				display: none;
+				z-index: 7;
 			}
 			#goldBack {
 				background-color: #FFFF00;
@@ -78,7 +78,52 @@
 				text-align: center;
 				width: 100%;
 				position: absolute;
-				top: 40%;
+				top: 250px;
+				display: none;
+				z-index: 7;
+			}
+			#startscreen {
+				position: absolute;
+				width: 100%;
+				text-align: center;
+				top: 75px;
+			}
+			#title {
+				font-size: 7em;
+				color: #FF0000;
+			}
+			#desc {
+				font-size: 1.5em;
+				color: #000;
+				width: 80%;
+				position: relative;
+				margin-left: auto;
+				margin-right: auto;
+				top: 50px;
+				text-align: left;
+			}
+			#start {
+				position: relative;
+				top: 30px;
+				border-style: groove;
+				border-color: #97FFFF;
+				border-width: 10px;
+				color: #000;
+				width: 25%;
+				font-size: 3.5em;
+				text-align: center;
+				vertical-align: middle;	
+				padding: 2.5px;
+			}
+			#start:hover {
+				cursor: default;
+			}
+			#vsdiv {
+				position: fixed;
+				right: 50px;
+				bottom: 50px;
+				z-index: 7;
+				float: right;
 				display: none;
 			}
 		</style>
@@ -87,17 +132,32 @@
 	</head>
 	<body style="margin: 0; padding: 0; overflow: hidden">
 		<script type="text/javascript" src="scripts/index.js"></script>
+
 		<div class="relative">
+			<div id="monstered">MONSTERED!</div>
+				<div id="hud">
+					<h1>Digulator!</h1>
+					<div class="hd" id="goldBack"><div class="lame">Gold: </div><span id="gold">800</span><span>oz</span></div>
+					<div class="hd" id="depthBack"><div class="lame">Depth: </div><span id="depthometer">500</span><span>m</span></div>
+					<div class="hd" id="timeBack"><div class="lame">Time Left: </div><span id="time">400</span><span>s</span></div>
+				</div>
+				<div id="vsdiv">
+					<input id="volslider" type="range" name="volume" min="0" max ="100" value="50"/>
+				</div>
+				<div id="loadingscreen"><img src="http://i.imgur.com/WUFGJqR.gif?1" /></div>
+			</div>
 			<div id="gamewrap">
-				<div id="monstered">MONSTERED!</div>
+				
+		</div>
+		<div id="startscreen">
+			<div id="title">Digulator!</div>
+			<div id="desc">
+				Welcome to Digulator, the Digging Simulator! (See what we did there??) <br/>
+				In Digulator, your goal is to mine the ground Beneath the Surface, to get as much weight of wealth as you can. You get 1oz per unit of rock, 10oz per unit of gold, and 50oz per unit of diamond.<br/>
+				But be warned, you only have a limited time and there is a monster who doesn't like you mining his home. <br/><br/>
+				Good Luck! 
+				<div id="start">Begin</div>
 			</div>
-			<div id="hud">
-				<h1>Digulator!</h1>
-				<div class="hd" id="goldBack"><div class="lame">Gold: </div><span id="gold">800</span><span>oz</span></div>
-				<div class="hd" id="depthBack"><div class="lame">Depth: </div><span id="depthometer">500</span><span>m</span></div>
-				<div class="hd" id="timeBack"><div class="lame">Time Left: </div><span id="time">400</span><span>s</span></div>
-			</div>
-			<div id="loadingscreen"><img src="http://i.imgur.com/WUFGJqR.gif?1" /></div>
 		</div>
 	</body>
 </html>

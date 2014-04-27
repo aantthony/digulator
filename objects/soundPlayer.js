@@ -82,11 +82,13 @@ SoundPlayer.prototype.setAtmosGain = function(val) {
 }
 
 SoundPlayer.prototype.setVolume = function(val) {
+  // console.log(this.audioGain.gain.value);
   var val = val/4;
   if(val < 0){
     val = 0;
   }
   this.audioGain.gain.value = val;
+  // console.log(this.audioGain.gain.value);
 }
 
 SoundPlayer.prototype.play = function(sound) {
