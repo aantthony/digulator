@@ -160,6 +160,7 @@ function Particles(n)
 		gl.useProgram(this.shaderParticlesDraw);
 		Shader.setActiveTexture(this.shaderParticlesDraw, "particles", 0, this.swap?this.texPosB:this.texPosA);
 		Shader.setActiveTexture(this.shaderParticlesDraw, "velocities", 1, this.swap?this.texVelB:this.texVelA);
+		Shader.setActiveTexture(this.shaderParticlesDraw, "noise", 3, this.noise);
 		//Shader.setActiveTexture(this.shaderParticlesDraw, "attributes", 2, this.texAttr);
 		if (!!shadowMap)
 		{

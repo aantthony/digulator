@@ -6,6 +6,8 @@ varying float fade;
 uniform sampler2D shadow;
 varying vec4 lsPos;
 
+varying vec3 noiseVal;
+
 varying float type;
 
 void main()
@@ -23,7 +25,9 @@ void main()
 	
 	vec3 col;// = vec3(inShadow ? 0.2 : 1.0);
 	
-	float circle = sqrt(max(1.0 - length(coord), 0.0));
+	float circle = min(length(coord), 1.0);
+	
+	circle = (1.0/(circle*circle*16.0+1.0)-(1.0/17.0))*(17.0/16.0);
 	
 	if (type == 0.0)
 	{
@@ -31,9 +35,14 @@ void main()
 		circle = ceil(circle - 0.5);
 	}
 	else if (type == 1.0)
-		col = vec3(0.5, 0.4, 0.2);
+	{
+		col = mix(vec3(0.6, 0.5, 0.3), vec3(0.2, 0.1, 0.0), noiseVal.x);
+		circle = sqrt(circle);
+	}
 	else if (type == 2.0)
-		col = vec3(1,1,1);
+	{
+		col = mix(vec3(1, 1, 1), vec3(0, 0.8, 0.8), 1.0 - fade * fade);
+	}
 	
 	float d = fade * circle;
 	//gl_FragColor = vec4(1,d*d,0,d * 0.2);

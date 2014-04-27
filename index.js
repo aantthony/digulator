@@ -33,10 +33,12 @@ var objectLoader = require('./objects/objectLoader');
 function shake(x)
 {
 	var r = 0.0;
+	var a = 1.0;
 	for (var i = 0; i < 6; ++i)
 	{
+		a *= 0.8;
 		var f = (1 << i);
-		r += Math.sin(x * f) / f;
+		r += Math.sin(x * f) * a;
 	}
 	return r;
 }
@@ -48,13 +50,16 @@ window.shake = function (value) {
 Game = function()
 {
 	GameState.call(this);
+	var game = this;
 
-	window.renderer = new THREE.WebGLRenderer();
+	this.renderer = new THREE.WebGLRenderer();
+	window.renderer = this.renderer;
 	gl = renderer.context;
 
 	var width = window.innerWidth - 100;
 	var height = window.innerHeight - 100;
-	window.camera = new THREE.PerspectiveCamera( 45, width / height, 0.1, 20 );
+	this.camera = new THREE.PerspectiveCamera( 45, width / height, 0.1, 20 );
+	window.camera = this.camera;
 	gl.viewportWidth = width; //FFS. can't query GL viewport state. this is a workaround for Particles
 	gl.viewportHeight = height;
 
@@ -64,7 +69,7 @@ Game = function()
 	var world = new World();
 	console.log('created a world!');
 
-	camera.position.z = 15;
+	this.camera.position.z = 15;
 	var cameraFocus = new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z);
 	
 	var sunPosition = new THREE.Vector3(-100, 50, -300);
@@ -78,15 +83,19 @@ Game = function()
 
 	keys.onleft = function () {
 		player.left();
+		game.emitParticles(player.object.position, 0);
 	};
 	keys.onright = function () {
 		player.right();
+		game.emitParticles(player.object.position, 2, {x:0,y:1});
 	};
 	keys.onup = function () {
 		player.digUp();
+		game.emitParticles(player.object.position, 2, {x:1,y:0});
 	};
 	keys.ondown = function () {
 		player.digDown();
+		game.emitParticles(player.object.position, 1, {x:0,y:1});
 	};
 
 	this.bloom = new Bloom(width, height);
@@ -121,6 +130,37 @@ Game = function()
 	backgroundScene.add(backgroundCamera);
 	backgroundScene.add(backgroundMesh);
 	
+	this.PARTICLE_SPARK = 0;
+	this.PARTICLE_DIRT = 1; //needs direction
+	this.PARTICLE_BEAM = 2; //needs direction
+	
+	this.emitParticles = function(pos, type, direction) //direction.xy
+	{
+		var zoff = 2.0;
+		var scaleVelZ = 0.1;
+		if (type == this.PARTICLE_SPARK)
+		{
+			var speed = 20.0;
+			var spread = 0.2;
+			for (var i = 0; i < 10; ++i)
+				this.particles.spawn([pos.x + (Math.random()-0.5)*spread, pos.y + (Math.random()-0.5)*spread, pos.z + zoff, type], [(Math.random()-0.5)*speed, (Math.random()-0.5)*speed, (Math.random()-0.5)*speed*scaleVelZ, Math.random()*0.2]);
+		}
+		else if (type == this.PARTICLE_DIRT) //FIXME: might need its own colour
+		{
+			var speed = 2.0;
+			var spread = 0.7;
+			for (var i = 0; i < 50; ++i)
+				this.particles.spawn([pos.x + (Math.random()-0.5)*spread, pos.y + (Math.random()-0.5)*spread, pos.z + zoff, type], [direction.x + (Math.random()-0.5)*speed, direction.y + (Math.random()-0.5)*speed, (Math.random()-0.5)*speed*scaleVelZ, -Math.random()*2.0]);
+		}
+		else if (type == this.PARTICLE_BEAM) //FIXME: might need its own colour
+		{
+			var spread = 0.05;
+			var spreadTrans = 0.1;
+			for (var i = 0; i < 2; ++i)
+				this.particles.spawn([pos.x + direction.y*(Math.random()-0.5) * spreadTrans + (Math.random()-0.5)*spread, pos.y + direction.x*(Math.random()-0.5)*spreadTrans + (Math.random()-0.5)*spread, pos.z + zoff, type], [direction.x, direction.y, 0.0, -Math.random()]);
+		}
+	}
+	
 	this.enter = function()
 	{
 		// cube = new Digulator.Sand();
@@ -137,9 +177,11 @@ Game = function()
 		cameraFocus.y += (targetY - cameraFocus.y) * 0.04;
 	
 		screenShakeTime += dt;	
-		camera.position.x = cameraFocus.x + shake(100.0 * screenShakeTime) * Math.sqrt(screenShake) * 0.1;
-		camera.position.y = cameraFocus.y + shake(100.0 * screenShakeTime + 12383.23487) * Math.sqrt(screenShake) * 0.1;
+		camera.position.x = cameraFocus.x + shake(100.0 * screenShakeTime) * Math.sqrt(screenShake) * 0.03;
+		camera.position.y = cameraFocus.y + shake(100.0 * screenShakeTime + 12383.23487) * Math.sqrt(screenShake) * 0.03;
 		screenShake *= 0.9;
+		
+		this.particles.step(dt);
 	}
 
 	this.secondTimer = 0.0;
@@ -165,15 +207,6 @@ Game = function()
 		
 		//soundPlayer.play('test');
 		
-		for (var i = 0; i < 2; ++i)
-		{
-			particleType = 1;
-			var speed = 1.0;
-			this.particles.spawn([0, 0, 2, particleType], [(Math.random()-0.5)*speed, (Math.random()-0.5)*speed, (Math.random()-0.5)*speed, 0]);
-		}
-		
-		this.particles.step(dt);
-		
 		if(monster)
 			monster.updateFunc(dt,player);
 	}
@@ -184,9 +217,11 @@ Game = function()
 		gl.viewportWidth = width; //FFS. can't query GL viewport state. this is a workaround for Particles
 		gl.viewportHeight = height;
 
-		renderer.setSize(width, height);
+		this.camera.setViewOffset(width, height, 0, 0, width, height);
+		this.camera.aspect = width / height;
+		this.camera.updateProjectionMatrix();
 
-		camera.setViewOffset(width, height, 0, 0, width, height);
+		this.renderer.setSize(width, height);
 
 		this.bloom.resize(width, height)
 	}

@@ -40,16 +40,21 @@ function Bloom(w, h) {
 	var fragSrc = require('../shaders/volumetric.frag');
 	this.volumetrics = Shader.create(vertSrc, fragSrc, "volumetric");
 	
-	gl.bindFramebuffer(gl.FRAMEBUFFER, this.RTTFBO);
-	gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.RTT, 0);
-	gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, this.RTTD);
-	gl.bindFramebuffer(gl.FRAMEBUFFER, this.RTTFBOdown);
-	gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.RTTdown, 0);
-	gl.bindFramebuffer(gl.FRAMEBUFFER, this.blurFBO);
-	gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.blurTex, 0);
-	gl.bindFramebuffer(gl.FRAMEBUFFER, this.blurFBOdown);
-	gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.blurTexDown, 0);
-	gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+	this._attach = function()
+	{
+		gl.bindFramebuffer(gl.FRAMEBUFFER, this.RTTFBO);
+		gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.RTT, 0);
+		gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, this.RTTD);
+		gl.bindFramebuffer(gl.FRAMEBUFFER, this.RTTFBOdown);
+		gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.RTTdown, 0);
+		gl.bindFramebuffer(gl.FRAMEBUFFER, this.blurFBO);
+		gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.blurTex, 0);
+		gl.bindFramebuffer(gl.FRAMEBUFFER, this.blurFBOdown);
+		gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.blurTexDown, 0);
+		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+	}
+	
+	this._attach();
 	
 	this.bind = function() {
 	   gl.bindFramebuffer(gl.FRAMEBUFFER, this.RTTFBO);
@@ -129,19 +134,21 @@ function Bloom(w, h) {
 	{
 		this.w = w;
 		this.h = h;
-		this.RTT = GLUtil.resize(this.w, this.h);
-		this.RTTdown = GLUtil.resize(this.w/4, this.h/4);
+		this.RTT.resize(this.w, this.h);
+		this.RTTdown.resize(this.w/4, this.h/4);
 		gl.bindRenderbuffer(gl.RENDERBUFFER, this.RTTD);
 		gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, this.w, this.h);
 		gl.bindRenderbuffer(gl.RENDERBUFFER, null);
-		this.blurTex = GLUtil.resize(this.w, this.h);
-		this.blurTexDown = GLUtil.resize(this.w/4, this.h/4);
+		this.blurTex.resize(this.w, this.h);
+		this.blurTexDown.resize(this.w/4, this.h/4);
+		
+		this._attach();
 	}
 	
 	this.release = function()
 	{
 		this.quad.release();
-	
+		
 		if (this.RTTFBO) gl.deleteFramebuffer(this.RTTFBO);
 		if (this.RTTFBOdown) gl.deleteFramebuffer(thisRTTFBOdown);
 		if (this.blurFBO) gl.deleteFramebuffer(this.blurFBO);
