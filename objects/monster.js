@@ -29,6 +29,7 @@ var exports = module.exports = function (details) {
   this.lastDir = -1;
 };
 exports.prototype.digLeft = function () {
+	this._world.updateMonPos(this.object.position.x,this.object.position.y,this.object.position.x-1,this.object.position.y);
  this.object.position.x--;
 };
 
@@ -78,7 +79,11 @@ exports.prototype.AI = function(player) {
 			if(y > 0) {
 				this.digDown();
 			} else {
-				this.digUp();
+				if(pos.y == -1) {
+					this.lastPlayerPos = undefined;
+					this.goalPos = undefined;
+				} else
+					this.digUp();
 			}
 		}
 	} else {
@@ -86,10 +91,10 @@ exports.prototype.AI = function(player) {
 		var dir = 0;
 		while(dir == 0) {
 			var r = Math.random();
-			if(r < 0.25 && this.lastDir != 1 && this._world.canDig(pos.x-1,pos.y)) dir = 1;
-			else if(r < 0.5 && this.lastDir != 4 && this._world.canDig(pos.x+1,pos.y)) dir = 4;
-			else if(r < 0.75 && this.lastDir != 3 && this._world.canDig(pos.x,pos.y-1)) dir = 3;
-			else if(this.lastDir != 2 && this._world.canDig(pos.x,pos.y+1)) dir = 2;
+			if(r < 0.25 && this.lastDir != 1 && this.canDig(pos.x-1,pos.y)) dir = 1;
+			else if(r < 0.5 && this.lastDir != 4 && this.canDig(pos.x+1,pos.y)) dir = 4;
+			else if(r < 0.75 && this.lastDir != 3 && this.canDig(pos.x,pos.y-1)) dir = 3;
+			else if(this.lastDir != 2 && this.canDig(pos.x,pos.y+1)) dir = 2;
 		}
 		switch(dir) {
 			case 1:
@@ -109,16 +114,28 @@ exports.prototype.AI = function(player) {
 	}
 }
 
-exports.prototype.digRight = function () {
+exports.prototype.canDig = function(x,y) {
+	if(y == 0 || this._world.monOccupy(x,y))
+		return false;
+	return this._world.canDig(x,y);
+}
 
+exports.prototype.digRight = function () {
+  this._world.updateMonPos(this.object.position.x,this.object.position.y,this.object.position.x+1,this.object.position.y);
   this.object.position.x++;
 };
 exports.prototype.digDown = function () {
-  this.object.position.y--;
+	if(this.canDig(this.object.position.x,this.object.position.y-1)) {
+		this._world.updateMonPos(this.object.position.x,this.object.position.y,this.object.position.x,this.object.position.y-1);
+	  this.object.position.y--;
+	}
 
 };
 exports.prototype.digUp = function() {
+	if( this.canDig(this.object.position.x-1,this.object.position.y)) {
+	this._world.updateMonPos(this.object.position.x,this.object.position.y,this.object.position.x,this.object.position.y+1);
 	this.object.position.y++;
+}
 };
 exports.prototype.faceLeft = function () {
   this.faceX = -1;
@@ -128,7 +145,7 @@ exports.prototype.faceRight = function () {
 };
 
 exports.prototype.right = function () {
-  if (this.faceX === +1) {
+  if (this.faceX === +1 && this.canDig(this.object.position.x+1,this.object.position.y)) {
     this.digRight();
   } else {
     this.faceRight();
@@ -136,7 +153,7 @@ exports.prototype.right = function () {
 };
 
 exports.prototype.left = function () {
-  if (this.faceX === -1) {
+  if (this.faceX === -1 && this.canDig(this.object.position.x-1,this.object.position.y)) {
     this.digLeft();
   } else {
     this.faceLeft();
