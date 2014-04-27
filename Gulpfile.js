@@ -64,7 +64,7 @@ gulp.task('images', function(){
 gulp.task('watch', function () {
   gulp.watch(paths.other, ['other']);
   gulp.watch(paths.html, ['html']);
-  gulp.watch([paths.scripts, 'objects/*.js'], ['scripts']);
+  gulp.watch([paths.scripts, 'objects/*.js', 'shaders/*'], ['scripts']);
   gulp.watch(paths.images, ['images']);
   gulp.watch(paths.styles, ['styles']);
   gulp.watch(paths.sounds, ['sounds']);
