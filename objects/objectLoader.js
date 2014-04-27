@@ -346,6 +346,7 @@ function ObjectLoader() {
   this.loadObject('Dirt');
   this.loadObject('Gold');
   this.loadObject('Diamond');
+  this.loadObject('Palm');
 }
 
 ObjectLoader.prototype.loadObject = function(url) {

@@ -8,6 +8,8 @@ var GOLD = 5;
 var DIAMOND = 6;
 var EMPTY = 7;
 var size = 10;
+// var width = 10;
+// var height = 10;
 var NUMDIAMONDS = 2;
 var NUMSPACE = 4;
 
@@ -27,12 +29,19 @@ function World() {
 		NUMDIAMONDS = Math.floor(size / 10) + 1;
 
 		for(var i = 0; i < size; i++){
-			var geometry = new THREE.CubeGeometry(0.5, 1, 0.5);
-			var material = new THREE.MeshLambertMaterial({color: 0xFFFFFF});
-			var tree = new THREE.Mesh(geometry, material);
+			var tree = objectLoader.getObject('Palm');
 
-			tree.position.x = i;
-			tree.position.y = 10;
+			tree.scale.x = 0.005;
+			tree.scale.y = 0.005+(Math.random()*0.002-0.001);
+			tree.scale.z = 0.005;
+
+			tree.rotation.x = Math.random()*0.25-0.125;
+			tree.rotation.y = Math.random()*Math.PI*2;
+			tree.rotation.z = Math.random()*0.25-0.125;
+
+			tree.position.x = i + Math.random()*0.5-0.25;
+			tree.position.y = 9.5;
+			tree.position.z = Math.random()*0.5-0.25;
 			scene.add(tree);
 		}
 

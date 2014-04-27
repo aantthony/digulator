@@ -23,6 +23,9 @@ function TextureLoader() {
   this.loadTexture('Diamond');
   this.loadNormal('DiamondNM');
   
+  this.loadTexture('Palm');
+  this.loadNormal('PalmNM');
+  
   this.loadTexture('spark');
 }
 
