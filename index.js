@@ -96,12 +96,12 @@ Game = function()
 	
 	var sunPosition = new THREE.Vector3(-5, 5, -30);
 	
-	var keys = new Keyboard();
+	this.keys = new Keyboard();
 
 	var player = new Player({
 		world: world,
 		game: game,
-		keys: keys
+		keys: this.keys
 	});
 
 	this.bloom = new Bloom(width, height);
@@ -316,6 +316,9 @@ Game = function()
 				document.getElementById("lossText").innerHTML = "MONSTERED!";
 				break;
 		}
+		
+		this.keys.disable(); //disable input when lost
+		
 		//changeGameState(new LossState());
 		// swap when game state changes properly
 		document.getElementById("loss").style.display = "block";

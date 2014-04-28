@@ -1,11 +1,15 @@
 module.exports = KeyboardState;
 
 function keydown(event) {
+  if (this.disabled)
+    return;
   if (this.keyCodes[event.keyCode]) return;
   this.keyCodes[event.keyCode] = true;
 }
 
 function keyup(event) {
+  if (this.disabled)
+    return;
   if (!this.keyCodes[event.keyCode]) return;
   delete this.keyCodes[event.keyCode];
 }
@@ -13,10 +17,22 @@ function keyup(event) {
 function KeyboardState() {
   this.keyCodes = {};
   this.modifiers  = {};
+  
+  this.disabled = false;
 
   var self  = this;
   this._onKeyDown = keydown.bind(this);
   this._onKeyUp = keyup.bind(this);
+  
+  this.disable = function() {
+  	//disable future events
+    this.disabled = true;
+    
+    //release all keys
+    for (var i in this.keyCodes)
+    	if (this.keyCodes[i] === true)
+    		this.keyCodes[i] = false;
+  };
 
   document.addEventListener('keydown', this._onKeyDown, false);
   document.addEventListener('keyup', this._onKeyUp, false);

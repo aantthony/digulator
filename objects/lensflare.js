@@ -15,11 +15,11 @@ function LensFlare()
 	this.shader = Shader.create(vertSrc, fragSrc, "lensflare");
 
 	this.flares = [];
-	this.flares.push([0.0, 1.0, 0.0]);
+	this.flares.push([0.0, 0.5, 0.0]);
 	for (var i = 0; i < 20; ++i)
 	{
 		var d = -0.5 + Math.random() * 4.0;
-		var l = Math.abs(1.0 - d);
+		var l = Math.abs(1.0 - d) / (1.0 + d);
 		this.flares.push([d, 0.4 * l * (Math.random()>0.8?0.3:1.0), Math.random()]);
 	}
 	
