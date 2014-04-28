@@ -313,7 +313,7 @@ Game = function()
 			case 'monstered':
 				this.beginSpin();
 				soundPlayer.play('Ending');
-				document.getElementById("lossText").innerHTML = "MONSTERED!";
+				// document.getElementById("lossText").innerHTML = "MONSTERED!";
 				break;
 		}
 		
@@ -505,7 +505,7 @@ window.onload = function()
 	var authors = document.getElementById("authors");
 	var children = [];
 	for (var i = 0; i < authors.childNodes.length; ++i)
-		if (authors.childNodes[i].nodeName == "SPAN")
+		if (authors.childNodes[i].nodeName == "DIV")
 			children.push(authors.childNodes[i]);
 	while (children.length)
 		authors.appendChild(children.splice(Math.floor(Math.random()*children.length), 1)[0]);
@@ -527,6 +527,10 @@ window.onload = function()
 	});
 	document.getElementById("flarecheck").addEventListener('click',function (){
 		flare = !flare;
+	});
+	document.getElementById("reset").addEventListener('click',function (){
+		// flare = !flare;
+		location.reload();
 	});
 }
 
