@@ -225,6 +225,16 @@ exports.prototype.digInDirection = function (xDir, yDir) {
     // }, mineTime * 2 / 3));
 
     var intervals = this.intervals;
+    if (block.name === 'sand' || block.name === 'dirt') {
+        intervals.push(setInterval(function () {
+          soundPlayer.play('Sand');
+        }, 500));
+    }
+    if (block.name === 'clay') {
+        intervals.push(setInterval(function () {
+          soundPlayer.play('Mud');
+        }, 400));
+    }
     if (block.name === 'gold' || block.name === 'diamond' || block.name === 'rock') {
       var sparkPosX = block.position.x - xDir * 0.5;
       var sparkPosY = block.position.y - yDir * 0.5;
@@ -242,7 +252,7 @@ exports.prototype.digInDirection = function (xDir, yDir) {
         soundPlayer.play('DrillMed');
       }, 200));
     }
-    soundPlayer.playLoop('Laser');
+    // soundPlayer.playLoop('Laser');
 
     this._currentDig = true;
     this._currentDigX = xDir;
@@ -311,7 +321,7 @@ exports.prototype._currentDigCancel = function () {
 
   this.timers.forEach(clearTimeout);
   this.intervals.forEach(clearInterval);
-  soundPlayer.stopLoop('Laser');
+  // soundPlayer.stopLoop('Laser');
   this._currentDigX = this._currentDigY = 0;
   this.digTime = 0;
 };

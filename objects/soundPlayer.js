@@ -38,6 +38,7 @@ function SoundPlayer() {
   // this.loadSound('Grenade');
   // this.loadSound('Rocket');
   this.loadSound('Sand');
+  this.loadSound('Mud');
 
   //Success
   this.loadSound('Gold');
