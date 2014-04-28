@@ -70,6 +70,7 @@ window.shake = function (value) {
 };
 Game = function()
 {
+	setTimeout(soundPlayer.playAtmospheric, 1000);
 	GameState.call(this);
 	window.game = this;
 
@@ -462,12 +463,12 @@ var changeGameState = function(newState)
 	currentGameState = newState;
 }
 
-var stats = new Stats();
+/*var stats = new Stats();
 stats.setMode(0);
 stats.domElement.style.position = 'absolute';
 stats.domElement.style.right = '0px';
 stats.domElement.style.bottom = '0px';
-document.body.appendChild(stats.domElement);
+document.body.appendChild(stats.domElement);*/
 
 var lastTime = 0.0;
 var sleepTime = 0.0;
@@ -476,7 +477,7 @@ var javascriptUsage = 0.0;
 var sleepTime = 0.0;
 var mainloop = function()
 {
-	stats.begin();
+	// stats.begin();
 	var thisTime = new Date().getTime();
 	var frameTime = thisTime - lastTime;
 	lastTime = thisTime;
@@ -496,7 +497,7 @@ var mainloop = function()
 	currentGameState.display();
 	
 	window.setTimeout(mainloop, sleepTime);
-	stats.end();
+	// stats.end();
 }
 
 window.onload = function()

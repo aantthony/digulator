@@ -141,5 +141,4 @@ function onError(err){
 }
 
 var instance = new SoundPlayer();
-setTimeout(instance.playAtmospheric, 1000);
 module.exports = instance;
