@@ -228,7 +228,7 @@ exports.prototype.digInDirection = function (xDir, yDir) {
     if (block.name === 'sand' || block.name === 'dirt') {
         intervals.push(setInterval(function () {
           soundPlayer.play('Sand');
-        }, 500));
+        }, 250));
     }
     if (block.name === 'clay') {
         intervals.push(setInterval(function () {

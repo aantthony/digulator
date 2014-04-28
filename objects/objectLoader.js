@@ -362,7 +362,10 @@ ObjectLoader.prototype.loadObject = function(url, texOverride) {
   var normal = this.textureLoader.getNormal((texOverride || url));
 
   var specCol = 0x222222;
-  if(url == "Gold"){
+  if(url == "Monster"){
+    specCol = 0xff0000;
+  }
+  else if(url == "Gold"){
     specCol = 0xffe400;
   }
   else if(url == "Sand"){
