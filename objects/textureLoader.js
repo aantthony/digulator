@@ -5,38 +5,38 @@ function TextureLoader() {
   this.textures = {};
   this.normals = {};
 
-  this.loadTexture('Sand');
-  this.loadNormal('SandNM');
+  this.loadTexture('Sand', 'jpg');
+  this.loadNormal('SandNM', 'jpg');
 
-  this.loadTexture('Clay');
-  this.loadNormal('ClayNM');
+  this.loadTexture('Clay', 'jpg');
+  this.loadNormal('ClayNM', 'jpg');
 
-  this.loadTexture('Rock');
-  this.loadNormal('RockNM');
+  this.loadTexture('Rock', 'jpg');
+  this.loadNormal('RockNM', 'jpg');
 
-  this.loadTexture('Gold');
-  this.loadNormal('GoldNM');
+  this.loadTexture('Gold', 'jpg');
+  this.loadNormal('GoldNM', 'jpg');
 
-  this.loadTexture('Dirt');
-  this.loadNormal('DirtNM');
+  this.loadTexture('Dirt', 'jpg');
+  this.loadNormal('DirtNM', 'jpg', 'SandNM');
   
-  this.loadTexture('Diamond');
-  this.loadNormal('DiamondNM');
+  this.loadTexture('Diamond', 'jpg');
+  this.loadNormal('DiamondNM', 'jpg');
   
   this.loadTexture('Palm');
-  this.loadNormal('PalmNM');
+  this.loadNormal('PalmNM', 'jpg');
 
   this.loadTexture('Grass');
   
   this.loadTexture('Flare');
   
-  this.loadTexture('Player');
-  this.loadNormal('PlayerNM');
-  this.loadTexture('Monster');
-  this.loadNormal('MonsterNM');
+  this.loadTexture('Player', 'jpg');
+  this.loadNormal('PlayerNM', 'jpg');
+  this.loadTexture('Monster', 'jpg');
+  this.loadNormal('MonsterNM', 'jpg');
 
-  this.loadTexture('Sign');
-  this.loadNormal('SignNM');
+  this.loadTexture('Sign', 'jpg');
+  this.loadNormal('SignNM', 'jpg');
 
   // this.loadTexture('spark');
 }
@@ -57,28 +57,40 @@ TextureLoader.prototype.getNormal = function(tex) {
   return this.normals[tex+'NM'];
 }
 
-TextureLoader.prototype.loadTexture = function(url) {
+TextureLoader.prototype.loadTexture = function(url, extension, alt) {
   var ctx = this;
-
-  var texture = new THREE.Texture();
-  this.textures[url] = texture;
+  var extension = extension || 'png';
   
-  this.imageLoader.load('images/' + url + '.png', function (event) {
-    texture.image = event;
-    texture.needsUpdate = true;
-  });
+  if(alt == undefined){
+    var texture = new THREE.Texture();
+    this.textures[url] = texture;
+    
+    this.imageLoader.load('images/' + url + '.' + extension, function (event) {
+      texture.image = event;
+      texture.needsUpdate = true;
+    });
+  }
+  else{
+    this.textures[url] = this.textures[alt];
+  }
 };
 
-TextureLoader.prototype.loadNormal = function(url) {
+TextureLoader.prototype.loadNormal = function(url, extension, alt) {
   var ctx = this;
+  var extension = extension || 'png';
 
-  var texture = new THREE.Texture();
-  this.normals[url] = texture;
-  
-  this.imageLoader.load('images/' + url + '.png', function (event) {
-    texture.image = event;
-    texture.needsUpdate = true;
-  });
+  if(alt == undefined){
+    var texture = new THREE.Texture();
+    this.normals[url] = texture;
+    
+    this.imageLoader.load('images/' + url + '.' + extension, function (event) {
+      texture.image = event;
+      texture.needsUpdate = true;
+    });
+  }
+  else{
+    this.normals[url] = this.normals[alt];
+  }
 };
 
 function onError(err){
