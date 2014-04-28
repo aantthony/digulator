@@ -135,7 +135,7 @@
 				float: right;
 				display: none;
 			}
-			#loss {
+			#loss, #diamondmsg {
 				font-size: 7em;
 				color: #FF0000;
 				text-align: center;
@@ -182,6 +182,10 @@
 			#authors span {
 				padding:30px;
 			}
+			
+			#diamondmsg {
+				transition: opacity 1s ease-in-out;
+			}
 		</style>
 		<title>Digulator!</title>
 		<script type="text/javascript" src="./stats.js"></script>
@@ -190,6 +194,9 @@
 		<script type="text/javascript" src="scripts/index.js"></script>
 
 		<div id="relative">
+			<div id="diamondmsg">
+				<div style="font-size:100px;">You got diamond.<br/>Return from beneath the surface to end the game.</div>
+			</div>
 			<div id="win">
 				<div>Winner!</div>
 				<!-- <img src="./images/Monstered.png" style="float:center; margin:auto;"> -->
@@ -220,6 +227,10 @@
 				Volume: <input id="volslider" type="range" name="volume" min="0" max ="100" value="50" title="Slide to change the volume"/>
 				<br/>
 				Bloom: <input id="bloomcheck" type="checkbox" name="bloomcheck" checked title="Untick for faster performance"/>
+					<br/>
+					Volumetrics: <input id="volumetricscheck" type="checkbox" name="volumetricscheck" checked title="Untick for faster performance"/>
+					<br/>
+					Particles: <input id="particlescheck" type="checkbox" name="volumetricscheck" checked title="Untick for faster performance"/>
 				<br/>
 				LensFlare: <input id="flarecheck" type="checkbox" name="flarecheck" checked title="Untick for faster performance"/>
 			</div>

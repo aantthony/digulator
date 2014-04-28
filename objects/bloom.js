@@ -62,20 +62,34 @@ function Bloom(w, h) {
 	this.bind = function() {
 	   gl.bindFramebuffer(gl.FRAMEBUFFER, this.RTTFBO);
 	}
-	this.unbind = function(target, sunPos) {
+	this.unbind = function(target, sunPos, bloom, volumetrics) {
 		if (!target)
 			target = null;
 			
 		gl.disable(gl.DEPTH_TEST);
 			
 		//blit primary + volumetrics
-		gl.useProgram(this.volumetrics);
-		gl.bindFramebuffer(gl.FRAMEBUFFER, target);
-		Shader.setActiveTexture(this.volumetrics, "tex", 0, this.RTT);
-		gl.uniform2f(gl.getUniformLocation(this.volumetrics, "size"), 1.0/this.w, 1.0/this.h);
-		gl.uniform2f(gl.getUniformLocation(this.volumetrics, "sun"), sunPos.x, sunPos.y);
-		gl.uniform1f(gl.getUniformLocation(this.volumetrics, "primaryScale"), this.primaryScale);
-		this.quad.draw(this.volumetrics);
+		if (volumetrics)
+		{
+			gl.useProgram(this.volumetrics);
+			gl.bindFramebuffer(gl.FRAMEBUFFER, target);
+			Shader.setActiveTexture(this.volumetrics, "tex", 0, this.RTT);
+			gl.uniform2f(gl.getUniformLocation(this.volumetrics, "size"), 1.0/this.w, 1.0/this.h);
+			gl.uniform2f(gl.getUniformLocation(this.volumetrics, "sun"), sunPos.x, sunPos.y);
+			gl.uniform1f(gl.getUniformLocation(this.volumetrics, "primaryScale"), this.primaryScale);
+			this.quad.draw(this.volumetrics);
+		}
+		else
+		{
+			gl.useProgram(this.blit);
+			gl.bindFramebuffer(gl.FRAMEBUFFER, target);
+			Shader.setActiveTexture(this.volumetrics, "tex", 0, this.RTT);
+			gl.uniform2f(gl.getUniformLocation(this.blit, "size"), 1.0/this.w, 1.0/this.h);
+			this.quad.draw(this.blit);
+		}
+		
+		if (!bloom)
+			return;
 		
 		//first full rez blur pass
 		gl.useProgram(this.blur);
