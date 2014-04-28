@@ -138,7 +138,7 @@ SoundPlayer.prototype.stopLoop = function(sound) {
 SoundPlayer.prototype.loadSound = function(url) {
   var ctx = this;
   var request = new XMLHttpRequest();
-  request.open('GET', './sounds/' + url + '.wav', true);
+  request.open('GET', './sounds/' + url + '.ogg', true);
   request.responseType = 'arraybuffer';
 
   // Decode asynchronously
