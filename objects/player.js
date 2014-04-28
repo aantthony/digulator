@@ -207,12 +207,12 @@ exports.prototype.digInDirection = function (xDir, yDir) {
   this.digFrom = this.object.position.clone();
 
   if (block) {
-	this.digTarget = block.position.clone();
+    this.digTarget = block.position.clone();
     shake(3);
     var world = this._world;
     var d = difficulty(block);
     var mineTime = d * 300;
-	this.digTimeLeft = this.digTime = mineTime / 1000.0;
+    this.digTimeLeft = this.digTime = mineTime / 1000.0;
     var timers = this.timers;
     
     // timers.push(setTimeout(function () {
@@ -235,7 +235,7 @@ exports.prototype.digInDirection = function (xDir, yDir) {
         soundPlayer.play('Mud');
         intervals.push(setInterval(function () {
           soundPlayer.play('Mud');
-        }, 400));
+        }, 300));
     }
     if (block.name === 'gold' || block.name === 'diamond' || block.name === 'rock') {
       var sparkPosX = block.position.x - xDir * 0.5;
@@ -312,7 +312,7 @@ exports.prototype.digInDirection = function (xDir, yDir) {
  * @return undefined
  */
 exports.prototype._failAttemptToDig = function (dx, dy) {
-  soundPlayer.play('DrillMed');
+  soundPlayer.play('Alarm2');
   if (this._currentDig) return this._currentDigCancel();
   this._currentDig = true;
   this.digFrom = this.object.position.clone();
@@ -322,7 +322,7 @@ exports.prototype._failAttemptToDig = function (dx, dy) {
   var pos = this.object.position;
   pos.x += dx * 0.5;
   this.digTarget = this.object.position.clone(); //animate drilling into wall
-  setTimeout(this._currentDigCancel, 500);
+  // setTimeout(this._currentDigCancel, 500);
   this.digTime = 500.0/1000.0;
   this.digTimeLeft = 800.0/1000.0; //a little higher so aniation won't complete
 };
@@ -338,7 +338,6 @@ exports.prototype._currentDigCancel = function () {
 
   this.timers.forEach(clearTimeout);
   this.intervals.forEach(clearInterval);
-  // soundPlayer.stopLoop('Laser');
   this._currentDigX = this._currentDigY = 0;
   this.digTime = 0;
 };
