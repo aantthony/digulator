@@ -4,12 +4,13 @@ function SoundPlayer() {
   var ctx = this;
   this.audio = new AudioContext();
   this.audioGain = this.audio.createGain();
-  this.audioGain.gain.value = 0.15;
+  this.volume = 0.15;
+  // this.audioGain.gain.value = 0.15;
   this.audioCompressor = this.audio.createDynamicsCompressor();
 
   this.atmosAudio = new AudioContext();
   this.atmosGain = this.atmosAudio.createGain();
-  this.atmosGainValue = 0.1;
+  this.atmosGainValue = 0.5;
 
   this.sounds = {};
   this.loops = {};
@@ -65,7 +66,7 @@ SoundPlayer.prototype.playAtmospheric = function() {
     return;
   }
 
-  instance.atmosGain.gain.value = instance.atmosGainValue;
+  instance.atmosGain.gain.value = instance.atmosGainValue * instance.volume;
 
   var source = instance.atmosAudio.createBufferSource();
   source.buffer = instance.sounds[atmos[pos]];
@@ -75,22 +76,19 @@ SoundPlayer.prototype.playAtmospheric = function() {
 }
 
 SoundPlayer.prototype.setAtmosGain = function(val) {
-  var val = (val-5)/10;
-  val *= 0.2;
+  var val = (5 + val)/2;
   if(val < 0){
     val = 0;
   }
-  this.atmosGainValue = val;
+  instance.atmosGainValue = val;
 }
 
 SoundPlayer.prototype.setVolume = function(val) {
-  // console.log(this.audioGain.gain.value);
   var val = (val/100)/4;
   if(val < 0){
     val = 0;
   }
   this.audioGain.gain.value = val;
-  // console.log(this.audioGain.gain.value);
 }
 
 SoundPlayer.prototype.play = function(sound) {
@@ -99,6 +97,7 @@ SoundPlayer.prototype.play = function(sound) {
     console.log("Sound not loaded: " + sound);
     return;
   }
+  instance.audioGain.gain.value = this.volume;
   var source = this.audio.createBufferSource();
   source.buffer = this.sounds[sound];
   source.connect(this.audioCompressor);

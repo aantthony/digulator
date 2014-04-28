@@ -122,6 +122,8 @@
 				/*cursor: pointer;*/
 			}
 			#vsdiv {
+				background-color: black;
+				padding:10px;
 				color: white;
 				position: fixed;
 				right: 50px;
@@ -180,7 +182,11 @@
 					<div class="hd" id="timeBack"><div class="lame">Timer: </div><span id="time">60</span><span>s</span></div>
 				</div>
 				<div id="vsdiv">
-					Volume: <input id="volslider" type="range" name="volume" min="0" max ="100" value="50"/>
+					Volume: <input id="volslider" type="range" name="volume" min="0" max ="100" value="50" title="Slide to change the volume"/>
+					<br/>
+					Bloom: <input id="bloomcheck" type="checkbox" name="bloomcheck" checked title="Untick for faster performance"/>
+					<br/>
+					LensFlare: <input id="flarecheck" type="checkbox" name="flarecheck" checked title="Untick for faster performance"/>
 				</div>
 				<div id="loadingscreen"><img src="http://i.imgur.com/WUFGJqR.gif?1" /></div>
 			</div>

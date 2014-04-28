@@ -37,8 +37,12 @@ var backgroundFragShader = require('./shaders/background.frag');
 var backgroundVertShader = require('./shaders/background.vert');
 
 var bloom = true;
+var flare = true;
 var flags = window.location.hash.replace(/^#/, '').split(',');
 if (~flags.indexOf('nobloom')) {
+	setTimeout(function(){
+		document.getElementById("bloomcheck").checked = false;
+	}, 100);
 	bloom = false;
 }
 
@@ -385,8 +389,10 @@ Game = function()
 		if (bloom)
 			this.bloom.unbind(null, sunpos);
 		
-		if (sunPosition.y + (0.0 - sunPosition.z) * (camera.position.y - sunPosition.y)/(camera.position.z - sunPosition.z) > -0.5)
-			this.lensflare.draw(sunpos, camera.aspect);
+		if (sunPosition.y + (0.0 - sunPosition.z) * (camera.position.y - sunPosition.y)/(camera.position.z - sunPosition.z) > -0.5){
+			if(flare)
+				this.lensflare.draw(sunpos, camera.aspect);
+		}
 	}
 }
 
@@ -511,8 +517,13 @@ window.onload = function()
 		soundPlayer.setVolume(this.value);
 	});
 	document.getElementById("volslider").addEventListener('focus',function (){
-		// soundPlayer.setVolume(this.value);
 		this.blur();
+	});
+	document.getElementById("bloomcheck").addEventListener('click',function (){
+		bloom = !bloom;
+	});
+	document.getElementById("flarecheck").addEventListener('click',function (){
+		flare = !flare;
 	});
 }
 
