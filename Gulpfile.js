@@ -4,10 +4,10 @@ var stylus     = require('gulp-stylus');
 var browserify = require('gulp-browserify');
 var minifyHTML = require('gulp-minify-html');
 var imagemin   = require('gulp-imagemin');
+var uglify     = require('gulp-uglify');
 
 var paths = {
   html: './views/*.html',
-  // scripts: 'index.js',
   scripts: 'index.js',
   styles: './styles/*.stylus',
   images: 'images/**/*',
@@ -46,6 +46,7 @@ gulp.task('scripts', function() {
     debug : process.env.NODE_ENV !== 'production',
     transform: [p.alsoAllow('md', 'vert', 'frag')]
   }))
+  .pipe(uglify())
   .pipe(gulp.dest('./dist/scripts'));
 });
 
@@ -57,7 +58,7 @@ gulp.task('styles', function(){
 
 gulp.task('images', function(){
   return gulp.src(paths.images)
-    // .pipe(imagemin())
+    .pipe(imagemin())
     .pipe(gulp.dest('./dist/images/'));
 });
 
