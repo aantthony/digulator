@@ -23,10 +23,11 @@
 				top: 0;
 			}
 			#loadingscreen{
-				display: inline-block;
-				position: absolute;
-				left: 0;
-				top: 0;
+				font-size: 4rem;
+				width:50%;
+				position: relative;
+				float: center;
+				margin: auto;
 			}
 			body{
 				font-family: arial, sans-serif;
@@ -222,7 +223,6 @@
 				<br/>
 				LensFlare: <input id="flarecheck" type="checkbox" name="flarecheck" checked title="Untick for faster performance"/>
 			</div>
-			<div id="loadingscreen"><img src="http://i.imgur.com/WUFGJqR.gif?1" /></div>
 			</div>
 			<div id="gamewrap">
 		</div>
@@ -234,7 +234,8 @@
 				In Digulator, your goal is to mine the ground Beneath the Surface, to get as much weight of wealth as you can. You get 1oz per unit of rock, 10oz per unit of gold, and 50oz per unit of diamond.<br/>
 				But be warned, as you dig, monsters will come to stop you from mining their home. <br/><br/>
 				Good Luck! 
-				<div id="start" class="button">Begin</div>
+				<div id="start" class="button" style="display:none;">Begin</div>
+				<div id="loadingscreen"><img src="http://i.imgur.com/WUFGJqR.gif?1"/>&nbsp;&nbsp;Loading...</div>
 				<div>Creators:</div>
 				<div id="authors"> <!-- all child span nodes are shuffled -->
 					<div style="margin-left: 50px;">Anthony Foster</div>

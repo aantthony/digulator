@@ -511,6 +511,8 @@ window.onload = function()
 	while (children.length)
 		authors.appendChild(children.splice(Math.floor(Math.random()*children.length), 1)[0]);
 
+	document.getElementById('start').style.display = "block";
+
 	setTimeout(function () {
 		changeGameState(new MainMenu());
 		//changeGameState(new Game());
@@ -541,7 +543,9 @@ window.onresize = function(){
 	var width = window.innerWidth;
 	var height = window.innerHeight;
 
-	currentGameState.resize(width, height);
+	if(currentGameState){
+		currentGameState.resize(width, height);
+	}
 }
 
 
