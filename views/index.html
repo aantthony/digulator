@@ -91,7 +91,7 @@
 			}
 			#desc {
 				background-color: rgba(255,255,255,0.5);
-				font-size: 1.5em;
+				font-size: 1.25em;
 				color: #000;
 				width: 80%;
 				position: relative;
@@ -144,6 +144,23 @@
 				display: none;
 				z-index: 7;
 			}
+			#win {
+				font-size: 7em;
+				color: #FFFF00;
+				text-align: center;
+				width: 100%;
+				position: absolute;
+				top: 50px;
+				display: none;
+				z-index: 7;
+			}
+			#win p {
+				font-size: 2rem;
+				color: #000000;
+				text-align: center;
+				width: 100%;
+				z-index: 7;
+			}
 			.ms {
 				font-size: 0.6em;
 				border-style: groove;
@@ -172,30 +189,42 @@
 		<script type="text/javascript" src="scripts/index.js"></script>
 
 		<div id="relative">
+			<div id="win">
+				<div>Winner!</div>
+				<!-- <img src="./images/Monstered.png" style="float:center; margin:auto;"> -->
+				<br/>
+				<p id="win1" style="display:hidden;">
+					Congratulations! You managed to fight your greed and get back to the surface with a brilliant diamond.
+				</p>
+				<p id="win2" style="display:hidden;">
+					Congratulations! Greed is good! You mined so much gold that you can barely get it back to your ship!
+				</p>
+				<div id="reset1" class="button">Go Again</div>
+				<!-- <div id="mm" class="ms">Main Menu</div> -->
+			</div>
 			<div id="loss">
 				<!-- <div id="lossText">MONSTERED!</div> -->
 				<img src="./images/Monstered.png" style="float:center; margin:auto;">
 				<br/>
-				<div id="reset" class="button">Try Again</div>
+				<div id="reset2" class="button">Try Again</div>
 				<!-- <div id="mm" class="ms">Main Menu</div> -->
 			</div>
-				<div id="hud">
-					<h1>Digulator!</h1>
-					<div class="hd" id="goldBack"><div class="lame">Gold: </div><span id="gold">0</span><span>oz</span></div>
-					<div class="hd" id="depthBack"><div class="lame">Depth: </div><span id="depthometer">0</span><span>m</span></div>
-					<div class="hd" id="timeBack"><div class="lame">Timer: </div><span id="time">60</span><span>s</span></div>
-				</div>
-				<div id="vsdiv">
-					Volume: <input id="volslider" type="range" name="volume" min="0" max ="100" value="50" title="Slide to change the volume"/>
-					<br/>
-					Bloom: <input id="bloomcheck" type="checkbox" name="bloomcheck" checked title="Untick for faster performance"/>
-					<br/>
-					LensFlare: <input id="flarecheck" type="checkbox" name="flarecheck" checked title="Untick for faster performance"/>
-				</div>
-				<div id="loadingscreen"><img src="http://i.imgur.com/WUFGJqR.gif?1" /></div>
+			<div id="hud">
+				<h1>Digulator!</h1>
+				<div class="hd" id="goldBack"><div class="lame">Gold: </div><span id="gold">0</span><span>oz</span></div>
+				<div class="hd" id="depthBack"><div class="lame">Depth: </div><span id="depthometer">0</span><span>m</span></div>
+				<div class="hd" id="timeBack"><div class="lame">Timer: </div><span id="time">60</span><span>s</span></div>
+			</div>
+			<div id="vsdiv">
+				Volume: <input id="volslider" type="range" name="volume" min="0" max ="100" value="50" title="Slide to change the volume"/>
+				<br/>
+				Bloom: <input id="bloomcheck" type="checkbox" name="bloomcheck" checked title="Untick for faster performance"/>
+				<br/>
+				LensFlare: <input id="flarecheck" type="checkbox" name="flarecheck" checked title="Untick for faster performance"/>
+			</div>
+			<div id="loadingscreen"><img src="http://i.imgur.com/WUFGJqR.gif?1" /></div>
 			</div>
 			<div id="gamewrap">
-				
 		</div>
 		<div id="startscreen">
 			<img src="./images/Title2.png" style="float:center; margin:auto;">
@@ -215,6 +244,7 @@
 					<div style="margin-left: 50px;">Pyarelal Knowles</div>
 				</div>
 				<div id="nogl" style="display: none;"><br/>Unfortunately you do not have WebGL enabled in your browser. Please either enable it or use a compatible browser like Chrome, Opera, Firefox or Safari. If you are using one of these browsers, then try updating or searching for how to enable WebGL.</div>
+				<div id="noAudio" style="display: none;"><br/>Unfortunately your browser does not support the audio context required. Please update your browser or use a compatible browser like Chrome, Opera, Firefox or Safari.</div>
 			</div>
 		</div>
 
@@ -225,6 +255,12 @@
 				document.getElementById("nogl").style.display = "block";
 				document.getElementById("start").style.display = "none";
 			}
+			var audioTest = window.AudioContext || window.webkitAudioContext;
+			if(!audioTest){
+				document.getElementById("noAudio").style.display = "block";
+				document.getElementById("start").style.display = "none";
+			}
+
 		</script>
 
 	</body>
