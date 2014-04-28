@@ -37,6 +37,8 @@ var backgroundFragShader = require('./shaders/background.frag');
 var backgroundVertShader = require('./shaders/background.vert');
 
 var bloom = true;
+var volumetrics = true;
+var particles = true;
 var flare = true;
 var flags = window.location.hash.replace(/^#/, '').split(',');
 if (~flags.indexOf('nobloom')) {
@@ -72,6 +74,9 @@ Game = function()
 {
 	GameState.call(this);
 	window.game = this;
+	
+	this.hasDiamond = false;
+	this.gameover = false;
 
 	this.renderer = new THREE.WebGLRenderer();
 	window.renderer = this.renderer;
@@ -98,11 +103,12 @@ Game = function()
 	
 	this.keys = new Keyboard();
 
-	var player = new Player({
+	this.player = new Player({
 		world: world,
 		game: game,
 		keys: this.keys
 	});
+	var player = this.player;
 
 	this.bloom = new Bloom(width, height);
 	window.bloom = this.bloom;
@@ -141,6 +147,9 @@ Game = function()
 	
 	this.emitParticles = function(pos, type, direction) //direction.xy
 	{
+		if (!particles)
+			return;
+		
 		var zoff = 1.0;
 		var scaleVelZ = 0.1;
 		if (type == this.PARTICLE_SPARK)
@@ -226,7 +235,8 @@ Game = function()
 			}
 		}
 		
-		this.particles.step(dt);
+		if (particles)
+			this.particles.step(dt);
 		
 		this.world.update(dt);
 	}
@@ -269,6 +279,11 @@ Game = function()
 				if(monster[i] != undefined)
 					monster[i].updateFunc(dt,player);
 		}
+		
+		if (this.hasDiamond && this.player.onSurface())
+		{
+			this.forceWin();
+		}
 	};
 
 	this.setUpHUD = function() {
@@ -295,13 +310,16 @@ Game = function()
 	};
 
 	this.forceLoss = function(losstype) {
-		if (loss)
+		if (this.gameover)
 		{
-			// console.log("Game.forceLoss but already in loss state");
+			// console.log("Game.forceLoss but already in gameover state");
 			return;
 		}
 		loss = true;
 
+		this.gameover = true;
+		
+		console.log("Game Lost");
 		
 		switch(losstype) {
 			case 'timeout':
@@ -322,11 +340,31 @@ Game = function()
 		//changeGameState(new LossState());
 		// swap when game state changes properly
 		document.getElementById("loss").style.display = "block";
-	}
+	};
+
+	this.forceWin = function() {
+		if (this.gameover)
+		{
+			// console.log("Game.forceWin but already in gameover state");
+			return;
+		}
+		
+		console.log("Game Won");
+		
+		this.gameover = true;
+		this.keys.disable(); //disable input when won
+		
+		try {
+			document.getElementById("win").style.display = "block";
+		}
+		catch (e) {
+			console.log(e);
+		}
+	};
 
 	this.updateDepth = function() {
 		document.getElementById("depthometer").innerHTML = Math.round( (-player.object.position.y) * 10 ) / 10;
-	}
+	};
 
 	this.updateScore = function(name) {
 		var score = 0;
@@ -338,6 +376,8 @@ Game = function()
 			case 'diamond':
 				soundPlayer.play('Gold');
 				score = 50;
+				this.hasDiamond = true;
+				this.displayDiamondMessage();
 				break;
 			case 'rock':
 				score = 1;
@@ -347,7 +387,30 @@ Game = function()
 		}
 		var t = document.getElementById("gold").innerHTML;
 		document.getElementById("gold").innerHTML = parseInt(t) + parseInt(score);
-	}
+	};
+	
+	this.diamondMessageTimer = null;
+	this.displayDiamondMessage = function()
+	{
+		try {
+			if (this.diamondMessageTimer)
+				clearTimeout(this.diamondMessageTimer);
+			var msgElement = document.getElementById("diamondmsg");
+			msgElement.style.display = "block";
+			msgElement.style.opacity = "1";
+			game.diamondMessageTimer = setTimeout(function () {
+				msgElement.style.opacity = "0";
+				game.diamondMessageTimer = setTimeout(function () {
+					msgElement.style.display = "none";
+					msgElement.style.opacity = "1";
+					game.diamondMessageTimer = null;
+				}, 1000);
+			}, 2000);
+		}
+		catch (e) {
+			console.log(e);
+		}
+	};
 	
 	this.resize = function(width, height)
 	{
@@ -364,7 +427,7 @@ Game = function()
 		this.bloom.resize(width, height);
 
 		backgroundMesh.material.uniforms.aspect.value = width / height;
-	}
+	};
 	
 	this.display = function()
 	{
@@ -377,7 +440,8 @@ Game = function()
 		sunpos.y = sunpos.y * 0.5 + 0.5;
 		backgroundMesh.material.uniforms.sun.value.copy(sunpos);
 		
-		if (bloom) this.bloom.bind();
+		if (bloom || volumetrics)
+			this.bloom.bind();
 		
 		renderer.autoClear = false;
 		renderer.clear();
@@ -387,16 +451,18 @@ Game = function()
 		gl.disable(gl.DEPTH_TEST);
 		gl.enable(gl.BLEND);
 		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-		this.particles.draw(camera.projectionMatrix.elements, camera.matrixWorldInverse.elements);
+		if (particles)
+			this.particles.draw(camera.projectionMatrix.elements, camera.matrixWorldInverse.elements);
 		gl.disable(gl.BLEND);
-		if (bloom)
-			this.bloom.unbind(null, sunpos);
+		
+		if (bloom || volumetrics)
+			this.bloom.unbind(null, sunpos, bloom, volumetrics);
 		
 		if (sunPosition.y + (0.0 - sunPosition.z) * (camera.position.y - sunPosition.y)/(camera.position.z - sunPosition.z) > -0.5){
 			if(flare)
 				this.lensflare.draw(sunpos, camera.aspect);
 		}
-	}
+	};
 }
 
 MainMenu = function()
@@ -524,6 +590,12 @@ window.onload = function()
 	});
 	document.getElementById("bloomcheck").addEventListener('click',function (){
 		bloom = !bloom;
+	});
+	document.getElementById("volumetricscheck").addEventListener('click',function (){
+		volumetrics = !volumetrics;
+	});
+	document.getElementById("particlescheck").addEventListener('click',function (){
+		particles = !particles;
 	});
 	document.getElementById("flarecheck").addEventListener('click',function (){
 		flare = !flare;

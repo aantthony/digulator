@@ -75,6 +75,10 @@ var exports = module.exports = function (details) {
       if (kD && !kU) return this.digDown();
     }
   }
+  this.onSurface = function()
+  {
+  	return this.object.position.y > -0.1;
+  }
   this.update = function(dt)
   {
     this._updateKeys();
