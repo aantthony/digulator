@@ -28,6 +28,8 @@ function TextureLoader() {
 
   this.loadTexture('Grass');
   
+  this.loadTexture('Flare');
+  
   this.loadTexture('Player');
   this.loadNormal('PlayerNM');
   this.loadTexture('Monster');
