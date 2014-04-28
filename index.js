@@ -90,7 +90,7 @@ Game = function()
 	this.camera.position.z = 12;
 	var cameraFocus = new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z);
 	
-	var sunPosition = new THREE.Vector3(-10, 5, -30);
+	var sunPosition = new THREE.Vector3(-5, 5, -30);
 	
 	var keys = new Keyboard();
 
@@ -104,7 +104,7 @@ Game = function()
 	window.bloom = this.bloom;
 	this.particles = new Particles(64);
 	
-	// this.lensflare = new LensFlare();
+	this.lensflare = new LensFlare();
 	
 	// full screen quad:
 	var geo = new THREE.PlaneGeometry(2, 2);
@@ -385,7 +385,8 @@ Game = function()
 		if (bloom)
 			this.bloom.unbind(null, sunpos);
 		
-		// this.lensflare.draw(camera.projectionMatrix.elements, camera.matrixWorldInverse.elements, sunPosition);
+		if (sunPosition.y + (0.0 - sunPosition.z) * (camera.position.y - sunPosition.y)/(camera.position.z - sunPosition.z) > -0.5)
+			this.lensflare.draw(sunpos, camera.aspect);
 	}
 }
 
@@ -491,6 +492,15 @@ var mainloop = function()
 
 window.onload = function()
 {
+	//randomize author order on page load
+	var authors = document.getElementById("authors");
+	var children = [];
+	for (var i = 0; i < authors.childNodes.length; ++i)
+		if (authors.childNodes[i].nodeName == "SPAN")
+			children.push(authors.childNodes[i]);
+	while (children.length)
+		authors.appendChild(children.splice(Math.floor(Math.random()*children.length), 1)[0]);
+
 	setTimeout(function () {
 		changeGameState(new MainMenu());
 		//changeGameState(new Game());

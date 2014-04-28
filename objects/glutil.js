@@ -160,6 +160,32 @@ GLUtil = {
 		l2 = Math.ceil(l2);
 		return Math.pow(2, l2);
 	},
+	uploadTexture: function(image, texture, name) {
+		texture.width = image.width;
+		texture.height = image.height;
+		texture.format = gl.RGBA;
+		var channels = GLUtil.getNumChannels(texture.format);
+		texture.totalBytes = texture.width * texture.height * channels;
+		gl.bindTexture(gl.TEXTURE_2D, texture);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+		gl.texImage2D(gl.TEXTURE_2D, 0, texture.format, texture.format, gl.UNSIGNED_BYTE, image);
+		gl.bindTexture(gl.TEXTURE_2D, null);
+		texture.loaded = true;
+		/*
+		assert(name in pendingTextureLoads, "texture not in pending");
+		if (name in pendingTextureLoads)
+		{
+			delete pendingTextureLoads[name];
+			pendingTextureLoads.length--; //what the fuck javascript, you lazy shit. do I have to do everything for you??
+		}
+		console.log("Loaded image " + name + " " + texture.width + " " + texture.height + ", " + pendingTextureLoads.length + " left");
+		checkerror("texture upload");
+		if (callbackCreateTexture)
+			callbackCreateTexture(texture);
+		*/
+		return texture;
+	},
 	createTexture: function(w, h, format, isfloat, name)
 	{	
 		if (GLUtil.nextPowerOf2(w) != w || GLUtil.nextPowerOf2(h) != h)

@@ -6,6 +6,7 @@ var GLUtil = require('./glutil');
 
 function Bloom(w, h) {
 	
+	this.primaryScale = 0.9;
 	this.threshold = 0.8;
 	
 	this.w = w;
@@ -73,7 +74,7 @@ function Bloom(w, h) {
 		Shader.setActiveTexture(this.volumetrics, "tex", 0, this.RTT);
 		gl.uniform2f(gl.getUniformLocation(this.volumetrics, "size"), 1.0/this.w, 1.0/this.h);
 		gl.uniform2f(gl.getUniformLocation(this.volumetrics, "sun"), sunPos.x, sunPos.y);
-		gl.uniform1f(gl.getUniformLocation(this.volumetrics, "bloomThresh"), this.threshold);
+		gl.uniform1f(gl.getUniformLocation(this.volumetrics, "primaryScale"), this.primaryScale);
 		this.quad.draw(this.volumetrics);
 		
 		//first full rez blur pass
