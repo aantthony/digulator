@@ -492,6 +492,15 @@ var mainloop = function()
 
 window.onload = function()
 {
+	//randomize author order on page load
+	var authors = document.getElementById("authors");
+	var children = [];
+	for (var i = 0; i < authors.childNodes.length; ++i)
+		if (authors.childNodes[i].nodeName == "SPAN")
+			children.push(authors.childNodes[i]);
+	while (children.length)
+		authors.appendChild(children.splice(Math.floor(Math.random()*children.length), 1)[0]);
+
 	setTimeout(function () {
 		changeGameState(new MainMenu());
 		//changeGameState(new Game());
