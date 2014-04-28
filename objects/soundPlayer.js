@@ -19,7 +19,7 @@ function SoundPlayer() {
   this.loadSound('DrillFast');
   this.loadSound('DrillMed');
   this.loadSound('Laser');
-  // this.loadSound('Laser2');
+  this.loadSound('Laser2');
 
   //atmospheric
   this.loadSound('Bird1');
@@ -30,30 +30,15 @@ function SoundPlayer() {
   this.loadSound('Wind3');
 
   //misc
-  // this.loadSound('DestroyTree');
   this.loadSound('TreeFall');
   this.loadSound('Leaves');
-  // this.loadSound('Engine');
   this.loadSound('Ending');
-  // this.loadSound('Grenade');
-  // this.loadSound('Rocket');
   this.loadSound('Sand');
   this.loadSound('Mud');
 
   //Success
   this.loadSound('Gold');
 
-  //Death
-  // this.loadSound('Death');
-
-  // this.loadSound('Laser');
-
-  /*setTimeout(function(){
-    instance.playLoop('Laser');
-    setTimeout(function(){
-      instance.stopLoop('Laser');
-    }, 1000);
-  }, 1000);*/
 }
 
 SoundPlayer.prototype.playAtmospheric = function() {
@@ -89,11 +74,10 @@ SoundPlayer.prototype.setVolume = function(val) {
   if(val < 0){
     val = 0;
   }
-  this.audioGain.gain.value = val;
+  this.volume = val;
 }
 
 SoundPlayer.prototype.play = function(sound) {
-  // console.log("Playing sound: " + sound);
   if(!this.sounds[sound]){
     console.log("Sound not loaded: " + sound);
     return;

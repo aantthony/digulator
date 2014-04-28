@@ -122,7 +122,7 @@ var exports = module.exports = function (details) {
         if(!this.aboveGroundMove)
           soundPlayer.play('Sand');
         // soundPlayer.play('DrillFast');
-        soundPlayer.stopLoop('Laser');
+        // soundPlayer.stopLoop('Laser');
         var block = this._targetBlock;
         if (block) {
           if (block.name === 'dirt' || block.name === 'sand' || block.name === 'clay') {
@@ -226,11 +226,13 @@ exports.prototype.digInDirection = function (xDir, yDir) {
 
     var intervals = this.intervals;
     if (block.name === 'sand' || block.name === 'dirt') {
+        soundPlayer.play('Sand');
         intervals.push(setInterval(function () {
           soundPlayer.play('Sand');
         }, 250));
     }
     if (block.name === 'clay') {
+        soundPlayer.play('Mud');
         intervals.push(setInterval(function () {
           soundPlayer.play('Mud');
         }, 400));
@@ -248,9 +250,24 @@ exports.prototype.digInDirection = function (xDir, yDir) {
         yO = Math.min(mO, Math.max(-mO, yO));
         self._game.emitParticles({x: sparkPosX + xO, y: sparkPosY + yO, z: 0}, 0);
       }, 20));
-      intervals.push(setInterval(function () {
+      if (block.name === 'rock') {
+        soundPlayer.play('DrillFast');
+        intervals.push(setInterval(function () {
+          soundPlayer.play('DrillFast');
+        }, 200));
+      }
+      else if(block.name === 'gold'){
         soundPlayer.play('DrillMed');
-      }, 200));
+        intervals.push(setInterval(function () {
+          soundPlayer.play('DrillMed');
+        }, 400));
+      }
+      else{
+        soundPlayer.play('Laser2');
+        intervals.push(setInterval(function () {
+          soundPlayer.play('Laser2');
+        }, 500));
+      }
     }
     // soundPlayer.playLoop('Laser');
 
