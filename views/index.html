@@ -145,6 +145,9 @@
 				display: none;
 				z-index: 7;
 			}
+			#diamondmsg {
+				color: #b2e4f0;
+			}
 			#win {
 				font-size: 7em;
 				color: #FFFF00;
@@ -195,18 +198,19 @@
 
 		<div id="relative">
 			<div id="diamondmsg">
-				<div style="font-size:100px;">You got diamond.<br/>Return from beneath the surface to end the game.</div>
+				<div style="font-size:5rem;">You got diamond.<br/>Return from beneath the surface to end the game.</div>
 			</div>
 			<div id="win">
 				<div>Winner!</div>
 				<!-- <img src="./images/Monstered.png" style="float:center; margin:auto;"> -->
 				<br/>
-				<p id="win1" style="display:hidden;">
+				<p id="win1" style="display:none;">
 					Congratulations! You managed to fight your greed and get back to the surface with a brilliant diamond.
 				</p>
-				<p id="win2" style="display:hidden;">
+				<p id="win2" style="display:none;">
 					Congratulations! Greed is good! You mined so much gold that you can barely get it back to your ship!
 				</p>
+				<br/>
 				<div id="reset1" class="button">Go Again</div>
 				<!-- <div id="mm" class="ms">Main Menu</div> -->
 			</div>

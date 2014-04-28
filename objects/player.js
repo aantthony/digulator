@@ -182,7 +182,7 @@ function difficulty (block) {
   switch(block.name) {
     case 'diamond': return 12;
     case 'gold': return 8;
-    case 'rock': return 18;
+    case 'rock': return 14;
     case 'clay': return 4;
     case 'dirt': return 2;
     case 'sand': return 1;

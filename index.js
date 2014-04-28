@@ -351,12 +351,19 @@ Game = function()
 		}
 		
 		console.log("Game Won");
+		var gold = parseInt(document.getElementById("gold").innerHTML);
 		
 		this.gameover = true;
 		this.keys.disable(); //disable input when won
 		
 		try {
 			document.getElementById("win").style.display = "block";
+			if(gold < 100){
+				document.getElementById("win1").style.display = "block";
+			}
+			else{
+				document.getElementById("win2").style.display = "block";
+			}
 		}
 		catch (e) {
 			console.log(e);
