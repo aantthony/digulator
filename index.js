@@ -600,8 +600,10 @@ window.onload = function()
 	document.getElementById("flarecheck").addEventListener('click',function (){
 		flare = !flare;
 	});
-	document.getElementById("reset").addEventListener('click',function (){
-		// flare = !flare;
+	document.getElementById("reset1").addEventListener('click',function (){
+		location.reload();
+	});
+	document.getElementById("reset2").addEventListener('click',function (){
 		location.reload();
 	});
 }

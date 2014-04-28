@@ -20,6 +20,9 @@ function SoundPlayer() {
   this.loadSound('DrillMed');
   this.loadSound('Laser');
   this.loadSound('Laser2');
+  this.loadSound('Sand');
+  this.loadSound('Mud');
+  
 
   //atmospheric
   this.loadSound('Bird1');
@@ -33,8 +36,7 @@ function SoundPlayer() {
   this.loadSound('TreeFall');
   this.loadSound('Leaves');
   this.loadSound('Ending');
-  this.loadSound('Sand');
-  this.loadSound('Mud');
+  this.loadSound('Alarm2');
 
   //Success
   this.loadSound('Gold');
