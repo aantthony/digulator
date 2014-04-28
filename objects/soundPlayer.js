@@ -18,7 +18,7 @@ function SoundPlayer() {
   this.loadSound('DrillFast');
   this.loadSound('DrillMed');
   this.loadSound('Laser');
-  this.loadSound('Laser2');
+  // this.loadSound('Laser2');
 
   //atmospheric
   this.loadSound('Bird1');
@@ -42,9 +42,9 @@ function SoundPlayer() {
   this.loadSound('Gold');
 
   //Death
-  this.loadSound('Death');
+  // this.loadSound('Death');
 
-  this.loadSound('Laser');
+  // this.loadSound('Laser');
 
   /*setTimeout(function(){
     instance.playLoop('Laser');
