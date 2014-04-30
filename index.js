@@ -20,6 +20,7 @@ function assert(exp, message) {
 window.assert = assert;
 
 var Keyboard = require('./objects/keyboard');
+var Toucher = require('./objects/toucher');
 var Player = require('./objects/player');
 var Monster = require('./objects/monster');
 var World = require('./objects/world');
@@ -36,10 +37,12 @@ var timeHack = undefined;
 var backgroundFragShader = require('./shaders/background.frag');
 var backgroundVertShader = require('./shaders/background.vert');
 
+
 var bloom = true;
 var volumetrics = true;
 var particles = true;
 var flare = true;
+
 var flags = window.location.hash.replace(/^#/, '').split(',');
 if (~flags.indexOf('nobloom')) {
 	setTimeout(function(){
@@ -103,11 +106,13 @@ Game = function()
 	var sunPosition = new THREE.Vector3(-5, 5, -30);
 	
 	this.keys = new Keyboard();
+	this.touches = new Toucher();
 
 	this.player = new Player({
 		world: world,
 		game: game,
-		keys: this.keys
+		keys: this.keys,
+		touches: this.touches,
 	});
 	var player = this.player;
 
@@ -337,6 +342,7 @@ Game = function()
 		}
 		
 		this.keys.disable(); //disable input when lost
+		this.touches.disable(); //disable input when lost
 		
 		//changeGameState(new LossState());
 		// swap when game state changes properly
@@ -355,6 +361,7 @@ Game = function()
 		
 		this.gameover = true;
 		this.keys.disable(); //disable input when won
+		this.touches.disable(); //disable input when lost
 		
 		try {
 			document.getElementById("win").style.display = "block";
@@ -616,6 +623,14 @@ window.onload = function()
 	document.getElementById("reset2").addEventListener('click',function (){
 		location.reload();
 	});
+	if(navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/)){
+		bloom = false;
+		document.getElementById("bloomcheck").checked = false;
+		volumetrics = false;
+		document.getElementById("volumetricscheck").checked = false;
+		particles = false;
+		document.getElementById("particlescheck").checked = false;
+	}
 }
 
 window.onresize = function(){

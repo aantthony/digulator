@@ -38,6 +38,7 @@ var exports = module.exports = function (details) {
   this._world = details.world;
   this._game = details.game;
   this._keys = details.keys;
+  this._touches = details.touches;
 
   // todo: replace this
   this.intervals = [];
@@ -58,10 +59,11 @@ var exports = module.exports = function (details) {
   
   this._updateKeys = function () {
     var keys = this._keys;
-    var kL = keys.pressed('left');
-    var kR = keys.pressed('right');
-    var kU = keys.pressed('up');
-    var kD = keys.pressed('down');
+    var touches = this._touches;
+    var kL = keys.pressed('left') || touches.touched('left');
+    var kR = keys.pressed('right') || touches.touched('right');
+    var kU = keys.pressed('up') || touches.touched('up');
+    var kD = keys.pressed('down') || touches.touched('down');
     if (this._currentDig) {
       if (this._currentDigX === +1 && kR) return;
       if (this._currentDigX === -1 && kL) return;
