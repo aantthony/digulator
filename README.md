@@ -1,90 +1,18 @@
 
-    f = lambda x: (17*x**4-114*x**3+163*x**2+90*x+792)/12
-    print ''.join(map(chr, map(f, range(5))))
-
-digulator
+Digulator
 =========
+Digulator is a game made for the Ludum Dare 29 game jam. My friends and I made it over a weekend, using WebGL, Three.js and other HTML5 and canvas technologies.
 
-Digging costs time
-Get to the end of the level
-When you dig, it replaces the block behind you with sand
+It is a simple game that demonstrates the high quality graphics you can achieve with custom WebGL shaders.
 
-Goal is to collect X amount of cash
-Monster can eat gold/diamond
-Diamond blocks take longer to dig, but earn more cash
+You can find the main page for it on the Ludum Dare website:
 
-Limited sight
-Can see gold/diamond everywhere though
+http://www.ludumdare.com/compo/ludum-dare-29/?action=preview&uid=5006
 
-
-What we need
-============
-	procedural level generator
-	ai monster
-	webgl scene setup
-	player controller
-
-	block textures
-	digger model
-	alien model
-
-
-
-Blocks cost time:
-	Sand - yellow
-		1
-	Dirt - light brown
-		2
-	Clay - dark brown
-		3
-	Rock - grey
-		4
-	Gold - gold
-		2
-	Diamond - light blue
-		4
-	Empty - none
-		0
-	oil - black
-		1
-
-	Monster - green
-	Fuel??
-
-
-
-Sound FX
+Creators
 ========
-
- -drilling
- 	-different material sounds
- -gold
- -diamond
- -monster
- -death
- -music
- -engine
- -tree destroy
-
-
-
-Art
-===
-	-drill model
-	-block textures
-	-monster
-	
-
-Where to go from here
-=====================
-	Models for alien and digger
-	limited field of view
-	laser effect
-	more sound effects
-	music
-	border texture
-	HUD (html/css is easiest)
-	menu to decide which difficulty
-	win condition and screen
-	lose condition and screen
-	make previous block 1 difficulty less than what you mined through
+	Anthony Foster
+	Pyar Knowles
+	James McKormic
+	Damien Gatt
+	Clark Lavery
